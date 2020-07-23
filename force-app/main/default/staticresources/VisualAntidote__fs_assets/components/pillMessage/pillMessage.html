@@ -1,0 +1,76 @@
+<html>
+
+<head>
+
+    <!-- Dependency -->
+    <script src="../jquery/jquery.js"></script>
+
+    <script src="pillMessage.js"></script>
+    <link rel="stylesheet" href="pillMessage.css" />
+
+    <!-- Test Scenarios - Onload -->
+    <script>
+        $(document).ready(function () {
+
+            $('input[type="radio"]').each(function () {
+                $(this).click(function () {
+                    executeTest($(this).val());
+                });
+            })
+        });
+
+        function executeTest(pValue) {
+            switch (pValue) {
+                case "test_ShortMessage":
+                    showPillMessage_Error('This is a test error message!');
+                    break;
+                case "test_LongMessage":
+                    showPillMessage_Error('Warning: This form has a payment field. If publishing with embed code, it must be embedded on an SSL-secured site to function.');
+                    break;
+                case "test_DoubleMessage":
+                    var vMessage1 = '<p>Warning: This form has a payment field. If publishing with embed code, it must be embedded on an SSL-secured site to function.</p>';
+                    var vMessage2 = '<p>Warning: This field will allow external users to view your Salesforce records.</p>';
+                    showPillMessage_Error(vMessage1 + vMessage2);
+                    break;
+                case "test_MessageAndButton":
+                    showPillMessage_Error('Warning: This form has not been published yet. <button type="button">Go to FormEditor</button>', false);
+                    break;
+                case "test_SuccessMessage":
+                    showPillMessage_Success('This is a test success message!');
+                    break;
+                case "test_HideMessage":
+                    hidePillMessage();
+                    break;
+                default:
+                    break;
+            }
+        }
+    </script>
+
+    <!-- For Pill Message Component - The Image Path is different when we open the component here -->
+    <style>
+        .fs_pillmessage__closeIcon {
+            background-image: url(../../images/sprites/dash_sprite_v1.png) !important;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="radio" id="rd1" name="test" value="test_ShortMessage">
+    <label for="rd1">Short Message</label>
+    <input type="radio" id="rd2" name="test" value="test_LongMessage">
+    <label for="rd2">Long Message</label>
+    <input type="radio" id="rd3" name="test" value="test_DoubleMessage">
+    <label for="rd3">Double Message</label>
+    <input type="radio" id="rd4" name="test" value="test_MessageAndButton">
+    <label for="rd4">Message and Button</label>
+    <input type="radio" id="rd6" name="test" value="test_SuccessMessage">
+    <label for="rd6">Success Message</label>
+    <input type="radio" id="rd5" name="test" value="test_HideMessage">
+    <label for="rd5">Hide Message</label>
+    <br>
+    <!-- Component here -->
+    <div class="fs_pillmessage_cmp"></div>
+</body>
+
+</html>

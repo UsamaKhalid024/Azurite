@@ -1,0 +1,132 @@
+/* Platform connection form css*/
+.fsForm {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+.fsForm--widthSM {
+    width: 380px;
+}
+.fsFormRow {
+    display: inline-block;
+    padding: 5px 0px;
+    width: 100%;
+}
+.fsLabel {
+    font-size: 14px;
+    font-family: 'Open Sans';
+    display: inline-block;
+    min-width: 100px;
+    color: #616161;
+}
+.fsLabel__req {
+    color: #129be1;
+    margin-left: 5px;
+}
+.fsInput {
+    box-sizing: border-box;
+    width: 266px;
+    padding: 7px;
+    font-size: 14px;
+    border: 1px solid #aaaaaa;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+.fsInput.fsInput--fsRequired {
+    border-color: red;
+}
+.fsFormRow .fsInput,
+.fsFormRow .fsBtn--primary {
+    float: right;
+}
+.fsFormRow .fsLabel {
+    line-height: 33px;
+}
+/* Platform connection form css ends*/
+/* Platform connection wrapper box css*/
+.fsPlatformConnectionBox {
+    border: 1px solid #ececec;
+    border-radius: 5px;
+    background-color: #ffffff;
+}
+.fsPlatformConnectionCompact,
+.fsPlatformConnectionDetail {
+    overflow: auto;
+    padding: 15px;
+}
+
+.fsPlatformConnectionDetail {
+    border-top: 1px solid #ececec;
+}
+.fsPlatformConnectionDetail__title,
+.fsPlatformConnectionDetail__titleBottom {
+    width: 100%;
+    color: #616161;
+    font-family: 'Open Sans';
+    font-size: 14px;
+    line-height: 19px;
+}
+.fsPlatformConnectionDetail__titleBottom {
+    font-size: 12px;
+}
+
+.fsPlatformConnectionDetail__titleBottom > label.text--bold {
+    font-weight: 700 !important;
+}
+
+.fsPlatformConnectionDetail__title > a,
+.fsPlatformConnectionDetail__titleBottom > a {
+    color: #129be1;
+}
+.fsPlatformConnectionCompact__title {
+    color: #616161;
+    font-family: 'Open Sans';
+    font-size: 14px;
+    line-height: 23px;
+    float: left;
+    margin-left: 10px;
+}
+.fsPlatformConnectionCompact__logo {
+    width: 23px;
+    height: 23px;
+    float: left;
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}
+.fsPlatformConnectionCompact__state {
+    width: 23px;
+    height: 23px;
+    border: none;
+    text-indent: -99999px;
+    float: left;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: -349px -78px;
+    background-image: url('./images/icon_publish_options/publish_option_sprite.png');
+}
+
+a.fsPlatformConnectionCompact__link {
+    float: right;
+    color: #129be1;
+    text-decoration: none;
+}
+
+.fsPlatformConnectionCompact__state:hover {
+    background-position: -349px -78px;
+}
+.fsPlatformConnectionCompact__state--collapsed,
+.fsPlatformConnectionCompact__state--collapsed:hover {
+    background-position: -349px 0px;
+}
+.fsPlatformConnectionCompact__logo--document {
+    background-image: url('./images/iconimages/formstack_documents_logo.png'); /*local-url('../../images/iconimages/document.png');*/
+}
+.fsPlatformConnectionCompact__logo--integrationActive {
+    background-image: url('./images/iconimages/integration-active.png');
+}
+.fsPlatformConnectionCompact__logo--integrationInactive {
+    background-image: url('./images/iconimages/integration-inactive.png');
+}
+/* Platform connection wrapper box css ends*/

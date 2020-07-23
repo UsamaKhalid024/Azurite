@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Breadwinner for QuickBooks Online</description>
+    <label>Breadwinner</label>
+    <motif>Custom67: Gears</motif>
+    <page>breadwinner_qbo__Breadwinner</page>
+</CustomTab>

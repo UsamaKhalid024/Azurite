@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   inkscape:version="1.0beta2 (2b71d25, 2019-12-03)"
+   sodipodi:docname="docs-logoicon.svg"
+   id="svg20"
+   version="1.1"
+   viewBox="0 0 23 23"
+   height="23px"
+   width="23px">
+  <metadata
+     id="metadata26">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs24" />
+  <sodipodi:namedview
+     inkscape:current-layer="FU-new-18---fin"
+     inkscape:window-maximized="1"
+     inkscape:window-y="23"
+     inkscape:window-x="0"
+     inkscape:cy="16.604691"
+     inkscape:cx="-5.8310956"
+     inkscape:zoom="13.685373"
+     showgrid="false"
+     id="namedview22"
+     inkscape:window-height="789"
+     inkscape:window-width="1440"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0"
+     guidetolerance="10"
+     gridtolerance="10"
+     objecttolerance="10"
+     borderopacity="1"
+     inkscape:document-rotation="0"
+     bordercolor="#666666"
+     pagecolor="#ffffff" />
+  <!-- Generator: Sketch 60 (88103) - https://sketch.com -->
+  <title
+     id="title10">docs-logoicon</title>
+  <desc
+     id="desc12">Created with Sketch.</desc>
+  <g
+     id="FU-new-18---fin"
+     transform="translate(-426,-776)"
+     style="fill:none;fill-rule:evenodd;stroke:none;stroke-width:1">
+    <g
+       id="g38">
+      <path
+         d="m 436.6737,779.63839 7.765,7.779 7.9e-4,7.98645 H 430.5267 v -15.76545 z"
+         id="Combined-Shape"
+         fill="#2384C9"
+         inkscape:connector-curvature="0" />
+      <polygon
+         id="Triangle"
+         fill="#175480"
+         transform="rotate(40,-836.27557,978.31381)"
+         points="20.81897,7.3203708 12.67237,6.6095723 17.114886,2.8818587 " />
+    </g>
+  </g>
+</svg>

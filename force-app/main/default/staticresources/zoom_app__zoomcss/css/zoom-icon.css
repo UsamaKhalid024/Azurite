@@ -1,0 +1,362 @@
+@font-face {
+  font-family: icozoom;
+  src: url(fonts/icozoom.woff?orgId=00D2v0000012rL1) format("woff"), url(fonts/icozoom.ttf?orgId=00D2v0000012rL1) format("truetype");
+  font-weight: 400;
+  font-style: normal;
+}
+
+[class*=zm-icon-], [class^=zm-icon-] {
+  font-family: icozoom !important;
+  speak: none;
+  font-style: normal;
+  font-weight: 400;
+  font-variant: normal;
+  text-transform: none;
+  vertical-align: baseline;
+  display: inline-block;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.zm-icon-version:before {
+  content: "\e948";
+}
+
+.zm-icon-sort-ascending:before {
+  content: "\e945";
+}
+
+.zm-icon-sort-descending:before {
+  content: "\e946";
+}
+
+.zm-icon-sort:before {
+  content: "\e947";
+}
+
+.zm-icon-full-screen-preview:before {
+  content: "\e931";
+}
+
+.zm-icon-copy:before {
+  content: "\e943";
+}
+
+.zm-icon-error-outline:before {
+  content: "\e935";
+}
+
+.zm-icon-error:before {
+  content: "\e936";
+}
+
+.zm-icon-help-outline:before {
+  content: "\e937";
+}
+
+.zm-icon-help:before {
+  content: "\e938";
+}
+
+.zm-icon-info-outline:before {
+  content: "\e939";
+}
+
+.zm-icon-info:before {
+  content: "\e93a";
+}
+
+.zm-icon-lock:before {
+  content: "\e93b";
+}
+
+.zm-icon-locked:before {
+  content: "\e93c";
+}
+
+.zm-icon-warning-outline:before {
+  content: "\e93d";
+}
+
+.zm-icon-warning:before {
+  content: "\e93e";
+}
+
+.zm-icon-success-outline:before {
+  content: "\e93f";
+}
+
+.zm-icon-success:before {
+  content: "\e940";
+}
+
+.zm-icon-time-outline:before {
+  content: "\e941";
+}
+
+.zm-icon-time:before {
+  content: "\e942";
+}
+
+.zm-icon-date:before {
+  content: "\e929";
+}
+
+.zm-icon-add:before {
+  content: "\e92a";
+}
+
+.zm-icon-minus:before {
+  content: "\e92d";
+}
+
+.zm-icon-folder:before {
+  content: "\e92b";
+}
+
+.zm-icon-move-to-folder:before {
+  content: "\e92c";
+}
+
+.zm-icon-search:before {
+  content: "\e91c";
+}
+
+.zm-icon-apple:before {
+  content: "\e91d";
+}
+
+.zm-icon-googleplay:before {
+  content: "\e927";
+}
+
+.zm-icon-microsoft:before {
+  content: "\e928";
+}
+
+.zm-icon-cc-transcript:before {
+  content: "\e908";
+}
+
+.zm-icon-cc-transcript-fill:before {
+  content: "\e91a";
+}
+
+.zm-icon-ellipsis:before {
+  content: "\e926";
+}
+
+.zm-icon-active-speaker-view:before {
+  content: "\e920";
+}
+
+.zm-icon-list-view:before {
+  content: "\e934";
+}
+
+.zm-icon-grid-view:before {
+  content: "\e933";
+}
+
+.zm-icon-cc:before {
+  content: "\e901";
+}
+
+.zm-icon-chatfile:before {
+  content: "\e902";
+}
+
+.zm-icon-audio-transcript:before {
+  content: "\e914";
+}
+
+.zm-icon-audio:before {
+  content: "\e900";
+}
+
+.zm-icon-video:before {
+  content: "\e915";
+}
+
+.zm-icon-delete:before {
+  content: "\e904";
+}
+
+.zm-icon-link:before {
+  content: "\e910";
+}
+
+.zm-icon-upload-alt:before {
+  content: "\e949";
+}
+
+.zm-icon-upload:before {
+  content: "\e94a";
+}
+
+.zm-icon-download-alt:before {
+  content: "\e905";
+}
+
+.zm-icon-download:before {
+  content: "\e906";
+}
+
+.zm-icon-share:before {
+  content: "\e912";
+}
+
+.zm-icon-play-circle-fill:before {
+  content: "\e921";
+}
+
+.zm-icon-play-circle:before {
+  content: "\e922";
+}
+
+.zm-icon-fullscreen-small:before {
+  content: "\e909";
+}
+
+.zm-icon-loading:before {
+  content: "\e923";
+  color: #fff;
+}
+
+.zm-icon-loading:after {
+  content: "\e924";
+  margin-left: -1em;
+  color: #208dff;
+}
+
+.zm-icon-settings:before {
+  content: "\e944";
+}
+
+.zm-icon-edit:before {
+  content: "\e907";
+}
+
+.zm-icon-arrow-down:before {
+  content: "\e911";
+}
+
+.zm-icon-arrow-up:before {
+  content: "\e925";
+}
+
+.zm-icon-ok:before {
+  content: "\e932";
+}
+
+.zm-icon-close:before {
+  content: "\e903";
+}
+
+.zm-icon-radio:before {
+  content: "\e918";
+  color: #fff;
+}
+
+.zm-icon-radio:after {
+  content: "\e919";
+  margin-left: -1em;
+  color: #2c89fa;
+}
+
+.zm-icon-join:before {
+  content: "\e90f";
+}
+
+.zm-icon-cut:before {
+  content: "\e913";
+}
+
+.zm-icon-volume-off:before {
+  content: "\e91e";
+}
+
+.zm-icon-volume-down:before {
+  content: "\e91b";
+}
+
+.zm-icon-volume-up:before {
+  content: "\e90e";
+}
+
+.zm-icon-exit-fullscreen:before {
+  content: "\e917";
+}
+
+.zm-icon-fullscreen:before {
+  content: "\e916";
+}
+
+.zm-icon-backward:before {
+  content: "\e90c";
+}
+
+.zm-icon-forward:before {
+  content: "\e90a";
+}
+
+.zm-icon-play:before {
+  content: "\e90b";
+}
+
+.zm-icon-pause:before {
+  content: "\e90d";
+}
+
+.zm-icon-left:before {
+  content: "\e92e";
+}
+
+.zm-icon-right:before {
+  content: "\e91f";
+}
+
+.zm-icon-up:before {
+  content: "\e92f";
+}
+
+.zm-icon-down:before {
+  content: "\e930";
+}
+
+.zm-icon-loading {
+  -webkit-animation: rotating 2s linear infinite;
+  animation: rotating 2s linear infinite;
+}
+
+.zm-icon--right {
+  margin-left: 5px;
+}
+
+.zm-icon--left {
+  margin-right: 5px;
+}
+
+@-webkit-keyframes rotating {
+  0% {
+    -webkit-transform: rotateZ(0);
+    transform: rotateZ(0);
+  }
+  
+  100% {
+    -webkit-transform: rotateZ(360deg);
+    transform: rotateZ(360deg);
+  }
+}
+
+@keyframes rotating {
+  0% {
+    -webkit-transform: rotateZ(0);
+    transform: rotateZ(0);
+  }
+  
+  100% {
+    -webkit-transform: rotateZ(360deg);
+    transform: rotateZ(360deg);
+  }
+}

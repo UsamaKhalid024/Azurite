@@ -1,0 +1,49 @@
+<html><body>
+<div class="nav-pills alert-pills">
+                                                <ul class="nav nav-tabs sfff-editor-tabs"  >
+                                                        <li   class="sfff-editor-tab sfff-system-alert-li active"><a id="systemAlert" href="#sfff-system-alert" aria-controls="sfff-system-alert" role="tab" data-toggle="tab" onclick="toggleAlertsTab(this,event,true)"><span class="tab-title">System Alerts</span></a></li>
+                                                        <li  class="sfff-editor-tab  sfff-custom-alert-li" ><a id="customAlert" href="#sfff-custom-alert" aria-controls="sfff-custom-alert" role="tab" data-toggle="tab" onclick="toggleAlertsTab(this,event,true)"><span class="tab-title">Custom Alerts</span>
+                                                        </a> </li>                                 
+                                                        <li  class="sfff-editor-tab  sfff-email-template-li" ><a id="emailTemplates" href="#sfff-email-template" aria-controls="sfff-email-template" role="tab" data-toggle="tab" onclick="toggleAlertsTab(this,event,true)"><span class="tab-title">Email Templates</span></a>                                                         
+                                                        </li>                               
+                                                </ul>                         
+                                         </div>                 
+                                         <div class="tab-pane fade in sfff-system-alert-content  active" id="sfff-system-alert">
+										 <div class="alert-content-holder"><div class="load-status-small" style="padding:20px 10px;"><div class="dialogSmall"></div><div class="primary">Loading system alerts, please wait... </div></div></div></div>
+										 <div class="tab-pane fade sfff-custom-alert-content" id="sfff-custom-alert">
+										 <div class="alert-content-holder"><div class="load-status-small" style="padding:20px 10px;"><div class="dialogSmall"></div><div class="primary">Loading custom alerts, please wait... </div></div></div></div>
+										 <div class="tab-pane fade sfff-email-template-content" id="sfff-email-template">
+										 <div class="alert-content-holder"><div class="load-status-small" style="padding:20px 10px;"><div class="dialogSmall"></div><div class="primary">Loading email templates, please wait... </div></div></div>
+										 </div>
+										 <div id="emailConfigSectionTEMP" style="display:none" >
+										 <div class="al-email-to-fields pt20"><div class="form-row alert-type-row"><label class="label-for">Type of Alert<span class="f-req">*</span></label> <div class="input-fields al-alert-type"><select data-placeholder="--select an alert type--" data-prop="Alert_Type__c" class="select-elem alert-select sel-231 remove-temp" onchange="onAlertTypeChange(this);onAlertInfoChange(this);" id="selectTypeOfAlertTEMP" ></select></div></div><div class="form-row"><label class="label-for">From<span class="f-req">*</span></label> <div class="input-fields al-alert-from"><input data-prop="From__c" class="el-text-box remove-temp" id="txtbxemailFromTEMP" onblur="onAlertInfoChange(this);validateAlertEmail(this);"  type="text"/><select data-prop="From__c" class="select-elem sel-231 email-only display-none" onchange="onAlertInfoChange(this);"></select><div class="al-toggle-links"><ul><li class="al-block-a static-alink display-none"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields" data-val="static" onclick="toggleALFieldBlock(this,'static',true)">Set a Value</a></li><li class="al-block-a dynamic-alink"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields"   data-val="dynamic" onclick="toggleALFieldBlock(this,'dynamic',true)">Select existing field</a></li></ul></div></div></div><div class="form-row"><label class="label-for">To<span class="f-req">*</span></label> <div class="input-fields al-alert-to"><input data-prop="To__c" class="el-text-box remove-temp" id="txtbxemailToTEMP"  type="text" onblur="onAlertInfoChange(this);"/><select data-prop="To__c" class="select-elem sel-231 email-only display-none"  onchange="onAlertInfoChange(this);"></select><span style="margin-right: -25px;margin-top: 4px;" class="help-icon blue-tooltip"><span class="blue-tooltip-text -mt68 -ml90">This email address is automatically assigned depending on the type of alert you are customizing</span><span class="draft-text  helpIconCode" style="margin-left: 5px;"></span></span><div class="al-toggle-links"><ul><li class="al-block-a static-alink display-none"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields" data-val="static" onclick="toggleALFieldBlock(this,'static',true)">Set a Value</a></li><li class="al-block-a dynamic-alink"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields"   data-val="dynamic" onclick="toggleALFieldBlock(this,'dynamic',true)">Select existing field</a></li></ul></div></div></div><div class="form-row"><label class="label-for">CC</label> <div class="input-fields al-alert-cc"><input data-prop="CC__c" class="el-text-box remove-temp" id="txtbxemailCcTEMP" type="text" onblur="onAlertInfoChange(this);"/><select data-prop="CC__c" class="select-elem sel-231 email-only display-none"  onchange="onAlertInfoChange(this);"></select><div class="al-toggle-links"><ul><li class="al-block-a static-alink display-none"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields" data-val="static" onclick="toggleALFieldBlock(this,'static',true)">Set a Value</a></li><li class="al-block-a dynamic-alink"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields"   data-val="dynamic" onclick="toggleALFieldBlock(this,'dynamic',true)">Select existing field</a></li></ul></div></div></div><div class="form-row"><label class="label-for">BCC</label><div class="input-fields al-alert-bcc"><input data-prop="BCC__c" class="el-text-box remove-temp" id="txtbxemailBccTEMP" type="text" onblur="onAlertInfoChange(this);"/><select data-prop="BCC__c" class="select-elem sel-231 email-only display-none"  onchange="onAlertInfoChange(this);"></select><div class="al-toggle-links"><ul><li class="al-block-a static-alink display-none"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields" data-val="static" onclick="toggleALFieldBlock(this,'static',true)">Set a Value</a></li><li class="al-block-a dynamic-alink"><a class="toggle-field-behaviour change-trigger" data-parentelem="al-email-to-fields"   data-val="dynamic" onclick="toggleALFieldBlock(this,'dynamic',true)">Select existing field</a></li></ul></div></div></div></div>
+										 </div>
+										 <div id="emailTemplateBoxTEMP" style="display:none" class="remove-temp" >
+										 <div class="al-email-content-box pb20">
+                                        <div class="form-row al-subject-row">
+                                            <label class="label-for">Subject<span class="f-req">*</span></label>
+                                            <input type="text" id="txtbxAlertSubjectTEMP" class="al-text-box remove-temp"  onblur="onAlertInfoChange(this);" />
+                                        </div>
+                                        <div class="form-row al-msg-row">
+                                            <label class="label-for ">Message<span class="f-req">*</span></label>
+                                        </div>
+                                        <div class="form-row al-email-body-box">
+                                            <div class="pb20">
+                                                <select id="formFieldListTEMP" class="select-elem al-select form-fields-select remove-temp"  >                                                     
+                                                <select>
+                                                <div class="insert-field-btn-div  ">
+                                                      <a  id="insert-field-btn" class="action-icon add-icon blue-tooltip"   onclick="insertFieldToEmailEditor(this);"><span class="blue-tooltip-text -ml25 -mt30">Insert merge field</span></a>
+                                                    </div>
+                                            </div>
+                                            <div id="ckeditorToolbar" class="ckediotr-toolbar"></div>                                            
+                                            <textarea id="ckeditortextTEMP" name="ckeditortextTEMP" class="ckeditortext clear remove-temp"></textarea>
+                                        </div>
+										<div class="form-row al-msg-row">
+										 <a class="vabutton5 " href="javascript:void(0);" onclick="saveAlert(this);">Save</a> 
+										 <a class="vabutton6 " style="float:right;" href="javascript:void(0);" onclick="cancelAlert(this);">Cancel</a> 
+                                        </div>
+                                       
+                                    </div>
+									</div>
+										 </body>
+										 </html>

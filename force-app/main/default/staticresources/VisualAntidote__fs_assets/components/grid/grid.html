@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Page Title</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" type="text/css" media="screen" href="grid.css">
+    <script src="../jquery/jquery.js"></script>
+    <script src="../../../common/scripts/jquery-ui.js"></script>
+    <script src="grid.js"></script>
+</head>
+
+<body>
+    <script>
+            var elementProperty = ['sandboxName','installed','icon','RecordId'];
+            // id: key property from List
+            // key: key attr saved in element 
+            var recordIdKey = {'id':'id','key':'RecordId'}; 
+            var listRecordIdKey = {'id':'orgid','key':'RecordId'};
+            var recordNameKey = {'id':'sandboxname','key':'sandboxname'};
+            var  SearchBy  = {id:'orgid',key:'sandboxName'}
+            var showAddPanel = false;
+           var Data = [{
+                sandboxName: "Org Name 1",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId : "ABDFO89098122222291"
+            }];
+
+        var DataList = [{
+                sandboxName: "long text name will take id to the next line",
+                status: "Completed",
+                orgid : "ABcdFO89098122222292"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                status: "Completed",
+                orgid : "A12341231231231233"
+            },{
+                sandboxName: "Org Name 3",
+                status: "Completed",
+                orgid : "B1234123123123121231243"
+            },
+            {
+                sandboxName: "Org Name 4",
+                status: "Completed",
+                orgid : "C12341231231253123123"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                status: "Completed",
+                orgid : "ABcdFO89098612222229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                status: "Completed",
+                orgid : "A12341231263123123"
+            },{
+                sandboxName: "Org Name 3",
+                status: "Completed",
+                orgid : "B1234123123123712123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                status: "Completed",
+                orgid : "C12341231231283123123"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                status: "Completed",
+                orgid : "ABcdFO89098122229229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                status: "Completed",
+                orgid : "A123412312312331123"
+            },{
+                sandboxName: "Org Name 3",
+                status: "Completed",
+                orgid : "B12341231231322312123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                status: "Completed",
+                orgid : "C123412312312312311223"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                status: "Completed",
+                orgid : "ABcdFO890219812222229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                status: "Completed",
+                orgid : "A123412312323123123"
+            },{
+                sandboxName: "Org Name 3",
+                status: "Completed",
+                orgid : "B12341231234312312123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                status: "Completed",
+                orgid : "C123412312345123123123"
+        }];
+
+            var SandboxList = [{
+                sandboxName: "long text name will take id to the next line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId:"ABcdFO89098122222292"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId:"A12341231231231233"
+            },{
+                sandboxName: "Org Name 3",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "B1234123123123121231243"
+            },
+            {
+                sandboxName: "Org Name 4",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "C12341231231253123123"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "ABcdFO89098612222229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId:"A12341231263123123"
+            },{
+                sandboxName: "Org Name 3",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "B1234123123123712123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "C12341231231283123123"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "ABcdFO89098122229229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId:"A123412312312331123"
+            },{
+                sandboxName: "Org Name 3",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "B12341231231322312123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "C123412312312312311223"
+            },{
+                sandboxName: "long text name will take id to the next line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "ABcdFO890219812222229"
+            },
+            {
+                sandboxName: "extra long text name will take id to the next line with more char in same line",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "A123412312323123123"
+            },{
+                sandboxName: "Org Name 3",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId: "B12341231234312312123123"
+            },
+            {
+                sandboxName: "Org Name 4",
+                installed: "App installed.",
+                icon: "btn-delete",
+                RecordId : "C123412312345123123123"
+            }];
+    
+        // Unassigned X / Y - Y is purchased amount overall, X is the number that you can still add as managed
+        //Z available sandboxes - Z is the number that you can still add as managed (it is the same as X)
+          var  GridHeaders = [{
+                    text: "Sandbox Add-Ons Purchased",
+                    value: "1"
+                },
+                {
+                    text: "Unassigned", 
+                    value: "0"
+                }, {
+                    text: "available sandboxes",
+                    value: "0" // unused value
+                }
+            ];
+
+        $(document).ready(function () {
+            FsJSGrid.init('Grid_Test','test test',false,GridHeaders);
+            FsJSGrid.setData(Data, recordIdKey,elementProperty);
+            FsJSGrid.setCounter(GridHeaders);
+            FsJSGrid.setAutocomplete(DataList, SearchBy, listRecordIdKey);
+            
+        });
+
+    </script>
+
+
+    <div id="Grid_Test"></div>
+</body>
+
+
+</html>
+

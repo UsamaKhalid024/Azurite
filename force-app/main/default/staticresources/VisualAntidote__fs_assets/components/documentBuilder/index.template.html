@@ -1,0 +1,245 @@
+<!--HTML for document tab-->
+<html>
+
+<head>
+    <!-- Dependency -->
+    <link rel="stylesheet" href="../../css/app_main.css" />
+    <link rel="stylesheet" href="../../css/appButtons.css" />
+    <link rel="stylesheet" href="../pillMessage/pillMessage.css" />
+    <link rel="stylesheet" href="../platformConnection/platformConnection.css" />
+    <link rel="stylesheet" href="../../../ffcommon/css/ffcommon.css" />
+
+    <!-- Component CSS and JS - Always after basic dependencies-->
+    <link rel="stylesheet" href="document.css" />
+    <script src="../jquery/jquery.js"></script>
+    <script src="../../components/moment/moment.js"></script>
+    <script>
+        window.fs = $;
+        window.REMOTE_ACTIONS ={};
+        window.REMOTE_ACTIONS.FormEditorController ={};
+        window.REMOTE_ACTIONS.DocumentController ={};
+        window.REMOTE_ACTIONS.PlatformConnectionController ={};
+    </script>
+    <script src="../appUtility/utility.js"></script>
+</head>
+
+<body>
+    <style>
+        /**/
+        .fsLocalWrapper {
+            margin: 20px auto;
+            max-width: 1200;
+        }
+
+        /*image for local rendering*/
+        .fsNewBlock__icon.fsNewBlock__icon--document {
+            background-image: url('../../images/iconimages/document.png');
+        }
+
+        .fsColumn--action .fsColumn__text {
+            background-image: url(../../images/icon_publish_options/publish_option_sprite.png);
+        }
+
+        .stepCompact__toggleBtn {
+            background-image: url(../../images/icon_publish_options/publish_option_sprite.png);
+        }
+        .fsIcon--processing {
+            background-image: url(../../images/icon_publish_options/loading_bar.GIF);
+        }
+    </style>
+
+    <div class="fsLocalWrapper">
+        <div class="fsContentBox">
+            <!--newDocumentIfNoRecordFound.template.html-->
+            <!--HTML for document tab  - No Documents found UI-->
+            <!-- FS New Content block HTML component starts-->
+            <div class="fsNewBlock">
+                <div class="fsNewBlock__icon fsNewBlock__icon--document">
+                </div>
+                <h3 class="fsNewBlock__title">
+                    Start creating documents from your forms data
+                </h3>
+                <h4 class="fsNewBlock__description">
+                    You haven't added any documents yet. Want to get started with first one?
+                </h4>
+                <div class="fsNewBlock__button fsNewBlock__button--center">
+                    <button type="button" class="fsBtn fsBtn--primary fsBtn--radius-md"><span
+                            class="fsBtn__icon fsBtn__icon--plus"></span><span class="fsBtn__text">New
+                            Document</span></button>
+                </div>
+            </div>
+            <!-- FS New Content block HTML component ends-->
+        </div>
+        <div class="fsContentBox">
+            <!--documentList.template.html-->
+            <!--HTML for Document listing in document tab-->
+            <!-- FS Content Table HTML component starts-->
+            <div class="fsTable" id="fsTable">
+                <div class="fsTable__row fsTable__row--header">
+                    <div class="fsColumn"><span class="fsColumn__title">Name</span></div>
+                    <div class="fsColumn fsColumn--action"></div>
+                </div>
+                <div class="fsTable__row">
+                    <div class="fsColumn"><span class="fsColumn__text">Sample Document</span></div>
+                    <div class="fsColumn fsColumn--action"><a
+                            class="fsColumn__text blue-tooltip fsColumn__text--edit"><span
+                                class="blue-tooltip-text -ml20">Edit</span></a><a
+                            class="fsColumn__text blue-tooltip fsColumn__text--duplicate"><span
+                                class="blue-tooltip-text -ml20">Duplicate</span></a><a
+                            class="fsColumn__text blue-tooltip fsColumn__text--delete"><span
+                                class="blue-tooltip-text -ml20">Delete</span></a></div>
+                </div>
+            </div>
+            <!-- FS Content Table HTML component ends-->
+
+            <!-- Vertical bar HTML component starts-->
+            <div class="fsVerticalBar"></div>
+            <!-- Vertical bar HTML component ends-->
+            <!-- New button component starts-->
+            <div class="fsNewBlock__button fsNewBlock__button--center">
+                <button type="button" class="fsBtn fsBtn--primary fsBtn--radius-md"><span
+                        class="fsBtn__icon fsBtn__icon--plus"></span><span class="fsBtn__text">New
+                        Document</span></button>
+            </div>
+            <!-- New button component ends-->
+        </div>
+        <div class="fsContentBox">
+            <!--documentDetail.template.html-->
+            <!--HTML for New/Edit Document Steps section-->
+            <div class="fsPlaceholder"><span class="fsIcon--processing"></span></div>
+        </div>
+        <div class="fsContentBox">
+            <!--fsList.template.html-->
+            <!--HTML for fsList for Radio button section-->
+            <div class="">
+                <ul class="fsList fsList--noListStyle">
+                    <li class="fsLiItem">
+                        <div class="liItem__component"><input class="liItemComp__input liItemComp__input--radio fsRadio" id="radiobtnSaveToFiles"
+                                name="savedocumentto" type="radio" value="File"><label class="liItemComp__label fsRadioLabel"
+                                for="radiobtnSaveToFiles">Save to Salesforce Files (Recommended)</label></div>
+                        <div class="liItem__component liItem__component--nested"><input class="liItemComp__input liItemComp__input--checkbox fsCheckbox" id="checkboxSaveToChatter"
+                                name="savedocumentto" type="checkbox" value="Chatter"><label class="liItemComp__label fsCheckboxLabel"
+                                for="checkboxSaveToChatter">Save to Chatter files</label></div>
+                    </li>
+                    <li class="fsLiItem">
+                        <div class="liItem__component"><input class="liItemComp__input liItemComp__input--radio fsRadio" id="radiobtnSaveToAttachment"
+                                name="savedocumentto" type="radio" value="Attachment"><label class="liItemComp__label fSRadioLabel"
+                                for="radiobtnSaveToAttachment">Save to Notes and Attachments (Legacy)</label></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="fsContentBox">
+            <!--fsList.template.html-->
+            <!--HTML for fsList section-->
+            <div class="fsPlaceholder">
+                <ul class="fsList fsList--noListStyle">
+                    <li class="fsLiItem">
+                        <div class="liItemBox">
+                            <label class="liItemBox__component">
+                                <div class="liItemBoxControl"><input
+                                        class="liItemBoxControl__input liItemBoxControl__input--radio"
+                                        name="documentSource" type="radio" value="simplepdf"></div>
+                                <div class="liItemBoxContent">
+                                    <div class="liItemBoxContent__header">Simple PDF from Form Submission</div>
+                                    <div class="liItemBoxContent__details">Generate a document that looks like your form
+                                        submission.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="fsLiItem">
+                        <div class="liItemBox">
+                            <label class="liItemBox__component">
+                                <div class="liItemBoxControl"><input
+                                        class="liItemBoxControl__input liItemBoxControl__input--radio"
+                                        name="documentSource" type="radio" value="newformstackdocument"></div>
+                                <div class="liItemBoxContent">
+                                    <div class="liItemBoxContent__header">New Document<span
+                                            class="liItemBoxContent__header--documentIcon"></span></div>
+                                    <div class="liItemBoxContent__details">Create a new Formstack Document from .doc
+                                        file. File must have merge fields inserted.</div>
+                                </div>
+                            </label>
+                        </div>
+                    </li>
+                    <li class="fsLiItem">
+                        <div class="liItemBox">
+                            <label class="liItemBox__component">
+                                <div class="liItemBoxControl"><input
+                                        class="liItemBoxControl__input liItemBoxControl__input--radio"
+                                        name="documentSource" type="radio" value="existingformstackdocument"></div>
+                                <div class="liItemBoxContent">
+                                    <div class="liItemBoxContent__header">Existing Document<span
+                                            class="liItemBoxContent__header--documentIcon"></span></div>
+                                    <div class="liItemBoxContent__details">Use a document, already created in Formstack
+                                        Documents.
+                                    </div>
+                                </div>
+                            </label></div>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <h2 style="text-align: center;">Dynamic Content</h2>
+        <div id="fsContentBoxId" class="fsContentBox">
+            <!--documentDetail.template.html-->
+            <!--HTML for New/Edit Document Steps section-->
+            <div class="fsPlaceholder">Placeholder for dynamic table</div>
+        </div>
+        <div id="fsDocumentDetailSteps" class="fsContentBox">
+            <div class="fsPlaceholder">Placeholder for dynamic table</div>
+        </div>
+    </div>
+    <!-- Javascript Libraries -->
+    <script src="../pillMessage/pillMessage.js"></script>
+    <script src="../../../../test/mock/mock_visualforceJsRemoting.js" ></script>
+    <script src="../platformConnection/platformConnection.js"></script>
+    <script src="./documentStep.js"></script>
+    <script src="./documentStepBuilder.js"></script>
+    <script src="./document.js"></script>
+    <script>
+        var documentsResponseDTO = JSON.parse(
+            '{"Result":[{"RecordId":"00Z00000sdfdsf001","Name":"Testing One with Webmerge","Type":"Simple PDF","Created":"2019-11-01 14:48:30"},{"RecordId":"00Z00000sdfdsf002","Name":"Testing One with Webmerge 2","Type":"Formstack Documents","Created":"2019-11-01 14:48:30"}],"ErrorMessage":"","IsValid":true}'
+        );
+        $(document).ready(function () {
+            // do something
+            fs.D.renderDocumentTabView(documentsResponseDTO, $('#fsContentBoxId'));
+            var documentStepsRootElem = $('#fsDocumentDetailSteps');
+            var divStepDocumentNameElement = fs.DSB.getStepComponents(fs.DSB.STEPS.DocumentName);
+            $(documentStepsRootElem).append((new fs.DS.Step(1, {
+                title: fs.DSB.STEP_CONSTANTS.DocumentName.Title,
+                showToggleBtn: true,
+                initialActiveStep: true,
+                eventDataAttributeName:fs.DSB.EVENT_DATA_ATTRIBUTE_NAME,
+                onChangeEventOnEventDataAttrItems: function(){return fs.DSB.validateStepDocumentName(false);}
+            })).build().addNewComponentToStepDetail(divStepDocumentNameElement).getRootComponent());
+            var divStepDocumentSourceElement = fs.DSB.getStepComponents(fs.DSB.STEPS.DocumentSource);
+            $(documentStepsRootElem).append((new fs.DS.Step(2, {
+                title: fs.DSB.STEP_CONSTANTS.DocumentSource.Title,
+                showToggleBtn: true,
+                initialActiveStep: false,
+                eventDataAttributeName:fs.DSB.EVENT_DATA_ATTRIBUTE_NAME,
+                onStepClickBefore: fs.DSB.validateStepDocumentSource
+            })).build().addNewComponentToStepDetail(divStepDocumentSourceElement).getRootComponent());
+            var divStepSaveDocumentElement = fs.DSB.getStepComponents(fs.DSB.STEPS.SaveDocumentTo);
+            $(documentStepsRootElem).append((new fs.DS.Step(3, {
+                title: fs.DSB.STEP_CONSTANTS.SaveDocumentTo.Title,
+                showToggleBtn: true,
+                initialActiveStep: false,
+                eventDataAttributeName:fs.DSB.EVENT_DATA_ATTRIBUTE_NAME,
+                onStepClickBefore: fs.DSB.validateStepSaveDocumentTo
+            })).build().addNewComponentToStepDetail(divStepSaveDocumentElement).getRootComponent());
+            $(documentStepsRootElem).append((new fs.DS.Step(4, {
+                title: fs.DSB.STEP_CONSTANTS.ReadyAndSave.Title,
+                isLastStep: true,
+                lastButtonText: fs.DSB.STEP_CONSTANTS.ReadyAndSave.Button.Initial,
+                onStepClickAfter: function () {
+                    console.log('heading out to save the document setup');
+                }
+            })).build().getRootComponent());
+        });
+    </script>
+</body>
+
+</html>

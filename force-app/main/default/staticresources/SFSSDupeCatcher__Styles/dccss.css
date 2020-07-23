@@ -1,0 +1,165 @@
+#main{
+	margin: 10px 10px 10px 0px;
+}
+
+.important{
+	color: red;
+}
+
+#nav{
+	list-style-type:none;
+	margin-top: 5px;
+}
+
+#wp{
+	width: 800px;
+}
+
+li{
+	display:inline;
+	padding: 0px 10px 0px 0px;
+}
+
+#content{
+	background-color: #F5F5F5;
+	padding: 25px;
+	margin-top: -15px;
+}
+
+#accordion{
+	width: 600px;
+	padding:0px;
+}
+
+.changeDiv{
+
+	padding: 10px;
+}
+
+.changeDiv:hover{
+	background-color: #E8E8E8;
+}
+
+.dcImage{
+	border-style: solid;
+	border-width: 10px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+#filterTypeImg{
+	display:none;
+	position:absolute;
+	border-style: solid;
+	border-width: 0px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+#matchOnInsertImg{
+	display:none;
+	position:absolute;
+	border-style: solid;
+	border-width: 0px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+#matchOnUpdateImg{
+	display:none;
+	position:absolute;
+	border-style: solid;
+	border-width: 0px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+#taskAlertImg{
+	display:none;
+	position:absolute;
+	border-style: solid;
+	border-width: 0px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+#matchBlanksImg{
+	display:none;
+	position:absolute;
+	border-style: solid;
+	border-width: 2px 10px 10px 10px;
+	border-color: #E8E8E8;
+}
+
+.theTable{
+    margin: 20px auto;
+}
+
+.theTable td:hover{
+	background-color: #F5F5F5;
+}
+
+.indent{
+	padding:4px 15px 4px 15px;
+}
+
+.indent:hover{
+	background-color: #D4D4D4;
+}
+
+.simple_overlay {
+ 
+    /* must be initially hidden */
+    display:none;
+ 
+    /* place overlay on top of other elements */
+    z-index:10000;
+ 
+    /* styling */
+    background-color:#333;
+ 
+    width:675px;
+    min-height:200px;
+    border:2px solid black;
+ 
+    /* CSS3 styling for latest browsers */
+    -moz-box-shadow:0 0 90px 5px #000;
+    -webkit-box-shadow: 0 0 90px #000;
+}
+ 
+/* close button positioned on upper right corner */
+.simple_overlay .close {
+    background-image:url(close.png);
+    position:absolute;
+    right:-15px;
+    top:-15px;
+    cursor:pointer;
+    height:35px;
+    width:35px;
+}
+
+.table_overlay {
+ 
+    /* must be initially hidden */
+    display:none;
+ 
+    /* place overlay on top of other elements */
+    z-index:10000;
+ 
+    /* styling */
+    background-color:#E8E8E8;
+ 
+    width:675px;
+    min-height:200px;
+    border:2px solid black;
+ 
+    /* CSS3 styling for latest browsers */
+    -moz-box-shadow:0 0 90px 5px #000;
+    -webkit-box-shadow: 0 0 90px #000;
+}
+ 
+/* close button positioned on upper right corner */
+.table_overlay .close {
+    background-image:url(close.png);
+    position:absolute;
+    right:-15px;
+    top:-15px;
+    cursor:pointer;
+    height:35px;
+    width:35px;
+}

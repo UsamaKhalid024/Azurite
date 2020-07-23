@@ -1,0 +1,11 @@
+﻿
+.loadImg, .ff-load-img
+{
+    background: transparent url(../styles/images/ajax-loader.gif) no-repeat center center;
+    height: 25px;
+    width: 100px;
+    position: relative;
+    z-index: 1000;
+    left: 0%;
+    top: 0%;
+}

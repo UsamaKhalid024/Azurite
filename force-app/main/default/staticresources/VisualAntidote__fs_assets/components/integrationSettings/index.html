@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link type="text/css" rel="stylesheet" href="integrationSettings.css" />
+        <link type="text/css" rel="stylesheet" href="../pillMessage/pillMessage.css" />
+        <link type="text/css" rel="stylesheet" href="../../../common/styles/select2.css" />
+        <link type="text/css" rel="stylesheet" href="../../../common/styles/select2-custom.css" />
+        <link type="text/css" rel="stylesheet" href="../lightbox/lightbox.css" />
+    </head>
+    <body>
+        <script>
+            var fs = {};
+        </script>
+
+        <script src="testFunctions.js"></script>
+        <script src="integrationSettings.js"></script>
+
+        <script src="../jquery/jquery.js"></script>
+        <script src="../../../../build/base/scripts/select2.min.js"></script>
+        <script src="../lightbox/lightbox.js"></script>
+
+        <script>
+            fs.ISP.refreshIntegrations(
+                function(domElements) {
+                    domElements.forEach(function(element) {
+                        document.body.appendChild(element);
+                    });
+                },
+                false,
+                true,
+                'https://vaformsdev6app.azurewebsites.net/FormEngine'
+            );
+
+            // !!!For this page only - fix background image urls to work here. The css is using urls that will work with salesforce.
+            /* As of this writing, chrome has been updated to prevent css from "link" tags to be modified on local files. For this page to work, use some web-server software:
+        Example -> On MacOs & Linux:
+        sudo php -S <your local ip address>:80 -t <app folder root>
+        After launching the server, visit localhost/components/integrationSettings/index.html on any browser (chrome/firefox/safari)*/
+            var styleRules = document.head.getElementsByTagName('link')[0].sheet.cssRules;
+            for (var i of styleRules) {
+                if (i.style && i.style.backgroundImage) {
+                    i.style.backgroundImage = i.style.backgroundImage.replace('../', '../../');
+                }
+            }
+        </script>
+    </body>
+</html>

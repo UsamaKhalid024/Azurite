@@ -1,0 +1,2 @@
+function getParameterByName(e){e=e.replace(/[\[]/,"\\[").replace(/[\]]/,"\\]");var c=new RegExp("[\\?&]"+e+"=([^&#]*)").exec(location.search);return null===c?"":decodeURIComponent(c[1].replace(/\+/g," "))}function doSearch(){var e=$(".ff-type-search").val(),c=$(".object-list").val();doSearchAF(e,c)}function searchComplete(){console.log("Search result is processed")}$(document).ready(function(){$("select.select-elem").select2()});
+//# sourceMappingURL=core.min.js.map

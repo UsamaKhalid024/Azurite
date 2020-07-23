@@ -1,0 +1,489 @@
+.pf-container-header {
+    width: 720px;
+    display: block;
+    margin: auto;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+
+/** just for first row - Start**/
+
+.pf-filters>div.pf-filter-row:nth-child(2) .btn-delete {
+    display: none;
+}
+
+.pf-filters>div.pf-filter-row:nth-child(2) .btn-add {
+    margin-left: 10px;
+}
+
+
+/** just for first row - end **/
+
+.pf-header-object-name>span.color-span.repeated {
+    background-image: url("../images/iconimages/repeat_small.png");
+    background-position: center center;
+    background-repeat: no-repeat;
+    display: inline-block;
+    margin: 5px !important;
+    width: 33px;
+    height: 35px;
+    background-size: contain;
+}
+
+.pf-header-object-name>span.color-span {
+    padding: 0px 0px;
+    margin: 0px 0px;
+}
+
+.pf-header-object-name>span.color-span::after {
+    padding-right: 5px;
+    padding-left: 5px;
+    text-align: center !important;
+    line-height: 14px;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    font-size: 15px;
+    margin-left: 6px;
+    margin-top: 7px;
+}
+
+.btn-saveprefill {
+    float: right;
+    margin-right: 20px;
+    text-align: center;
+}
+
+.prefill-help-box.pf-cm-helpbox {
+    float: left !important;
+}
+
+.pf-filter-token>input {
+    color: #3db2fd !important;
+    font-weight: bold;
+}
+
+.pf-content .select2-container {
+    min-width: 230px;
+}
+
+.pf-orderby .select2-container {
+    width: 230px;
+}
+
+.pf-container-listobject {
+    background: #e6ecef;
+    width: 100%;
+    display: inline-block;
+    padding: 20px;
+    margin: auto;
+    padding-top: 0px;
+}
+
+.pf-container-autoprefill {
+    width: 720px;
+    display: block;
+    background: #fff;
+    padding: 15px;
+    margin: auto;
+    border-radius: 5px;
+    padding-right: 20px;
+    padding-left: 20px;
+    box-shadow: 0 4px 6px rgba(8, 52, 80, .15);
+    margin-bottom: 20px;
+    margin-top: 30px;
+    border: 1px solid #E0E0E0;
+}
+
+.btn-autoprefill {
+    display: inline-block;
+    margin-top: 0px;
+    margin-right: 20px;
+}
+
+.btn-noautoprefill {
+    display: inline-block;
+    font-family: 'Open Sans';
+    font-weight: 600;
+    display: inline-block;
+    font-size: 14px;
+    cursor: pointer;
+    color: #33aefd;
+}
+
+.btn-noautoprefill.vabutton1 {
+    text-align: center;
+}
+
+.pf-content {
+    padding: 20px;
+    background: white;
+    position: relative;
+    border-bottom-left-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.pf-header {
+    padding: 15px;
+    background: #e6ecef;
+    position: relative;
+    padding-left: 8px;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.pf-object-container {
+    width: 740px;
+    border: 1px solid #c8d6d9;
+    border-radius: 8px;
+    display: block;
+    margin-top: 30px;
+    float: right;
+    position: relative;
+}
+
+.pf-container-listobject>div:nth-child(1) {
+    width: 760px;
+}
+
+.box-shadown-blue {
+    box-shadow: 0.5px 0.5px 6px 3px #b8d7ef;
+}
+
+.pf-title {
+    display: inline-block;
+    width: 100%;
+}
+
+h2 {
+    padding: 0px;
+    margin: 0px;
+}
+
+.pf-text {
+    padding-bottom: 20px;
+}
+
+.pf-filter-row-header {
+    padding-bottom: 5px;
+}
+
+.pf-filter-row-header-border-bt {
+    border-bottom: 1px solid #c4d5e0;
+    width: 92%;
+    display: block;
+    padding-top: 5px;
+}
+
+.pf-filter-row-header>span {
+    width: 49%;
+    display: inline-block;
+    font-style: italic;
+    font-weight: bold;
+    font-size: small !important;
+}
+
+.pf-filter-row {
+    margin-top: 10px;
+}
+
+.pf-filter-column {
+    display: inline-block;
+    width: 39%;
+    vertical-align: top;
+}
+
+.pf-filter-operator {
+    display: inline-block;
+    width: 10%;
+    vertical-align: top;
+    text-align: center;
+    padding-top: 7px;
+}
+
+.pf-filter-value {
+    display: inline-block;
+    width: 45%;
+    vertical-align: top;
+}
+
+.pf-filter-value-box {
+    display: inline-block;
+}
+
+.pf-filter-value-buttons {
+    display: inline-block;
+    vertical-align: top;
+}
+
+.btn-delete {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background-image: url("../images/icon_publish_options/publish_option_sprite.png");
+    background-position: -163px -208px;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    background-color: #e6e9ec;
+    border-radius: 14px;
+    border: 1px solid #cecece;
+    margin-left: 10px;
+    outline: 0!important;
+    margin-right: 10px;
+}
+
+.btn-delete:hover,
+.btn-delete:focus {
+    background-position: -163px -208px;
+    background-color: #eee;
+    border-color: #33aefd;
+}
+
+.btn-add {
+    display: inline-block;
+    cursor: pointer;
+    background-image: url("../images/icon_publish_options/publish_option_sprite.png");
+    background-repeat: no-repeat;
+    background-position: -377px -113px;
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    background-color: #e6e9ec;
+    border-radius: 14px;
+    border: 1px solid #cecece;
+    outline: 0!important;
+}
+
+.btn-add:hover,
+.btn-add:focus {
+    background-position: -377px -113px;
+    background-color: #eee;
+    border-color: #33aefd;
+}
+
+.pf-icon-status {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    cursor: help;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+.pf-icon-status.alert-triangle {
+    background-position: center;
+    background-image: url("../images/iconimages/icon_attention.png");
+    background-repeat: no-repeat;
+}
+
+.pf-icon-status.checkmark-green {
+    background-position: center;
+    background-image: url("../images/iconimages/icon_chekmark_13x10.png");
+    background-repeat: no-repeat;
+}
+
+.help-loggedinuser {
+    display: inline-block;
+    cursor: help;
+    margin-left: 5px;
+    margin-right: 20px;
+}
+
+.help-prefillthisobject {
+    display: inline-block;
+    cursor: help;
+    margin-left: 5px;
+}
+
+.pf-icon-autoprefill {
+    display: inline-block;
+    width: 50px;
+    height: 40px;
+    background-image: url("../images/iconimages/announce_icon.svg");
+    background-repeat: no-repeat;
+    vertical-align: top;
+    background-position: center;
+}
+
+.pf-filter-value-input {
+    width: 230px;
+    position: relative;
+}
+
+.pf-content-autoprefill {
+    display: inline-block;
+    width: 90%;
+    vertical-align: top;
+    margin-left: 10px;
+}
+
+.pf-header-object-name {
+    display: inline-block;
+    width: 270px;
+    vertical-align: middle;
+}
+
+.pf-header-object-name>span {
+    font-size: 19px;
+    font-weight: bold;
+    color: #052942;
+}
+
+.pf-header-loggedinuser {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pf-header-prefillthisobject {
+    display: inline-block;
+    vertical-align: middle;
+}
+
+.pf-header-right {
+    float: right;
+    margin-top: 0.2em;
+}
+
+.pf-object-order-name {
+    z-index: 2;
+    position: absolute;
+    left: 27px;
+    top: -10px;
+    padding-right: 20px;
+    padding-left: 20px;
+    padding-top: 0px!important;
+    padding-bottom: 2px!important;
+    font-size: small!important;
+    color: #fff;
+    float: none;
+    clear: both;
+    display: block;
+    border-radius: 8px;
+    background-color: #052942;
+    padding: 0 15px;
+    line-height: 1.3em;
+}
+
+.pf-filter-value-token {
+    font-size: 10px !important;
+    font-weight: 600;
+    color: #33aefd;
+    display: block;
+    cursor: pointer;
+    text-align: right;
+}
+
+.ck-header-loggedinuser,
+.ck-header-prefillthisobject {
+    margin-right: 8px;
+}
+
+.help-loggedinuser,
+.help-prefillthisobject {
+    vertical-align: text-bottom;
+}
+
+.pf-header.pf-h-repeated {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
+
+div.pf-text span {
+    color: #616161;
+    font-size: 16px;
+}
+
+.fs-italic {
+    font-style: italic;
+}
+
+span.small-text {
+    font-size: 13px !important;
+}
+
+.pf-block-object-container {
+    z-index: 3;
+    background-color: #e6ecef8f;
+    display: block;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+}
+
+.pf-block-object-container.child {
+    height: 200px;
+}
+
+.pf-block-object-container.primary {
+    top: 66px;
+    width: 758px;
+    height: 230px;
+    left: -0;
+}
+
+div.pf-cm-wrapper {
+    margin-bottom: 0px;
+}
+
+.pf-lupe {
+    display: block;
+    top: 4px;
+    position: absolute;
+    left: 200px;
+    z-index: 2;
+    cursor: pointer;
+    background-color: white;
+}
+
+.pf-filter-value-input input[type=checkbox].fs-checkbox+label.fs-checkbox-label {
+    margin-left: 0px;
+    margin-top: 3px;
+}
+
+.pf-cm-helpbox .blue-tooltip-text {
+    margin-left: -65px !important;
+    margin-top: -70px !important;
+}
+
+.help-prefillthisobject .blue-tooltip-text {
+    margin-left: -110px !important;
+    margin-top: -55px !important;
+}
+
+.help-loggedinuser .blue-tooltip-text {
+    margin-top: 30px !important;
+    margin-left: 10px !important;
+}
+
+.blue-tooltip-text {
+    z-index: 4;
+}
+
+p.small-text {
+    font-size: 13px;
+}
+
+.pf-text-autoprefill {
+    padding-bottom: 5px;
+}
+li.pf-source {
+    margin-left: 40px !important;
+}
+li.pf-source-text{
+     margin-left: 18px !important;
+    }
+.pf-source .ff-radio-css {
+    margin-right: 8px !important;
+}
+.pf-header-loggedinuser-hide{display: none !important;}
+.nav{display: inline-block !important;}
+
+.pf-text span a{    
+    text-decoration: underline;
+    color: #33affd;}
+
+.pf-sourceContainer-text{margin-left: 6px;}
+.pf-sourceContainer-helperIcon{vertical-align: sub;}

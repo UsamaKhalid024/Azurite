@@ -1,0 +1,135 @@
+/** Formstack Buttons CSS **/
+
+.fsBtn {
+    font-family: 'Open Sans';
+    font-weight: 600;
+    background-image: none;
+    text-decoration: none;
+    padding: 5px 10px 5px 10px;
+    display: inline-block;
+    font-size: 14px;
+    min-width: 100px;
+    border-width: 1px;
+    border-style: solid;
+    cursor: pointer;
+    vertical-align: middle;
+}
+/*the blue background color*/
+.fsBtn--secondary{
+    background-image: none;
+    background-color: #ffffff;
+    color: #33aefd;
+    border-color: #33aefd;
+}
+/*white back with blue border*/
+.fsBtn--primary{
+    color: #fff;
+    background-color: #33aefd;
+    border-color: #33aefd;  
+}
+/* link with no border*/
+.fsBtn--alink{
+    border-width:0px;
+    color: #00AFFF;
+    outline: none;
+    background:none;
+}
+
+.fsBtn--radius-sm{
+    border-radius: 6px;
+}
+.fsBtn--radius-md{
+    border-radius: 15px;
+}
+.fsBtn--large {
+    padding: 6px 10px 6px 10px;
+    font-size: 16px;
+    min-width: 100px;
+}
+.fsBtn__icon{
+    width: 16px;
+    height: 16px;
+    display: inline-block; 
+    vertical-align: middle;   
+    background-repeat: no-repeat;
+}
+.fsBtn__text{
+    padding: 0px 3px;
+    display: inline-block;
+}
+.fsBtn__icon.fsBtn__icon--plus{
+    background-image: url(../images/sprites/publish_option_sprite.png);
+    background-repeat: no-repeat;
+    background-position: -357px -119px;  
+}
+.fsBtn--secondary .fsBtn__icon--plus{
+    background-position: -384px -120px;
+}
+.fsBtn--secondary.fsBtn--large .fsBtn__icon--plus {
+    background-position: -384px -119px;
+}
+.fsBtn__icon--leftArrow{
+    background-image: url(../images/sprites/publish_option_sprite.png);
+    background-repeat: no-repeat;
+    background-position: -78px -77px;
+    margin-top: -2px;
+    height: 17px;
+}
+.fsBtn:hover .fsBtn__icon--leftArrow{
+    background-position: -96px -77px;
+}
+
+.fsBtn__icon--refresh{
+    background-image: url(../images/iconimages/refresh_active.png);
+    background-position: center;
+    background-size: contain;
+}
+.fsBtn:hover .fsBtn__icon--refresh{
+    background-image: url(../images/iconimages/refresh_white.png);
+}
+.fsBtn--disabled .fsBtn__icon--refresh,.fsBtn--disabled:hover .fsBtn__icon--refresh,.fsBtn--disabled:focus .fsBtn__icon--refresh{
+    background-image: url(../images/iconimages/refresh_inactive.png);
+}
+
+.fsBtn--primary:hover,
+.fsBtn--secondary:hover,
+.fsBtn--large:hover {
+    background-color: #139be1;
+    color: #fff;
+    text-decoration: none;
+    border: solid 1px #139be1;
+}
+.fsBtn--alink:hover{
+    color: #139be1;
+}
+
+.fsBtn--primary:active,
+.fsBtn--primary:focus,
+.fsBtn--secondary:active,
+.fsBtn--secondary:focus,
+.fsBtn--large:active,
+.fsBtn--large:focus {
+    outline-width: 0px;
+}
+.fsBtn--alink:focus,.fsBtn--alink:active{
+    color: #1288c5;
+}
+
+.fsBtn--secondary:hover .fsBtn__icon--plus {
+    background-position: -357px -120px; 
+}
+
+.fsBtn--secondary.fsBtn--large:hover .fsBtn__icon--plus {
+    background-position: -357px -119px; 
+}
+.fsBtn--disabled,.fsBtn--disabled:hover{
+    background-color: #CECECE;
+    border-color: #CECECE;
+    cursor: not-allowed;
+}
+.fsBtn--secondary.fsBtn--disabled,.fsBtn--secondary.fsBtn--disabled:hover{
+    border-color: #CECECE;
+    color: #CECECE;
+    background-color: #ffffff;
+    cursor: not-allowed;
+}

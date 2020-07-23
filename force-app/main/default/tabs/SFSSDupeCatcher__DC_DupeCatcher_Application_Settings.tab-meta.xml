@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Settings for the DupeCatcher Appilcation</description>
+    <icon>SFSSDupeCatcher__DupeCatcher_Media/SFSSDupeCatcher__DC_32x32_png.png</icon>
+    <label>DupeCatcher Application Settings</label>
+    <motif>Custom242: TV Widescreen</motif>
+    <page>SFSSDupeCatcher__ApplicationSettingsDetail</page>
+</CustomTab>

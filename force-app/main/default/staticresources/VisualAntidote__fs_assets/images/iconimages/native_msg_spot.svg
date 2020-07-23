@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="60px" height="60px" viewBox="0 0 60 60" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 63.1 (92452) - https://sketch.com -->
+    <title>native_msg_spot</title>
+    <desc>Created with Sketch.</desc>
+    <defs>
+        <linearGradient x1="18.1307165%" y1="7.99828506%" x2="81.9883765%" y2="87.5905107%" id="linearGradient-1">
+            <stop stop-color="#E6F5FE" offset="0%"></stop>
+            <stop stop-color="#CDEBFC" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="119.904563%" y1="39.8806329%" x2="65.1100852%" y2="15.6598186%" id="linearGradient-2">
+            <stop stop-color="#0197EC" offset="0%"></stop>
+            <stop stop-color="#38B7FF" offset="100%"></stop>
+        </linearGradient>
+        <linearGradient x1="119.904563%" y1="29.0645581%" x2="65.1100852%" y2="-21.0446478%" id="linearGradient-3">
+            <stop stop-color="#0197EC" offset="0%"></stop>
+            <stop stop-color="#38B7FF" offset="100%"></stop>
+        </linearGradient>
+    </defs>
+    <g id="FU" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <g id="FU---NativeCloud-1" transform="translate(-202.000000, -1198.000000)">
+            <g id="native_msg_spot" transform="translate(202.000000, 1198.000000)">
+                <circle id="native_msg_bg" fill="url(#linearGradient-1)" cx="30" cy="30" r="30"></circle>
+                <g id="native_msg_icon" transform="translate(15.499700, 20.500000)" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M17.875,18.9003 C20.727,18.9003 23.039,16.5863 23.039,13.7333 C23.039,10.9523 20.842,8.6913 18.093,8.5763 C17.373,5.3853 14.529,3.0003 11.122,3.0003 C7.173,3.0003 3.973,6.2043 3.973,10.1563 C3.973,10.4263 3.99,10.6923 4.021,10.9553 L3.973,10.9503 C1.779,10.9503 -5.75539616e-13,12.7303 -5.75539616e-13,14.9253 C-5.75539616e-13,17.1203 1.779,18.9003 3.973,18.9003 L17.875,18.9003 Z" id="Stroke-3" stroke="url(#linearGradient-2)"></path>
+                    <path d="M24.7298,15.81 C27.1538,15.385 28.9998,13.28 28.9998,10.733 C28.9998,7.952 26.8028,5.691 24.0538,5.577 C23.3338,2.386 20.4898,-2.7533531e-14 17.0828,-2.7533531e-14 C15.5958,-2.7533531e-14 14.2158,0.455 13.0728,1.232" id="Stroke-5" stroke="url(#linearGradient-3)"></path>
+                </g>
+            </g>
+        </g>
+    </g>
+</svg>

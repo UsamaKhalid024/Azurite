@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomTab xmlns="http://soap.sforce.com/2006/04/metadata">
+    <icon>VisualAntidote__Fast_Forms/VisualAntidote__Formstack_Logo_Icon.ico</icon>
+    <label>Formstack</label>
+    <motif>Custom173: TV Widescreen</motif>
+    <page>VisualAntidote__FormWelcome</page>
+</CustomTab>

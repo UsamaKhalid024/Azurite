@@ -1,0 +1,114 @@
+<html>
+
+<head>
+    <!-- Dependency -->
+    <link rel="stylesheet" href="../jquery-ui/jquery-ui.css" />
+
+    <script src="../jquery/jquery.js"></script>
+    <script src="../jquery-ui/jquery-ui.js"></script>
+
+    <script src="popupMessage.js"></script>
+    <link rel="stylesheet" href="popupMessage.css" />
+
+    <!-- Test Scenarios - Onload -->
+    <script>
+        $(document).ready(function () {
+
+            $('input[type="radio"]').each(function () {
+                $(this).click(function () {
+                    executeTest($(this).val());
+                });
+            })
+        });
+
+        function executeTest(pValue) {
+            switch (pValue) {
+                case "test_Alert_ShortMessage":
+                    popupMessage_ShowOneButton(
+                        enumFSPopupMessageType.Alert,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Close');
+                    break;
+                case "test_Success_ShortMessage":
+                    popupMessage_ShowOneButton(
+                        enumFSPopupMessageType.Success,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Close');
+                    break;
+                case "test_Info_ShortMessage":
+                    popupMessage_ShowOneButton(
+                        enumFSPopupMessageType.Info,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Close');
+                    break;
+
+                case "test_Alert_ShortMessage_TwoButtons":
+                    popupMessage_ShowTwoButtons(
+                        enumFSPopupMessageType.Alert,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Yes', null, null,
+                        'No', null, null);
+                    break;
+                case "test_Success_ShortMessage_TwoButtons":
+                    popupMessage_ShowTwoButtons(
+                        enumFSPopupMessageType.Success,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Yes', null, null,
+                        'No', null, null);
+                    break;
+                case "test_Info_ShortMessage_TwoButtons":
+                    popupMessage_ShowTwoButtons(
+                        enumFSPopupMessageType.Info,
+                        'User added successfully!',
+                        '<b>Note:</b> The Salesforce license type for this user does not allow additional apps to be added to the application launcher. <a href="#"> Learn more. </a>',
+                        'Yes', null, null,
+                        'No', null, null);
+                    break;
+
+                default:
+                    break;
+            }
+        }
+    </script>
+
+    <!-- For Pill Message Component - The Image Path is different when we open the component here -->
+    <style>
+        .dialog__icon--alert {
+            background: #fff url(../../images/sprites/publish_option_sprite.png) no-repeat -336px -151px;
+        }
+
+        .dialog__icon--checkmark {
+            background: #fff url(../../images/sprites/publish_option_sprite.png) no-repeat -370px -150px;
+        }
+
+        .dialog__icon--info {
+            background: #fff url(../../images/sprites/publish_option_sprite.png) no-repeat -336px -200px;
+        }
+    </style>
+</head>
+
+<body>
+    <input type="radio" id="rd1" name="test" value="test_Alert_ShortMessage">
+    <label for="rd1">Short Alert Message - One Buttons</label>
+    <input type="radio" id="rd2" name="test" value="test_Success_ShortMessage">
+    <label for="rd2">Short Success Message - One Buttons</label>
+    <input type="radio" id="rd3" name="test" value="test_Info_ShortMessage">
+    <label for="rd3">Short Info Message - One Buttons</label>
+    <br>
+    <input type="radio" id="rd4" name="test" value="test_Alert_ShortMessage_TwoButtons">
+    <label for="rd4">Short Alert Message - Two Buttons</label>
+    <input type="radio" id="rd5" name="test" value="test_Success_ShortMessage_TwoButtons">
+    <label for="rd5">Short Success Message - Two Buttons</label>
+    <input type="radio" id="rd6" name="test" value="test_Info_ShortMessage_TwoButtons">
+    <label for="rd6">Short Info Message - Two Buttons</label>
+    <br>
+    <!-- Component here -->
+    <!-- It doesn't need component, you just need to call it. =) -->
+</body>
+
+</html>

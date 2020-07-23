@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomPageWebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <availability>online</availability>
+    <description>Link to configuration page</description>
+    <displayType>link</displayType>
+    <height>600</height>
+    <linkType>page</linkType>
+    <masterLabel>Link To Config</masterLabel>
+    <openType>sidebar</openType>
+    <page>cf123__VF00_Config</page>
+    <protected>true</protected>
+</CustomPageWebLink>

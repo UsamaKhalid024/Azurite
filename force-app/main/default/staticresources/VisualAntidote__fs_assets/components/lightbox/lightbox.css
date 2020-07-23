@@ -1,0 +1,27 @@
+.close {
+    width: 35px;
+    height: 12px;
+    font-size: 14px;
+    line-height: 9px;
+    text-align: left;
+    color: #54abf7;
+    padding: 22px;
+    display: block;
+    text-decoration-line: none;
+    float: right;
+}
+
+.header-text {
+    font-size: 18px;
+    font-weight: 600;
+    text-align: left;
+    color: #052942;
+    padding: 22px;
+    float: left;
+    padding-top: 12px;
+}
+
+.header {
+    height: 50px;
+    background-color: #e6ecef;
+}

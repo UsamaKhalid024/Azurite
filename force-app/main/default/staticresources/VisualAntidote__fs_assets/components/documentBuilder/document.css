@@ -1,0 +1,620 @@
+/* fsTable component css starts
+TODO: TBD could be common UI component
+*/
+.fsTable {
+    width: 100%;
+    display: table;
+    border: 1px solid #c4d5e0 !important;
+}
+
+.fsTable__row {
+    display: table-row;
+}
+
+.fsTable__row {
+    background-color: #fff;
+}
+
+.fsTable__row:not(.fsTable__row--header):hover {
+    background-color: #fbfbfb;
+}
+
+.fsTable__row--header {
+    background-color: #f1f6f8;
+}
+
+.fsTable__row--header > .fsColumn {
+    text-align: center;
+}
+
+.fsTable__row--header > .fsColumn.action-th {
+    width: 160px;
+    text-align: center;
+}
+
+.fsColumn,
+.fsTable__row--header > .fsColumn {
+    display: table-cell;
+}
+
+.fsColumn {
+    border-top: 1px solid #c4d5e0 !important;
+    vertical-align: middle;
+}
+
+.fsTable__row--header > .fsColumn .fsColumn__title {
+    color: #052942;
+    font-size: 15px;
+    font-weight: 600;
+    padding: 20px 10px;
+    display: inline-block;
+}
+
+.fsColumn .fsColumn__text {
+    color: #616161;
+    font-size: 15px;
+    padding: 20px 10px;
+    display: inline-block;
+}
+
+.fsColumn.fsColumn--action {
+    text-align: right;
+    width: 180px;
+}
+
+.fsColumn.fsColumn--fixedM {
+    width: 190px;
+}
+
+.fsColumn:first-child .fsColumn__text {
+    margin-left: 20px;
+}
+
+.fsColumn.fsColumn--action .fsColumn__text--delete {
+    margin-right: 25px;
+}
+
+.fsTable__row.ff-loading .fsColumn--action {
+    background-image: url(./images/icon_publish_options/loading_bar.GIF);
+    background-repeat: no-repeat;
+    background-position: center;
+    pointer-events: none;
+}
+
+.fsTable__row .fsColumn--action > .fsColumn__text,
+.fsTable__row.ff-loading:hover .fsColumn--action > .fsColumn__text {
+    /*this line blocks the blue icons from showing up if the loading class is applied.*/
+    opacity: 0;
+}
+
+.fsTable__row:hover .fsColumn--action > .fsColumn__text {
+    opacity: 1;
+}
+
+.fsColumn--action .fsColumn__text {
+    vertical-align: middle;
+    height: 24px;
+    margin-left: 12px;
+    margin-right: 12px;
+    width: 20px;
+    cursor: pointer;
+    padding: 0px;
+    background-image: url(./images/icon_publish_options/publish_option_sprite.png);
+    background-repeat: no-repeat;
+}
+
+.fsColumn__text--edit {
+    background-position: -171px -146px;
+}
+
+.fsColumn__text--duplicate {
+    background-position: -169px -109px;
+}
+
+.fsColumn__text--delete {
+    background-position: -166px -208px;
+}
+
+/* fsTable component css ends*/
+
+/* fsVerticalBar component css starts*/
+.fsVerticalBar {
+    width: 3px;
+    height: 35px;
+    display: block;
+    margin: auto;
+    background-color: #e6ecef;
+}
+
+/* fsVerticalBar component css ends*/
+
+/* fsNewBlock component css starts
+TODO: TBD could be common UI component
+*/
+.fsNewBlock {
+    text-align: center;
+    padding: 100px 0px;
+    margin: 0px auto;
+}
+
+.fsNewBlock__title {
+    padding: 24px 0px 16px 0px;
+    overflow: hidden;
+    display: block;
+}
+
+.fsNewBlock__description {
+    padding: 8px 0px;
+    display: block;
+}
+
+.fsNewBlock__icon {
+    margin: 0px auto;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-color: #cdebfc;
+    border-radius: 50px;
+    width: 100px;
+    height: 100px;
+}
+
+.fsNewBlock__icon.fsNewBlock__icon--document {
+    background-image: url('./images/iconimages/document.png');
+    /*local-url('../../images/iconimages/document.png');*/
+}
+
+.fsNewBlock__button--center {
+    text-align: center;
+}
+
+/* fsNewBlock component css ends*/
+/* Document List specific CSS*/
+.fsContentBox {
+    display: block;
+    max-width: 1020px;
+    margin: 40px auto;
+    border: 1px solid #ececec;
+    border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px 0 rgba(0, 41, 68, 0.15);
+}
+
+.fsPlaceholder {
+    margin: 50px auto;
+}
+
+.detailView {
+    overflow: auto;
+}
+
+.detailView__navLink .fsBtn--alink {
+    padding-left: 0px;
+}
+
+.detailView__navLink .fsBtn__text {
+    font-weight: 100;
+}
+
+.detailView--document {
+    padding: 13.5px 25px;
+}
+
+.detailView__title {
+    padding: 8px 0px;
+}
+
+.documentListView__title > h2,
+.detailView__title > h2 {
+    color: #616161;
+    font-weight: 200;
+}
+
+.detailView__description {
+    color: #616161;
+    font-size: 14px;
+}
+
+.documentListView {
+    padding: 20px 30px;
+}
+
+.documentListView__title {
+    margin-bottom: 14px;
+}
+
+.documentListView__title,
+.documentListView__table {
+    padding: 10px 0px;
+}
+
+.documentListView__title,
+.documentDetail__title {
+    color: #616161;
+    font-family: 'Open Sans';
+    font-size: 20px;
+}
+
+/*documents step*/
+.stepCompact,
+.stepDetail {
+    overflow: auto;
+    border-top: 1px solid #ececec;
+}
+
+.stepDetail {
+    background-color: #f1f6f8;
+    box-shadow: inset 0 0 5px 0 rgba(0, 41, 68, 0.2);
+    text-align: left;
+    padding: 24px;
+}
+
+.stepCompact {
+    color: #002944;
+    font-family: 'Open Sans';
+    font-size: 18px;
+    font-weight: 600;
+    position: sticky;
+    background-color: #ffffff;
+    top: 0;
+    z-index: 2;
+    padding: 13.5px 24px;
+}
+.stepCompact.stepCompact--disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.stepCompact__badgeTitle {
+    font-weight: 100;
+    float: left;
+    margin-right: 10px;
+    line-height: 31px;
+}
+
+.stepCompact__title {
+    float: left;
+    line-height: 31px;
+}
+
+.stepCompact__title > span {
+    font-size: smaller;
+    font-weight: lighter;
+}
+
+.stepCompact__Btn {
+    float: right;
+    min-width: 78px;
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.stepCompact__Btn--hidden {
+    display: none;
+}
+
+.stepDetail--collpased {
+    display: none;
+}
+
+.stepCompact__toggleBtn {
+    width: 23px;
+    height: 23px;
+    border: none;
+    text-indent: -99999px;
+    float: left;
+    cursor: pointer;
+    margin-left: 10px;
+    background-color: transparent;
+    background-repeat: no-repeat;
+    background-position: -349px -78px;
+    background-image: url(./images/icon_publish_options/publish_option_sprite.png);
+    margin-top: 3px;
+}
+
+.stepCompact__toggleBtn:hover,
+.stepCompact__toggleBtn:active,
+.stepCompact__toggleBtn:focus {
+    background-position: -349px -78px;
+    outline: none;
+}
+
+.stepCompact__toggleBtn--collapsed,
+.stepCompact__toggleBtn--collapsed:hover,
+.stepCompact__toggleBtn--collapsed:active,
+.stepCompact__toggleBtn--collapsed:focus {
+    background-position: -349px 0px;
+}
+
+.stepCompact__toggleBtn.stepCompact__toggleBtn--disabled {
+    background-position: -430px -78px;
+    cursor: not-allowed;
+}
+
+.stepCompact__note {
+    clear: left;
+    color: #616161;
+    font-family: 'Open Sans';
+    font-size: 14px;
+    font-weight: 100;
+    float: left;
+}
+
+/*documents step ends*/
+
+/* fsList with liItemBox css starts*/
+.fsList.fsList--noListStyle {
+    list-style-type: none;
+    padding-left: 0px;
+}
+
+.fsLiItem {
+    margin-left: 0px;
+}
+
+.liItemBox {
+    border: 1px solid #eff4f6;
+    border-radius: 5px;
+    background-color: #ffffff;
+    width: -webkit-fill-available;
+}
+
+.liItemBox--selected {
+    border-color: #00afff;
+}
+
+.liItemBox__component {
+    overflow: hidden;
+    display: table-row;
+}
+
+.liItemBoxControl {
+    height: auto;
+    width: 37px;
+    display: table-cell;
+    max-width: -3px;
+    text-align: center;
+    vertical-align: middle;
+    border-right: 1px solid #eff4f6;
+}
+
+.liItemBox--selected .liItemBoxControl {
+    border-right: 1px solid #00afff;
+}
+
+.liItemBoxContent {
+    padding: 6px;
+    display: table-cell;
+}
+
+.liItemBoxContent__header {
+    font-weight: 600;
+    font-family: 'Open Sans';
+}
+
+.liItemBoxContent__details {
+    font-weight: 100;
+    font-family: 'Open Sans';
+}
+
+.liItemBoxContent__header,
+.liItemBoxContent__details {
+    padding: 3px;
+    text-align: initial;
+    font-size: 14px;
+}
+
+.liItemBoxControl__input {
+    margin: auto;
+}
+
+/* fsList with liItemBox css ends */
+
+/* fsList with liItem__component css starts */
+.liItem__component {
+    padding: 5px 0px;
+}
+
+.liItem__component--nested {
+    margin-left: 20px;
+}
+
+.liItemComp__label {
+    font-size: 14px;
+    font-weight: 100;
+    margin-left: 5px;
+    color: #616161;
+}
+
+/* fsList with liItem__component css ends */
+
+/* document step css starts */
+.stepRow {
+    text-align: left;
+}
+
+.stepRow--newSectionBlock {
+    margin-top: 24px;
+}
+.fsStepItem--fieldMappingBox {
+    margin-top: 10px;
+}
+
+.stepRow--attachmentTypeList {
+    margin-top: 19px;
+}
+
+.fmRow {
+    display: block;
+    padding: 5px 0px;
+    overflow: hidden;
+}
+
+.fmRow--header .fsLabel {
+    color: #616161;
+    font-size: 12px;
+    font-style: italic;
+    font-weight: 600;
+    line-height: 17px;
+}
+
+.fmRow--header {
+    border-bottom: 1px solid #e0e0e0;
+    position: -webkit-sticky;
+    /* Safari */
+    position: sticky;
+    background-color: #f1f6f8;
+    top: 0;
+    z-index: 1;
+    margin-bottom: 8px;
+}
+.fmRow__item.fmRow__item--fmRowBox {
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgb(224, 224, 224);
+    margin-bottom: 5px;
+}
+.fmRow__item.fmRow__item--fmRowBox  .fmRow--header{
+    border-bottom: none;
+    margin-top: 14px;
+    border-top: 1px solid rgb(221, 219, 218);
+    margin-bottom: 0px;
+}
+.fmColumn {
+    min-width: 80px;
+    display: inline-block;
+}
+
+.fmColumn.fmColumn--col1 {
+    width: 42%;
+}
+
+.fmColumn.fmColumn--col2 {
+    max-width: 46%;
+}
+
+.fmColumn.fmColumn--col3 {
+    margin-left: 10px;
+}
+
+.fmRow__item--fmRowBox .fmColumn.fmColumn--col1 {
+    width: 47%;
+    padding-left: 20px;
+    margin-right: 5px;
+    vertical-align: bottom;
+}
+
+.fmColumn > span {
+    font-size: 14px;
+    color: #818283;
+    padding: 0px 3px;
+}
+.fmColumn .fsInput--text {
+    padding-top: 7px;
+    padding-bottom: 7px;
+    width: 300px;
+}
+.fsStepItem {
+    max-width: 770px;
+    overflow: auto;
+}
+
+.fsStepItem.fsStepItem--platformConnection,
+.fsStepItem.fsStepItem--documentEventsBox {
+    max-width: 634px;
+}
+
+.fsStepItem.fsStepItem--platformConnection {
+    margin-top: 17px;
+}
+
+.fsStepItem--documentEventsBox .fsBtn--secondary {
+    margin-left: 10px;
+}
+
+.fsStepItem.fsStepItem--fieldMappingBox .stepRow__item {
+    overflow: auto;
+}
+
+.fmRow__item .actionBtn {
+    text-indent: -9999px;
+    width: 28px;
+    height: 28px;
+    margin-top: 2px;
+    background: hsl(210, 14%, 91%);
+    border-radius: 14px;
+    text-indent: -9999px;
+    border: 1px solid #cecece;
+    cursor: pointer;
+    outline: 0;
+    background-repeat: no-repeat;
+}
+.fmRow__item .actionBtn--add {
+    background-image: url(./images/icon_publish_options/publish_option_sprite.png);
+    background-position: -216px -233px;
+    margin-right: 5px;
+}
+.fmRow__item .actionBtn--delete {
+    background-image: url(./images/icon_publish_options/publish_option_sprite.png);
+    margin-right: 5px;
+    background-position: -163px -209px;
+}
+.signdoc--release2 {
+    display: none;
+}
+
+.signdoc--release1 {
+    margin: 14px auto 24px auto;
+}
+
+.signdoc--release1 .fsRow {
+    display: table-row;
+}
+
+.signdoc--release1 .fsCol1,
+.signdoc--release1 .fsCol2 {
+    display: table-cell;
+}
+
+.signdoc--release1 .fsCol2 {
+    width: 200px;
+    vertical-align: middle;
+    text-align: right;
+}
+
+.fsLabel.fsLabel--bold {
+    font-weight: 600;
+}
+
+.fsLabel.fsLabel--fontSM {
+    font-size: 12px;
+}
+
+.fsLabel.fsLabel--block {
+    display: block;
+}
+
+.stepDetail .fsLabel.fsLabel--block {
+    margin-bottom: 7px;
+}
+
+.signdoc--release1 .fsLabel--fontSM {
+    line-height: 18px;
+}
+
+.fsIcon--processing {
+    background-image: url(./images/icon_publish_options/loading_bar.GIF);
+    height: 5px;
+    display: block;
+    width: inherit;
+    margin: 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* document step css ends */
+
+/* workaround for pill message close btn icon*/
+.fs_pillmessage__closeIcon,
+.fs_pillmessage__closeIcon:hover {
+    background-image: url(./images/sprites/dash_sprite_v1.png);
+}
+/* workaround ends*/

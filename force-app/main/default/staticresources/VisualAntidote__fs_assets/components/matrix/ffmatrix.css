@@ -1,0 +1,337 @@
+/* matrixCSS starts */
+
+.matrix-section-container {
+    position: relative;
+    padding-top: 14px;
+}
+
+#dvFastForms .ff-form-main .ff-item-row.matrix-section-holder-scroll {
+    overflow-x: auto ;
+}
+
+.matrix-section-holder {
+    border-radius: 7px;
+    border: solid 2px #e6ecef;
+    margin: 10px !important;
+    width: 97% !important;
+    height: auto;
+    min-height: 50px;
+    padding-left: 0px;
+    position: relative;
+}
+
+.show-labels-above-this-field {
+    font-size: 14.5px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: -0.4px;
+    text-align: left;
+    color: #616161;
+}
+
+/* Customize the label (the container) */
+
+.radio-container {
+    display: block;
+    position: relative;
+    margin-bottom: 12px;
+    cursor: pointer;
+    font-size: 22px;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+    .radio-container.ff-radio-li span {
+        float: none;
+    }
+
+.container-table {
+    display: block;
+    width: 100%;
+}
+
+.container-row {
+    display: inline-block;
+    width: 100%;
+}
+
+.container-cell {
+    display: table-cell;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 0px 2px;
+    line-height: 1.1em;
+    vertical-align: middle;
+    min-width: 70px;
+    max-width: 70px;
+    text-align: center;
+    height: 32px;
+}
+
+/* Hide the browser's default radio button */
+
+.radio-container .matrix-likert {
+    position: absolute;
+    opacity: 0;
+}
+
+/* Create a custom radio button */
+
+.radio-checkmark {
+    border-radius: 10px;
+}
+
+/* On mouse-over, add a grey background color */
+
+.radio-container:hover input ~ .radio-checkmark {
+    background-color: #ccc;
+}
+
+/* Create the indicator */
+
+.radio-checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+}
+
+.likert-label {
+    font-size: 9.5px;
+    font-weight: 600;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: -0.2px;
+    text-align: center;
+    color: #616161;
+}
+
+.matrix-label-container {
+    min-height: 55px;
+}
+
+.hasLabel {
+    border-bottom: solid 1px #e6ecef;
+}
+
+.matrix-label {
+    font-size: 9.5px;
+    font-weight: 500;
+    font-style: normal;
+    letter-spacing: -0.2px;
+    text-align: center;
+}
+
+.matrix-labelDiv {
+    max-width: 45%;
+    float: left;
+    font-family: 'Open Sans', sans-serif;
+    vertical-align: middle;
+    display: inline-block;
+    padding-top: 10px;
+}
+
+.matrix-label-container:hover {
+    background-color: rgb(247, 247, 247);
+}
+
+.matrix-likert-container:hover {
+    opacity: 1;
+    background-color: rgb(247, 247, 247);
+}
+
+/* Space between each field in the matrix */
+
+.matrix-likert-container {
+    min-height: 55px;
+}
+
+/* Remove extra space between the Field Settings and the Field section */
+
+.matrix-section-container .ExpandDiv {
+    margin-top: 0px;
+}
+
+.matrix-label-container:hover .matrixEditImg,
+.matrix-likert-container:hover .matrixEditImg,
+.matrix-likert-container:hover .matrixDeleteField {
+    opacity: 1;
+}
+
+.matrix-column-input {
+    width: 82px;
+    height: 33px;
+    border-radius: 5px;
+    border: solid 0.5px #a3a3a3;
+    background-color: #ffffff;
+    padding-left: 13px;
+    padding-right: 10px;
+}
+
+#bodyTable .fieldLi table td.td-mtx-header {
+    padding-right: 15px;
+    font-size: 12px;
+    font-weight: normal;
+    font-style: italic;
+    padding-bottom: -8px;
+    height: 30px;
+}
+
+.mtx-col {
+    padding-top: 7px;
+}
+
+.mtx-value-circle {
+    padding: 5px 11px 5px 11px;
+    border: solid 1px #aaaaaa;
+    border-radius: 80%;
+    background-color: #e6ecef;
+    text-align: center;
+}
+
+.matrix-likert-container:hover .matrixEditImg,
+.matrix-likert-container:hover .matrixDeleteField {
+    opacity: 1;
+}
+
+.section-header {
+    top: 0px;
+    position: absolute;
+    width: 106px;
+    height: 22px;
+    border-radius: 11.5px;
+    background-color: #e6ecef;
+    text-align: center;
+    left: 23px;
+    cursor: default;
+    margin-top: 14px;
+}
+
+.section-header-text {
+    margin-top: 2px;
+}
+
+div.matrix-control-container > div.ff-invalid-msg {
+    position: relative;
+    top: -17px;
+    left: 5%;
+}
+
+li.matrix-section-container.ui-sortable-placeholder {
+    background: 0 0 !important;
+    background-color: #fff;
+    min-height: 40px;
+    border: 1px dashed #33aefd;
+}
+
+li.matrix-section-container.grabCursor {
+    background-color: #fff;
+    background-image: none;
+}
+
+div.matrix-section > .matrix-field > div:first-child {
+    clear: both;
+    width: 100%;
+    display: inline-block;
+}
+
+/* Shows the Tooltip for Premium Feature in Matrix section. */
+
+ul.matrix-section.matrix-section-holder .fieldLi {
+    overflow: initial;
+}
+
+/* Make the tooltip for Premium Feature be centralized in the delete icon. */
+
+.matrix-likert-container span.freemium-icon.blue-tooltip > span.blue-tooltip-text.-marginLT {
+    margin-left: -82px;
+    margin-top: -147px;
+}
+
+/* Aligning the delete icon inside of Matrix. */
+.matrix-likert-container .editDelDiv.fm-enabled {
+    margin-right: 0px;
+}
+
+div.matrix-section > .matrix-field > div:first-child > div.ff-col-1 {
+    min-height: 1px;
+}
+
+.container-cell.matrix-big-column {
+    min-width: 70px;
+    max-width: 70px;
+    width: auto;
+}
+
+/* Builder */
+.container-cell.matrix-small-column {
+    min-width: initial;
+    max-width: initial;
+    width: 3em;
+}
+
+/* Live form with No Hosted Form */
+#dvFastForms .container-cell.matrix-small-column {
+    min-width: 70px;
+    max-width: 70px;
+    width: 3em;
+}
+
+.matrix-small-letter-topheaderlabel > label.matrix-label {
+    font-size: 7.5px;
+}
+
+.form-pdf .matrix-section .ff-col-2 {
+    max-width: 50%;
+}
+
+.form-pdf .matrix-section .ff-col-1 {
+    max-width: 45%;
+}
+.matrix-likert:focus + .radio-checkmark {
+    outline: 1px solid rgba(19, 155, 225, 0.729);
+}
+
+.matrix-field :nth-child(1).ff-col-1   {
+    max-width:30%;
+    width:100%;
+    clear: left;
+}
+.matrix-likert-container>.repeatable-color{
+    display: none;
+}
+ul.formFieldUl .fieldLi.A>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.B>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.C>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.D>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.E>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.F>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.G>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.H>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.I>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.J>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.K>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.L>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.M>.matrix-likert-container>.repeatable-color,
+ul.formFieldUl .fieldLi.N>.matrix-likert-container>.repeatable-color
+{
+    position: absolute;
+    left: -12px;
+    height: 55px;
+    display: block;
+}
+
+@media (min-width: 320px) and (max-width: 750px) {
+       .matrix-field :nth-child(1).ff-col-1   {
+        max-width:100%;
+    }
+   #dvFastForms .matrix-field :nth-child(2).ff-col-2 {
+        max-width: 100%;
+        width: 100%;
+    }
+}
+/*matrixCSS ends*/

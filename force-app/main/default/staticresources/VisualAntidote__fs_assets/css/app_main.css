@@ -1,0 +1,374 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+@font-face {
+  font-family: 'Open Sans Bold';
+  src: url(../fonts/OpenSans-ExtraBold.eot?orgId=00D2v0000012rL1);
+  src: url(../fonts/OpenSans-ExtraBold.eot?orgId=00D2v0000012rL1#iefix) format('embedded-opentype'), url(../fonts/OpenSans-ExtraBold.woff?orgId=00D2v0000012rL1) format('woff'), url(../fonts/OpenSans-ExtraBold.ttf?orgId=00D2v0000012rL1) format('truetype');
+}
+
+.btn, .btnWhatsNew, .button, .formulaButton {
+  font-family: 'Open Sans', sans-serif !important;
+  font-weight: 600 !important;
+}
+
+p {
+  font-family: 'Open Sans', sans-serif !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Open Sans', sans-serif;
+}
+
+h1 {
+  font-size: 26px;
+  font-weight: 600 !important;
+  color: #052942;
+}
+
+h2 {
+  font-size: 20px;
+  font-weight: 400 !important;
+}
+
+h3 {
+  font-size: 18px;
+  font-weight: 400 !important;
+}
+
+h4 {
+  font-size: 14px;
+  font-weight: 400 !important;
+}
+
+h5 {
+  font-size: 12px;
+  font-weight: 400 !important;
+  color: #616161;
+  font-style: italic;
+}
+
+h6 {
+  font-size: 10px;
+  font-weight: 400 !important;
+}
+
+.a--white, .a--white:hover {
+  color: white;
+}
+
+.a--blue {
+  color: #33aefd;
+}
+
+.a--blue:hover {
+  color: #015ba7;
+}
+
+input[type=checkbox].fs-checkbox {
+  display: none;
+}
+
+input[type=checkbox].fs-checkbox + label.fs-checkbox-label {
+  background-image: url(../images/sprites/checkbox_sprite.png);
+  padding-left: 30px;
+  height: 25px;
+  display: inline-block;
+  line-height: 25px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  vertical-align: middle;
+  margin-left: -22px;
+}
+
+input[type=checkbox].fs-checkbox:checked + label.fs-checkbox-label {
+  background-position: 0 -25px;
+}
+
+input[type=checkbox].fs-checkbox:checked:disabled + label.fs-checkbox-label {
+  background-position: 0 -175px;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+input[type=checkbox].fs-checkbox:disabled + label.fs-checkbox-label {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-position: 0 -151px;
+}
+
+input[type=checkbox].fs-checkbox.fs-checkbox-red + label.fs-checkbox-label {
+  background-image: url(../images/sprites/checkbox_sprite_red.png);
+}
+
+.vabutton2 {
+  font-family: 'Open Sans';
+  font-weight: 600;
+  background-image: none;
+  background-color: #fff;
+  color: #33aefd;
+  text-decoration: none;
+  padding: 4px 10px 4px 10px;
+  display: inline-block;
+  font-size: 14px;
+  border-radius: 6px;
+  min-width: 100px;
+  border: solid 1px #33aefd;
+  cursor: pointer;
+}
+
+.vabutton1 {
+  font-family: 'Open Sans';
+  font-weight: 600;
+  color: #fff;
+  background-color: #33aefd;
+  background-image: none;
+  text-decoration: none;
+  padding: 4px 10px 4px 10px;
+  display: inline-block;
+  font-size: 14px;
+  min-width: 100px;
+  border-radius: 6px;
+  border: solid 1px #33aefd;
+  cursor: pointer;
+}
+
+.vabuttonLarge {
+  font-family: 'Open Sans';
+  font-weight: 600;
+  color: #fff;
+  background-image: none;
+  background-color: #33aefd;
+  text-decoration: none;
+  padding: 14px 20px 14px 20px;
+  display: inline-block;
+  font-size: 16px;
+  min-width: 100px;
+  border-radius: 6px;
+  border: solid 1px #33aefd;
+  cursor: pointer;
+}
+
+.vabutton2 span {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.vabutton2 span.btnIcon {
+  width: 10px;
+  height: 18px;
+  background-image: url(../images/sprites/publish_option_sprite.png);
+  background-repeat: no-repeat;
+  background-position: -81px -77px;
+}
+
+.vabutton2 span.btn-icon {
+  width: 24px;
+  height: 18px;
+  margin-left: 5px;
+  background-image: url(../images/sprites/publish_option_sprite.png);
+  background-repeat: no-repeat;
+  background-position: -140px -1px;
+}
+
+.vabutton2-noactive span {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.vabutton2-noactive span.btn-icon {
+  width: 24px;
+  height: 18px;
+  margin-left: 5px;
+  background-image: url(../images/sprites/publish_option_sprite.png);
+  background-repeat: no-repeat;
+  background-position: -140px -1px;
+}
+
+.vabutton1:hover, .vabutton2-noactive:hover, .vabutton2:hover, .vabuttonLarge:hover {
+  background-color: #139be1;
+  color: #fff;
+  text-decoration: none;
+  border: solid 1px #139be1;
+}
+
+.vabutton1:active, .vabutton1:focus, .vabutton2:active, .vabutton2:focus, .vabuttonLarge:active, .vabuttonLarge:focus {
+  background-color: #1288c5;
+  text-decoration: none;
+  color: #fff;
+  border: solid 1px #1288c5;
+  background-image: none !important;
+}
+
+.vabutton2:hover span.btnIcon {
+  background-position: -324px -77px;
+}
+
+.vabutton2-noactive:hover span.btn-icon, .vabutton2:hover span.btn-icon {
+  background-position: -454px -82px;
+}
+
+.vabutton2:active span.btnIcon, .vabutton2:focus span.btnIcon {
+  background-position: -324px -77px;
+}
+
+.vabutton1 span.ui-button-text, .vabuttonLarge span.ui-button-text {
+  padding-left: 5px;
+  padding-right: 5px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.vabutton1 span {
+  display: inline-block;
+  line-height: 18px;
+  vertical-align: top;
+}
+
+.vabuttonLarge span {
+  display: inline-block;
+  line-height: 18px;
+  vertical-align: top;
+}
+
+.vabutton2 span {
+  display: inline-block;
+  vertical-align: top;
+}
+
+.vabutton2 span.btnIcon {
+  width: 24px;
+  height: 18px;
+  margin-left: 5px;
+  background-image: url(../images/sprites/publish_option_sprite.png);
+  background-repeat: no-repeat;
+  background-position: -140px -1px;
+}
+
+.vabutton2 span.btnText, .vabutton2 span.ui-button-text {
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.vabutton1 span.ui-button-text, .vabutton2 span.ui-button-text {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+
+.vabutton1:hover, .vabutton2:hover, .vabuttonLarge:hover {
+  background-color: #139be1 !important;
+  color: #fff !important;
+  text-decoration: none;
+  border: solid 1px #139be1 !important;
+}
+
+.vabutton1:active, .vabutton1:focus, .vabutton2.active, .vabutton2:focus, .vabutton3.active, .vabutton3.focus, .vabuttonLarge:active, .vabuttonLarge:focus {
+  background-color: #1288c5 !important;
+  text-decoration: none !important;
+  color: #fff !important;
+  border: solid 1px #1288c5 !important;
+}
+
+.vabutton2:hover span.btnIcon {
+  background-position: -168px -1px;
+}
+
+.vabutton2:active span.btnIcon, .vabutton2:focus span.btnIcon {
+  background-position: -168px -1px;
+}
+
+.vabutton2-noactive.active span.btn-icon, .vabutton2.active span.btn-icon {
+  background-position: -373px -1px !important;
+}
+
+.vabutton3 {
+  font-family: 'Open Sans';
+  font-weight: 600;
+  color: #fff;
+  background-color: #33aefd;
+  text-decoration: none;
+  padding: 6px 10px 6px 10px;
+  display: inline-block;
+  font-size: 14px;
+  min-width: 100px;
+  border-radius: 6px;
+  border: solid 1px #33aefd;
+  width: auto !important;
+  cursor: pointer;
+  background: #33aefd;
+}
+
+.vabutton3 span.btn-text {
+  padding-left: 5px;
+  padding-right: 5px;
+  display: inline-block;
+  vertical-align: top;
+  line-height: 22px;
+}
+
+span.required--darkblue {
+  color: #33aefd;
+}
+
+input[type=radio].fsRadio {
+  opacity: 0;
+  display: none;
+}
+
+input[type=radio].fsRadio + label.fsRadioLabel:before {
+  content: '';
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  margin-right: 10px;
+  vertical-align: bottom;
+  background-image: url(../images/icon_publish_options/ff_radio_buttons.png);
+  background-repeat: no-repeat;
+  background-position: -1px 0px;
+}
+
+input[type=radio].fsRadio:checked + label.fsRadioLabel:before {
+  background-position: -1px -59px;
+}
+
+input[type=radio].fsRadio:disabled + label.fsRadioLabel:before {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-position: -1px -87px;
+}
+
+input[type=radio].fsRadio:checked:disabled + label.fsRadioLabel:before {
+  background-position: -1px -118px;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+input[type=checkbox].fsCheckbox {
+  display: none;
+}
+
+input[type=checkbox].fsCheckbox + label.fsCheckboxLabel {
+  background-image: url(../images/sprites/checkbox_sprite.png);
+  padding-left: 30px;
+  height: 25px;
+  display: inline-block;
+  line-height: 25px;
+  background-repeat: no-repeat;
+  background-position: 0 0;
+  vertical-align: middle;
+}
+
+input[type=checkbox].fsCheckbox:checked + label.fsCheckboxLabel {
+  background-position: 0 -25px;
+}
+
+input[type=checkbox].fsCheckbox:checked:disabled + label.fsCheckboxLabel {
+  background-position: 0 -175px;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+input[type=checkbox].fsCheckbox:disabled + label.fsCheckboxLabel {
+  cursor: not-allowed;
+  pointer-events: none;
+  background-position: 0 -151px;
+}

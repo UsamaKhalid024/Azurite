@@ -1,0 +1,17 @@
+@font-face {
+  font-family: 'Open Sans';
+  src: url(../fonts/OpenSans-Regular.eot?orgId=00D2v0000012rL1);
+  src: url(../fonts/OpenSans-Regular.eot?orgId=00D2v0000012rL1#iefix) format('embedded-opentype'), url(../fonts/OpenSans-Regular.woff?orgId=00D2v0000012rL1) format('woff'), url(../fonts/OpenSans-Regular.ttf?orgId=00D2v0000012rL1) format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans SemiBold';
+  src: url(../fonts/OpenSans-SemiBold.eot?orgId=00D2v0000012rL1);
+  src: url(../fonts/OpenSans-SemiBold.eot?orgId=00D2v0000012rL1#iefix) format('embedded-opentype'), url(../fonts/OpenSans-SemiBold.woff?orgId=00D2v0000012rL1) format('woff'), url(../fonts/OpenSans-SemiBold.ttf?orgId=00D2v0000012rL1) format('truetype');
+}
+
+@font-face {
+  font-family: 'Open Sans Bold';
+  src: url(../fonts/OpenSans-ExtraBold.eot?orgId=00D2v0000012rL1);
+  src: url(../fonts/OpenSans-ExtraBold.eot?orgId=00D2v0000012rL1#iefix) format('embedded-opentype'), url(../fonts/OpenSans-ExtraBold.woff?orgId=00D2v0000012rL1) format('woff'), url(../fonts/OpenSans-ExtraBold.ttf?orgId=00D2v0000012rL1) format('truetype');
+}

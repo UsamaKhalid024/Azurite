@@ -1,0 +1,1 @@
+// DEPRECATED: Moved to ~\salesforceapp\grunt\source\fs_assets\components\submission-preview\core.js

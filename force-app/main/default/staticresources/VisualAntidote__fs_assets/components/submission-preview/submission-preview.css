@@ -1,0 +1,24 @@
+#dvFastForms input,#dvFastForms select,#dvFastForms textarea,#dvFastForms button,
+#dvFastForms .ff-checkbox-li, #dvFastForms  .ff-radio-li,#dvFastForms .ff-col-2>div,
+#dvFastForms .ff-sign-ul a,#dvFastForms .ff-item-row a{
+pointer-events: none;
+} 
+#dvFastForms .docsignWrapper.ff-col-2{
+line-height: 6px;
+}
+#dvFastForms .ffsign-label,#dvFastForms .ff-email-verification .ff-col-1{
+width:30%;
+}
+.img-esign{ 
+    position: absolute; 
+    z-index: 1;
+    background: transparent;
+    border-radius: 10px; 
+    margin: 1px;
+}
+#dvFastForms select.ff-multipicklist {
+pointer-events: visible;
+}
+#dvFastForms select.ff-multipicklist option {
+pointer-events: none;
+}

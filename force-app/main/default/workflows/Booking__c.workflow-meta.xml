@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>Email_alert_for_booking_creation</fullName>
+        <ccEmails>trina_opensource@bigpond.com,</ccEmails>
+        <ccEmails>alessandra@azurite.com.au</ccEmails>
+        <description>Email alert for booking creation.</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>alessandra@azurite.com.au</recipient>
+            <type>user</type>
+        </recipients>
+        <senderAddress>alessandra@azurite.com.au</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Azurite_Communities/Email_template_for_booking_creation</template>
+    </alerts>
+    <alerts>
+        <fullName>Feedback_on_booking_completion</fullName>
+        <description>Feedback on booking completion</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Contact__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderAddress>alessandra@azurite.com.au</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Azurite_Communities/Azurite_Customer_Review</template>
+    </alerts>
+</Workflow>

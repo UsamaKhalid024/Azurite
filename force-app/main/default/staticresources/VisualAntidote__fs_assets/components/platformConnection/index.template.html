@@ -1,0 +1,208 @@
+<!--HTML for document tab-->
+<html>
+
+<head>
+    <!-- Dependency -->
+    <link rel="stylesheet" href="../../css/app_main.css" />
+    <link rel="stylesheet" href="../../css/appButtons.css" />
+    <link rel="stylesheet" href="../pillMessage/pillMessage.css" />
+    <link rel="stylesheet" href="../../components//lightbox/lightbox.css" />
+    <!-- Component CSS and JS - Always after basic dependencies-->
+    <link rel="stylesheet" href="platformConnection.css" />
+    <script src="../jquery/jquery.js"></script>
+    <script src="../../components/lightbox/lightbox.js"></script>
+    <script>
+        window.fs = $;
+    </script>
+    <script src="../appUtility/utility.js"></script>
+</head>
+
+<body>
+    <style>
+        /**/
+        .fsLocalWrapper {
+            margin: 20px auto;
+            max-width: 1200;
+        }
+        .fsContentBox{
+            display: block;
+            max-width: 1020px;
+            margin: 40px auto;
+        }
+
+        /*image for local rendering*/
+        .fsPlatformConnectionCompact__logo--document{
+            background-image: url('../../images/iconimages/formstack_documents_logo.png');
+        }
+        .fsPlatformConnectionCompact__logo--integrationActive {
+            background-image: url('../../images/iconimages/integration-active.png');
+        }
+        .fsPlatformConnectionCompact__logo--integrationInactive {
+            background-image: url('../../images/iconimages/integration-inactive.png');
+        }
+        
+        .fsPlatformConnectionCompact__state{
+            background-image: url('../../images/icon_publish_options/publish_option_sprite.png');
+        }
+        .fs_pillmessage__closeIcon{
+            background-image: url('../../images/sprites/dash_sprite_v1.png');
+        }
+    </style>
+
+<div class="fsLocalWrapper">
+    <div class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <!--HTML for Platform Connection section -->
+        <div class="fsPlatformConnectionBox">
+            <div class="fsPlatformConnectionCompact">
+                <div class="fsPlatformConnectionCompact__logo fsPlatformConnectionCompact__logo--document"></div>
+                <div class="fsPlatformConnectionCompact__title">Connect to Formstack Documents</div>
+                <button type="button" class="fsPlatformConnectionCompact__state">toggle</button>
+            </div>
+            <div class="fsPlatformConnectionDetail">
+                <div class="fsPlatformConnectionDetail__title">Let's start by connecting to Formstack Documents (formerly Webmerge). <a hreaf="#">Learn More</a></div>
+                <div class="fsPlatformConnectionDetail__notification"></div>
+                <div class="fsForm fsForm--widthSM">
+                    <div class="fsFormRow">
+                        <label for="textAPIKey" class="fsLabel lblAPIKey">Api Key<span class="fsLabel__req">*</span></label>
+                        <input id="textAPIKey" class="fsInput fsInput--text" type="password" />
+                    </div>
+                    <div class="fsFormRow">
+                        <label for="textAPISecret" class="fsLabel lblAPISecret">Api Secret<span class="fsLabel__req">*</span></label>
+                        <input id="textAPISecret" class="fsInput fsInput--text" type="password" /> 
+                    </div>
+                    <div class="fsFormRow fsFormButtonRow">
+                        <button type="button" class="fsBtnSave fsBtn fsBtn--primary fsBtn--radius-sm">
+                            <span class="fsBtn__text">Save</span>
+                        </button>
+                    </div>
+                </div>
+                <div class="fsPlatformConnectionDetail__titleBottom"></div>
+            </div>
+        </div>
+    </div>
+    <h2 style="text-align: center;">Dynamic Content</h2>
+    <div id="fsContentBoxExistingConnection" class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <h2>Existing Connection View</h2>
+        <!--HTML for Platform connection section-->
+        <div class="fsPlaceholder">Placeholder for dynamic platform connection section</div>
+    </div>
+    <div id="fsContentBoxNoConnection" class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <h2>No Connection View</h2>
+        <!--HTML for Platform connection section-->
+        <div class="fsPlaceholder">Placeholder for dynamic platform connection section</div>
+    </div>
+    <div id="fsContentBoxError" class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <h2>Error View</h2>
+        <!--HTML for Platform connection section-->
+        <div class="fsPlaceholder">Placeholder for dynamic platform connection section</div>
+    </div>
+    <div id="fsContentStash" class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <h2>Stash View</h2>
+        <!--HTML for Platform connection section-->
+        <div class="fsPlaceholder">Placeholder for dynamic platform connection section</div>
+    </div>
+    <div id="fsContentDropbox" class="fsContentBox">
+        <!--platformConnection.template.html-->
+        <h2>Dropbox View</h2>
+        <!--HTML for Platform connection section-->
+        <div class="fsPlaceholder">Placeholder for dynamic platform connection section</div>
+    </div>
+    
+</div>
+    <!-- Javascript Libraries -->
+    <script src="../pillMessage/pillMessage.js"></script>
+    <script src="./platformConnection.js"></script>
+    <script src="../documentBuilder/documentStepBuilder.js"></script>
+    <script>
+        var existingPlatformConnectResponseDTO = {"Result":{"IsActive":false,"Name":"Testing One with Webmerge","RecordId":"00Z00000sdfdsf002","Key":"W9FYWGKMWL22B7CTP5UPTZHJ5R72","Secret":"7EN5FUBJ","ProviderType":"FormstackDocuments"},"ErrorMessage":"","IsValid":true};
+        var noPlatformConnectResponseDTO = {"Result":[],"ErrorMessage":"","IsValid":true};
+        var errorPlatformConnectResponseDTO = {"Result":[],"ErrorMessage":"Something went wrong buddy","IsValid":false};
+        var stashPlatformConnection = {"Result":{"IsActive":true,"Name":"Testing Stash","RecordId":"00Z00000sdfdsf005","Key":"W9FYWGKMWL22B7CTP5UPTZHJ5R72","Secret":"7EN5FUBJ","ProviderType":"Stash"},"ErrorMessage":"","IsValid":true};
+        var dropboxPlatformConnection = {"Result":{"IsActive":true,"Name":"Testing Dropbox","RecordId":"00Z00000sdfdsf005","Key":"W9FYWGKMWL22B7CTP5UPTZHJ5R72","Secret":"","ProviderType":"Dropbox"},"ErrorMessage":"","IsValid":true};
+        $(document).ready(function () {
+            // do something
+            fs.PC.renderConnectionPickerView(existingPlatformConnectResponseDTO,$('#fsContentBoxExistingConnection .fsPlaceholder'));
+            fs.PC.renderConnectionPickerView(noPlatformConnectResponseDTO,$('#fsContentBoxNoConnection .fsPlaceholder'));
+            fs.PC.renderConnectionPickerView(errorPlatformConnectResponseDTO,$('#fsContentBoxError .fsPlaceholder'));
+            
+            var options = {
+                providerType: 'Stash',
+                layout: {
+                    compactTitleConnected: 'Connected to Stash (by Formstack)',
+                    compactTitleNotConnected: 'Connect to Stash (by Formstack)',
+                    detailTextTop: '<label>Get started by connection to your Stash account. <a href="#" target="__blank">Learn more</a></label>',
+                    detailTextBottom: '<label class="text--bold">Important:</label> <label>Publish the form and make a test submission to verify that the integration works correctly.</label>',
+                    iconLogoConnected: 'fsPlatformConnectionCompact__logo--integrationActive',
+                    iconLogoDisconnected: 'fsPlatformConnectionCompact__logo--integrationInactive',
+                    showAdminSettingsPanelButton: false,
+                },
+                fields: [
+                    {
+                        fieldLabel: 'Account Name',
+                        fieldIsRequired: true,
+                        fieldIsPasswordType: false,
+                        fieldPlatformAccountFieldName: 'Secret'
+                    },
+                    {
+                        fieldLabel: 'Secret Key',
+                        fieldIsRequired: true,
+                        fieldIsPasswordType: true,
+                        fieldPlatformAccountFieldName: 'Key'
+                    }
+                ]
+            }
+            console.log('Test Rogerio');
+            fs.PC.renderConnectionPickerViewWithOptions(stashPlatformConnection, $('#fsContentStash .fsPlaceholder'), options);
+
+                var DropboxCommponent = {
+                    providerType: 'Dropbox',
+                    layout: {
+                        compactTitleConnected: 'Connected to Dropbox',
+                        compactTitleNotConnected: 'Connect to Dropbox',
+                        detailTextTop:
+                            '<label>You have to grant Formstack access to your Dropbox account first. To do this, just click the “Log in to Dropbox” button. <a href="#" target="_blank">Learn more</a></label>',
+                        detailTextBottom:
+                            '<label class="text--bold">Important:</label> <label>Publish the form and make a test submission to verify that the integration works correctly.</label>',
+                        iconLogoConnected: 'fsPlatformConnectionCompact__logo--integrationActive',
+                        iconLogoDisconnected: 'fsPlatformConnectionCompact__logo--integrationInactive',
+                        showAdminSettingsPanelButton: false,
+                        showSaveButton: false
+                    },
+                    button: [
+                    {
+                        ButtonText: 'Log in to Dropbox',
+                        id:'btn2233',
+                        class:'float-left fsBtn fsBtn--primary fsBtn--radius-sm',
+                        onClick:'fsLightbox2233.show()',
+                        action:'fsLightbox',
+                        javascript:{  
+                            functionName: 'fsLightbox2233',                   
+                            form: '2233',
+                            handleText: "Connected to Dropbox",
+                            handlePosition: "left",
+                            handleImage: "",
+                            handle: null,
+
+                            iframe:{
+                                id:'2233',
+                                src:'https://vaformsdev2app.azurewebsites.net/FormEngine/Integration/AuthorizeIntegration?IntegrationType=Dropbox',
+                                title:'Connected to Dropbox'
+                            }
+                        }
+                    }],
+                    fields: []
+                }
+
+            fs.PC.renderConnectionPickerViewWithOptions(dropboxPlatformConnection, $('#fsContentDropbox .fsPlaceholder'), DropboxCommponent);
+
+        });
+        
+    </script>
+</body>
+
+</html>

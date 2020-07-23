@@ -1,0 +1,248 @@
+/*CSS to overwrite select2 default a=or additional css for select2 components only*/
+.fsSelect2--selectSM {
+    width: 300px;
+}
+
+.fsSelect2--selectM {
+    width: 325px;
+}
+
+.fsSelect2--selectL {
+    width: 343px;
+}
+.select2-dropdown-open.select2-drop-above .select2-choice,
+.select2-dropdown-open.select2-drop-above .select2-choices {
+    background-image: none;
+}
+.select2-container .select2-choice {
+    background-color: #fff;
+    background-image: none;
+    height: 34px;
+    padding-left: 7px;
+    border-color: #aaa;
+}
+
+.select2-dropdown-open .select2-choice {
+    border-color: #5897fb;
+}
+
+.select2-container .select2-choice > .select2-chosen {
+    margin-top: 2px;
+    color: #052942;
+    font-size: 13.5px;
+    font-family: 'Open Sans';
+}
+
+.select2-container .select2-choice > .select2-chosen {
+    float: left;
+}
+
+.select2-results .select2-result-selectable {
+    border-left: 5px solid #fff;
+    color: #052942;
+    font-size: 13.5px;
+    font-family: 'Open Sans';
+}
+
+.select2-results .select2-highlighted {
+    color: #052942;
+    border-left: 5px solid #33aefd;
+    background-color: #fff;
+}
+
+.MainTabContainer select option:hover {
+    border-left: 5px solid #33aefd;
+    padding-left: 5px;
+    background-color: #fff;
+}
+
+.MainTabContainer .select2-container .select2-choice > .select2-chosen {
+    margin-top: 3px;
+}
+
+.select2-results li.select2-result-with-children > .select2-result-label {
+    font-size: 18px;
+    font-weight: 400;
+    color: #616161;
+}
+
+.select2-container .select2-choice > .select2-chosen {
+    float: left;
+}
+
+#select2-results .select2-highlighted {
+    background-color: transparent;
+    color: #000;
+    border-left: 5px solid #33aefd;
+    margin-left: 0;
+    padding-left: 0;
+}
+
+.select2-container .select2-choice .select2-arrow {
+    display: block;
+    width: 25px;
+    background-image: none;
+    border-left-width: 0;
+    background-color: #fff;
+}
+
+.select2-container .select2-choice .select2-arrow b {
+    display: block;
+    width: 100%;
+    height: 100%;
+    background-image: url(../images/sprites/publish_option_sprite.png);
+    background-repeat: no-repeat;
+    background-position: -144px 7px;
+}
+.select2-container.select2-container-disabled .select2-choice {
+    cursor: not-allowed;
+    opacity: 0.8;
+}
+.select2-container.select2-container-disabled .select2-choice .select2-arrow b {
+    background-position: -432px -74px;
+}
+
+.select2-container.select2-dropdown-open .select2-choice .select2-arrow b {
+    background-position: -349px 7px;
+}
+.select2-choice .item--childdetail::after {
+    line-height: 14px;
+    margin-top: 5px;
+}
+.select2-choice .item--childdetail.repeat::after {
+    padding: 4px 9px;
+    background-image: url(../images/iconimages/repeat_rules.png);
+    background-position: center;
+    background-size: cover;
+}
+.select2-choice .item--childdetail,
+.select2-results li.select2-result-with-children.item--childdetail > .select2-result-label {
+    background-position: center right;
+    background-repeat: no-repeat;
+    padding-right: 20px;
+}
+.select2-choice .item--childdetail::after,
+.select2-results li.select2-result-with-children.item--childdetail > .select2-result-label::after {
+    border-radius: 50%;
+    text-align: center;
+    display: inline-block;
+    color: #fff;
+    padding: 1px 5px;
+    font-size: 0.7em;
+    font-style: normal;
+    margin-left: 5px;
+}
+.select2-choice .item--childdetail.A::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.A
+    > .select2-result-label::after {
+    content: 'A';
+    background-color: #d9217d;
+}
+.select2-choice .item--childdetail.B::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.B
+    > .select2-result-label::after {
+    content: 'B';
+    background-color: #0c0;
+}
+.select2-choice .item--childdetail.C::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.C
+    > .select2-result-label::after {
+    content: 'C';
+    background-color: #7d21d9;
+}
+.select2-choice .item--childdetail.D::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.D
+    > .select2-result-label::after {
+    content: 'D';
+    background-color: #d39f02;
+}
+.select2-choice .item--childdetail.E::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.E
+    > .select2-result-label::after {
+    content: 'E';
+    background-color: #f54028;
+}
+.select2-choice .item--childdetail.F::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.F
+    > .select2-result-label::after {
+    content: 'F';
+    background-color: #2121d9;
+}
+.select2-choice .item--childdetail.G::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.G
+    > .select2-result-label::after {
+    content: 'G';
+    background-color: #d0601d;
+}
+.select2-choice .item--childdetail.H::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.H
+    > .select2-result-label::after {
+    content: 'H';
+    background-color: #d921d9;
+}
+.select2-choice .item--childdetail.I::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.I
+    > .select2-result-label::after {
+    content: 'I';
+    background-color: #159215;
+}
+.select2-choice .item--childdetail.J::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.J
+    > .select2-result-label::after {
+    content: 'J';
+    background-color: #d9217d;
+}
+.select2-choice .item--childdetail.K::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.K
+    > .select2-result-label::after {
+    content: 'K';
+    background-color: #0c0;
+}
+.select2-choice .item--childdetail.L::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.L
+    > .select2-result-label::after {
+    content: 'L';
+    background-color: #7d21d9;
+}
+.select2-choice .item--childdetail.M::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.M
+    > .select2-result-label::after {
+    content: 'M';
+    background-color: #d39f02;
+}
+.select2-choice .item--childdetail.N::after,
+.select2-results
+    li.select2-result-with-children.item--childdetail.N
+    > .select2-result-label::after {
+    content: 'N';
+    background-color: #f54028;
+}
+.select2-results
+    li.select2-result-with-children.item--childdetail.repeat
+    > .select2-result-label::after {
+    background-image: url(../images/iconimages/repeat_rules.png);
+    background-position: center;
+    background-size: cover;
+    padding: 2.5px 7px;
+    width: 16px;
+    line-height: 24px;
+}
+
+.select2-results li.SectionOption .select2-result-selectable,
+.select2-results li.ChildOption .select2-result-selectable,
+.select2-results .FieldOption.template-section-1 li.select2-result-selectable {
+    border-color: #f1f6f8;
+}

@@ -1,0 +1,229 @@
+/* CSS for: 
+Custom Dialog boxes: Confirm,Alert etc
+Tooltip for hints*/
+
+/*@TODO are places where we need to re-factor as part of more modular css*/
+.overlay {
+    background: none repeat scroll 0 0 #f6f9f9!important;
+    opacity: .3!important;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 500
+}
+
+.dialogFont {
+    padding: 30px 20px 0 20px
+}
+.ui-dialog-content.ui-widget-content{
+	background-color:#ffffff;
+	overflow:hidden!important; /*TODO: remove important*/
+}
+.ui-widget-overlay {
+    background: none repeat scroll 0 0 #f6f9f9!important;
+    opacity: .3!important;
+}
+.ui-dialog .ui-dialog-buttonpane .vabutton1, .ui-dialog .ui-dialog-buttonpane .vabutton2 {
+	padding:4px 10px!important; /*TODO: remove important*/
+}
+.introDialogFont {
+    padding: 30px 20px 7px 20px;
+    background-color: #fafafa;
+    border-radius: 10px 10px 0 0;
+    background-image: url(../images/graphics/survey_element_1.png);
+    background-repeat: no-repeat;
+    background-position: 0 0
+}
+
+.dialogFont .primary,.introDialogFont .primary {
+    color: #052942;
+    font-family: 'Open Sans';
+    font-weight: 500;
+    font-size: 20px
+}
+
+.dialogFont .secondary,.introDialogFont .secondary {
+    color: #616161;
+    font-family: 'Open Sans';
+    font-weight: 500;
+    font-size: 16px
+}
+
+.dialogHeader {
+    background-color: #e6ecef;
+    width: 100%;
+    height: 43px;
+    padding: 25px 0 0 20px;
+    border-radius: 10px 10px 0 0;
+    box-sizing: border-box;
+}
+
+.dialogIcon {
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
+    background-color: #fff;
+    border: 3px solid #e6ecef;
+    text-align: center
+}
+
+.dialogIconAlert {
+    background: #fff url(../images/icon_publish_options/publish_option_sprite.png) no-repeat -339px -153px
+}
+
+.dialogIconWait {
+    background: #fff url(../images/icon_publish_options/please_wait_gif.gif) no-repeat 3px;
+    background: #fff url(../images/icon_publish_options/loading_svg.svg) no-repeat center;
+    background-size: contain
+}
+
+.dialogIconOK {
+    background: #fff url(../images/icon_publish_options/checkmark_gif.gif) no-repeat 1px 3px
+}
+
+.dialogIconInfo {
+    background: #fff url(../images/icon_publish_options/publish_option_sprite.png) no-repeat -339px -203px
+}
+
+.dialogFont .secondary .dialog-row-group,.introDialogFont .secondary .dialog-row-group {
+    clear: both;
+    overflow: hidden
+}
+
+.dialogFont .secondary .form-col-1,.introDialogFont .secondary .form-col-1 {
+    float: left;
+    width: 35%
+}
+
+.dialogFont .secondary .form-col-2,.introDialogFont .secondary .form-col-2 {
+    float: left;
+    width: 63%
+}
+
+.dialogSmall {
+    background-image: url(../images/icon_publish_options/loading_gear.gif);
+    background-repeat: no-repeat;
+    width: 40px;
+    height: 40px;
+    float: left;
+    display: inline-block
+}
+a.blue-tooltip,span.blue-tooltip {
+    outline: 0
+}
+
+a.blue-tooltip:hover {
+    text-decoration: none
+}
+
+a.blue-tooltip>span.blue-tooltip-text,span.blue-tooltip>span.blue-tooltip-text {
+    z-index: 10;
+    display: none;
+    padding: 4px 6px;
+    margin-top: -20px;
+    margin-left: -12px;
+    max-width: 200px;
+    font-size: 12px;
+    line-height: 14px;
+    font-weight: 300;
+    font-family: 'Open Sans';
+    -webkit-transition: all .5s ease;
+    transition: all .5s ease
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt30,span.blue-tooltip>span.blue-tooltip-text.-mt30 {
+    margin-top: -30px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt40,span.blue-tooltip>span.blue-tooltip-text.-mt40 {
+    margin-top: -40px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt55,span.blue-tooltip>span.blue-tooltip-text.-mt55 {
+    margin-top: -55px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml40,span.blue-tooltip>span.blue-tooltip-text.-ml40 {
+    margin-left: -40px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt45,span.blue-tooltip>span.blue-tooltip-text.-mt45 {
+    margin-top: -45px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt130,span.blue-tooltip>span.blue-tooltip-text.-mt130 {
+    margin-top: -130px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml30,span.blue-tooltip>span.blue-tooltip-text.-ml30 {
+    margin-left: -30px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml25,span.blue-tooltip>span.blue-tooltip-text.-ml25 {
+    margin-left: -25px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml20,span.blue-tooltip>span.blue-tooltip-text.-ml20 {
+    margin-left: -20px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml18,span.blue-tooltip>span.blue-tooltip-text.-ml18 {
+    margin-left: -18px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml15,span.blue-tooltip>span.blue-tooltip-text.-ml15 {
+    margin-left: -15px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml95,span.blue-tooltip>span.blue-tooltip-text.-ml95 {
+    margin-left: -95px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml63,span.blue-tooltip>span.blue-tooltip-text.-ml63 {
+    margin-left: -63px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml90,span.blue-tooltip>span.blue-tooltip-text.-ml90 {
+    margin-left: -90px
+}
+
+a.blue-tooltip:hover span.blue-tooltip-text,span.blue-tooltip:hover span.blue-tooltip-text {
+    display: inline;
+    position: absolute;
+    color: #fff;
+    border-radius: 8px;
+    background-color: #052942
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt85,span.blue-tooltip>span.blue-tooltip-text.-mt85 {
+    margin-top: -85px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt80,span.blue-tooltip>span.blue-tooltip-text.-mt80 {
+    margin-top: -80px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt68,span.blue-tooltip>span.blue-tooltip-text.-mt68 {
+    margin-top: -68px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt60,span.blue-tooltip>span.blue-tooltip-text.-mt60 {
+    margin-top: -60px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-mt90,span.blue-tooltip>span.blue-tooltip-text.-mt90 {
+    margin-top: -90px
+}
+
+a.blue-tooltip>span.blue-tooltip-text.-ml65,span.blue-tooltip>span.blue-tooltip-text.-ml65 {
+    margin-left: -65px
+}
+
+a.blue-tooltip>span.blue-tooltip-text,span.blue-tooltip>span.blue-tooltip-text {
+    border-radius: 8px
+}
+a.blue-tooltip>span.blue-tooltip-text.-mt100, span.blue-tooltip>span.blue-tooltip-text.-mt100 {
+    margin-top: -100px;
+}

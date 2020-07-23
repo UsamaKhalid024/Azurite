@@ -1,0 +1,659 @@
+<!doctype html>
+<html>
+
+<head>
+
+    <script id="jsFastForms" src="../../../../../Source/staticresources/NativeEngineJS.resource"></script>
+    <link href="ffmatrix.css" rel="stylesheet" type="text/css">
+    <script src="ffmatrix.js"></script>
+    <script src="../../../common/scripts/jquery.js"></script>
+</head>
+
+<body>
+
+    <input id="isHostedForm" type="hidden" value="True">
+    <div id="dvFastForms">
+        <meta http-equiv="PRAGMA" content="NO-CACHE">
+        <meta http-equiv="Expires" content="Mon, 01 Jan 1990 12:00:00 GMT">
+        <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport">
+        <meta content="text/html; charset=utf8" http-equiv="Content-Type">
+        <meta content="IE=edge" http-equiv="X-UA-Compatible">
+        <link href="../../../nativeengine/styles/hostedform.css" id="hostedformcss" rel="stylesheet" type="text/css">
+
+
+
+
+        <div id="ffbrowser"></div>
+        <script data-js="fastforms" language="javascript" type="text/javascript">
+            var isCHROME = /Chrome/.test(navigator.userAgent) && /Google Inc/.test(navigator.vendor);
+            var isSAFARI = /Safari/.test(navigator.userAgent) && /Apple Computer/.test(navigator.vendor);
+            var isMicrosoftIE = (window.ActiveXObject || "ActiveXObject" in window);
+            var isFIREFOX = !(window.mozInnerScreenX == null);
+            var isEDGE = /Edge/.test(navigator.userAgent);
+            if (isMicrosoftIE || isEDGE) {
+                var version = detectIE();
+
+                if (version === false) {
+                    document.getElementById('ffbrowser').setAttribute('class', 'ieEdge');
+                } else if (version >= 12) {
+                    document.getElementById('ffbrowser').setAttribute('class', 'ie' + version);
+                } else {
+                    document.getElementById('ffbrowser').setAttribute('class', 'ie' + version);
+                }
+            } else if (isSAFARI) {
+                document.getElementById('ffbrowser').setAttribute('class', 'safari');
+            } else if (isCHROME) {
+                document.getElementById('ffbrowser').setAttribute('class', 'chrome');
+            } else if (isFIREFOX) {
+                document.getElementById('ffbrowser').setAttribute('class', 'firefox');
+            }
+            console.log('Browser:' + document.getElementById('ffbrowser').getAttribute('class'));
+
+            function detectIE() {
+                var ua = window.navigator.userAgent;
+
+
+                var msie = ua.indexOf('MSIE ');
+                if (msie > 0) {
+                    // IE 10 or older => return version number
+                    return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+                }
+
+                var trident = ua.indexOf('Trident/');
+                if (trident > 0) {
+                    // IE 11 => return version number
+                    var rv = ua.indexOf('rv:');
+                    return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+                }
+
+                var edge = ua.indexOf('Edge/');
+                if (edge > 0) {
+                    // Edge (IE 12+) => return version number
+                    return parseInt(ua.substring(edge + 5, ua.indexOf('.', edge)), 10);
+                }
+
+                // other browser
+                return false;
+            }
+        </script>
+        <form action="https://dev6fs-developer-edition.na78.force.com/apex/MultiPartEndpoint?encoding=UTF-8" enctype="multipart/form-data"
+            id="form1" method="post" target="ffIframe">
+            <input id="userTimeZone" type="hidden">
+            <input id="txtObjId" type="hidden" value="">
+            <input id="txtHtmlId" type="hidden" value="">
+            <input id="formHtml" type="hidden">
+            <input id="txtSessionID" type="hidden" value="">
+            <input class="ignore-submit" id="txtSubmittedData" type="hidden" value="">
+            <input id="multipageEnabled" type="hidden" value="false">
+            <input id="breadcrumbEnabled" type="hidden" value="false">
+            <input id="breadcrumbNumbered" type="hidden" value="false">
+            <input id="breadcrumbPrefix" type="hidden" value="">
+            <input id="submitMessage" type="hidden" value="Thank you for your submission!">
+            <input id="submitUrl" type="hidden" value="">
+            <input id="submitBtnText" type="hidden" value="Send">
+            <input id="prevBtnText" type="hidden" value="Back">
+            <input id="nextBtnText" type="hidden" value="Next">
+            <input id="pageValType" type="hidden" value="">
+            <input id="txtUserContentId" type="hidden" value="">
+            <input id="hasCustomCSS" type="hidden" value="false">
+            <input id="isCurrentForm" type="hidden" value="false">
+            <input id="isDraft" type="hidden" value="false">
+            <input id="saveForLaterEnabled" type="hidden" value="false">
+            <input id="saveBtnText" type="hidden" value="Save">
+            <input id="discardBtnText" type="hidden" value="Discard">
+            <input id="draftSaved" type="hidden" value="false">
+            <input id="draftEmail" type="hidden">
+            <input id="paymentType" type="hidden" value="">
+            <input class="ignore-submit" id="ruleFieldsMap" type="hidden" value="{&quot;Contact.LastName&quot;:&quot;1||false,1||false,1||false&quot;}">
+            <input class="ignore-submit" id="relatedFieldsMapJSON" type="hidden" value="">
+            <input class="ignore-submit" id="staticPrefillParams" type="hidden" value="{}">
+            <input id="formName" type="hidden" value="">
+            <input id="formId" type="hidden" value="a0S1N000006pS2qUAE">
+            <input id="prefillObj" type="hidden" value="">
+            <input id="accessToken" type="hidden" value="QOIK1Mr5yi6C93Z27PcNHVd79NwF0D9TtKuEB7Lbu3man5Dx+xlM645XSlawgUBKrWcZbbip4J+94dupPOXhPFx+a9TFdNweHl8OLagH7znsjEMjR2LCkbymwt4GwlnU3dazzRKt5FDkErNZfKBPI+Y44Sw5lZvl1pPJJnZhKyQ=">
+            <input id="dateFormat" type="hidden" value="dd/mm/yy">
+            <input id="todayDate" type="hidden" value="Thu Oct 04 00:00:00 GMT 2018">
+            <input id="userLocal" type="hidden" value="en_US">
+            <input id="jsCode" type="hidden" value="">
+            <input id="ipAddress" type="hidden" value="80.10.28.153">
+            <input id="recaptchaSiteKey" type="hidden" value="6Lc18EwUAAAAAOB_uHmFppxqGckUWnMwK0h3fsdp">
+            <input id="submitRules" type="hidden">
+
+            <input id="CommunityInstanceURL" type="hidden" value="">
+            <input id="CommunitySessioID" type="hidden" value="">
+            <input id="CommunityUserId" type="hidden" value="">
+            <input id="CommunityUserType" type="hidden" value="">
+            <input id="CommunityViewMode" type="hidden" value="">
+
+            <input id="comPrefillDataset" type="hidden">
+            <input id="comPrefillObj" type="hidden">
+
+
+            <div id="dvBannerHTML" runat="server">
+                <div id="j_id0:ffRules">
+                    <script data-js="fastforms" type="text/javascript" language="javascript">
+                        function evaluateRules(lstRules, source) {
+                            if (arguments.length > 0) {
+                                for (var i = 0; i < lstRules.length; i++) {
+                                    switch (lstRules[i]) {
+                                        case 1:
+                                            if ((FFEqualTo('Contact.LastName', 'asd', false, source)) || (FFEqualTo(
+                                                    'Contact.LastName', 'das', false, source)) || (FFEqualTo(
+                                                    'Contact.LastName', 'aa', false, source))) {
+                                                FFHideField('Contact.MailingLatitude', source);
+                                            } else {
+                                                FFShowField('Contact.MailingLatitude', source);
+                                            }
+                                            break;
+                                    }
+                                }
+                            } else {
+                                if ((FFEqualTo('Contact.LastName', 'asd', false, source)) || (FFEqualTo(
+                                        'Contact.LastName', 'das', false, source)) || (FFEqualTo('Contact.LastName',
+                                        'aa', false, source))) {
+                                    FFHideField('Contact.MailingLatitude', source);
+                                } else {
+                                    FFShowField('Contact.MailingLatitude', source);
+                                }
+                            }
+                        }
+                    </script>
+                </div>
+                <div id="j_id0:j_id10" class="ff-form-main">
+                    <div id="ffPage23647" class="ff-page-row page-1" data-pagetitle="Page Title">
+                        <div class="ff-group-row group-0" id="ffSection0">
+                            <div class="ff-item-row">
+                                <div class="ff-col-1 ff-section-col"><label class="ff-section-header" id="sectionLabel0">New
+                                        Section Title</label></div>
+                            </div>
+                            <div class="ff-item-row">
+                                <div class="ff-col-1 ff-label-col"><label vatt="STRING" for="Contact.LastName" class="ff-label"
+                                        id="lblContactLastName">Last Name</label><span class="requiredSpan ff-required-mark">*</span></div>
+                                <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.LastName"
+                                        placeholder="" name="Contact.LastName" vatt="STRING" class="ff-input-type ff-type-text"
+                                        data-maxlengthmessage="Maximum 80 characters" maxlength="80" value=""
+                                        data-requiredmessage="required" data-isrequired="true" data-isupsert="false"
+                                        data-ishidden="false" data-vatt="STRING"></div>
+                            </div>
+                            <div class="ff-item-row matrix-section" data-matrix="0">
+                                <div class="ff-item-row"></div>
+                                <div class="matrix-field" data-matrix="0.0">
+                                    <div class="" id="001">
+                                        <div class="ff-col-1 ff-label-col"></div>
+                                        <div class="ff-col-2 ff-label-col">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row">
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.0"
+                                                            for="0.0.0">Strongly Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.1"
+                                                            for="0.0.1">Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.2"
+                                                            for="0.0.2">Neutral</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.3"
+                                                            for="0.0.3">Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.4"
+                                                            for="0.0.4">Strongly Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.5"
+                                                            for="0.0.5">Strongly 2</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.6"
+                                                            for="0.0.6">Strongly 3</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.7"
+                                                            for="0.0.7">Strongly 4</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.8"
+                                                            for="0.0.8">Strongly 8</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.0.9"
+                                                            for="0.0.9">Strongly 9</label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="" id="002">
+                                        <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(18,0)" for="Contact.number_5__c"
+                                                class="ff-label" id="lblContactnumber_5__c">number_5</label><span class="requiredSpan ff-required-mark">*</span></div>
+                                        <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.number_5__c"
+                                                placeholder="" name="Contact.number_5__c" vatt="DOUBLE(18,0)" class="ff-input-type ff-type-text custom-flexcontrol-offscreen matrix-elem hasSection"
+                                                data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                                data-flexcontrol="integer-matrixlikert" data-matrix-value-steps="1"
+                                                data-matrix-label-isshownlabel="true" data-matrix-columns="10"
+                                                data-matrix="0.0" data-matrix-labels="Strongly Disagree,Disagree,Neutral,Agree,Strongly Agree,Strongly 2,Strongly 3,Strongly 4,Strongly 8,Strongly 9"
+                                                data-requiredmessage="required" data-isrequired="true" data-isupsert="false"
+                                                data-ishidden="false" data-vatt="DOUBLE(18,0)" data-matrix-isprimary="true">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row" id="sizzle1541965050730">
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.0" id="0.0.0" data-value="1" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.1" id="0.0.1" data-value="2" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.2" id="0.0.2" data-value="3" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.3" id="0.0.3" data-value="4" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.4" id="0.0.4" data-value="5" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.5" id="0.0.5" data-value="6" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.6" id="0.0.6" data-value="7" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.7" id="0.0.7" data-value="8" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.8" id="0.0.8" data-value="9" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.0.1"
+                                                                data-matrix="0.0.9" id="0.0.9" data-value="10" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-field" data-matrix="0.5">
+                                    <div class="custom-flexcontrol-offscreen" id="051">
+                                        <div class="ff-col-1 ff-label-col"></div>
+                                        <div class="ff-col-2 ff-label-col">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row">
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.0"
+                                                            for="0.5.0">Strongly Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.1"
+                                                            for="0.5.1">Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.2"
+                                                            for="0.5.2">Neutral</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.3"
+                                                            for="0.5.3">Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.4"
+                                                            for="0.5.4">Strongly Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.5"
+                                                            for="0.5.5">Strongly 2</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.6"
+                                                            for="0.5.6">Strongly 3</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.7"
+                                                            for="0.5.7">Strongly 4</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.8"
+                                                            for="0.5.8">Strongly 8</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.5.9"
+                                                            for="0.5.9">Strongly 9</label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="" id="052">
+                                        <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(3,15)" for="Contact.OtherLongitude"
+                                                class="ff-label" id="lblContactOtherLongitude">Other Longitude</label></div>
+                                        <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.OtherLongitude"
+                                                placeholder="" name="Contact.OtherLongitude" vatt="DOUBLE(3,15)" class="ff-input-type ff-type-text custom-flexcontrol-offscreen matrix-elem hasSection"
+                                                data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                                data-flexcontrol="integer-matrixlikert" data-matrix-value-steps="1"
+                                                data-matrix-label-isshownlabel="false" data-matrix-columns="10"
+                                                data-matrix="0.5" data-matrix-labels="Strongly disagree,Disagree,Neutral,Agree,Strongly agree,Strongly 2,Strongly 3,Strongly 4,Strongly 8,Strongly 9"
+                                                data-requiredmessage="required" data-isupsert="false" data-ishidden="false"
+                                                data-vatt="DOUBLE(3,15)" data-matrix-isprimary="false">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row" id="sizzle1541965050730">
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.0" id="0.5.0" data-value="1" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.1" id="0.5.1" data-value="2" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.2" id="0.5.2" data-value="3" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.3" id="0.5.3" data-value="4" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.4" id="0.5.4" data-value="5" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.5" id="0.5.5" data-value="6" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.6" id="0.5.6" data-value="7" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.7" id="0.5.7" data-value="8" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.8" id="0.5.8" data-value="9" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.5.2"
+                                                                data-matrix="0.5.9" id="0.5.9" data-value="10" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-field" data-matrix="0.7">
+                                    <div class="custom-flexcontrol-offscreen" id="071">
+                                        <div class="ff-col-1 ff-label-col"></div>
+                                        <div class="ff-col-2 ff-label-col">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row">
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.0"
+                                                            for="0.7.0">Strongly Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.1"
+                                                            for="0.7.1">Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.2"
+                                                            for="0.7.2">Neutral</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.3"
+                                                            for="0.7.3">Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.4"
+                                                            for="0.7.4">Strongly Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.5"
+                                                            for="0.7.5">Strongly 2</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.6"
+                                                            for="0.7.6">Strongly 3</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.7"
+                                                            for="0.7.7">Strongly 4</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.8"
+                                                            for="0.7.8">Strongly 8</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.7.9"
+                                                            for="0.7.9">Strongly 9</label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="" id="072">
+                                        <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(3,15)" for="Contact.MailingLongitude"
+                                                class="ff-label" id="lblContactMailingLongitude">Mailing Longitude</label></div>
+                                        <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.MailingLongitude"
+                                                placeholder="" name="Contact.MailingLongitude" vatt="DOUBLE(3,15)"
+                                                class="ff-input-type ff-type-text custom-flexcontrol-offscreen matrix-elem hasSection"
+                                                data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                                data-flexcontrol="integer-matrixlikert" data-matrix-value-steps="1"
+                                                data-matrix-label-isshownlabel="false" data-matrix-columns="10"
+                                                data-matrix="0.7" data-matrix-labels="Strongly Disagree,Disagree,Neutral,Agree,Strongly Agree,Strongly 2,Strongly 3,Strongly 4,Strongly 8,Strongly 9"
+                                                data-requiredmessage="required" data-isupsert="false" data-ishidden="false"
+                                                data-vatt="DOUBLE(3,15)" data-matrix-isprimary="false">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row" id="sizzle1541965050730">
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.0" id="0.7.0" data-value="1" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.1" id="0.7.1" data-value="2" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.2" id="0.7.2" data-value="3" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.3" id="0.7.3" data-value="4" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.4" id="0.7.4" data-value="5" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.5" id="0.7.5" data-value="6" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.6" id="0.7.6" data-value="7" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.7" id="0.7.7" data-value="8" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.8" id="0.7.8" data-value="9" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.7.3"
+                                                                data-matrix="0.7.9" id="0.7.9" data-value="10" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="matrix-field" data-matrix="0.3">
+                                    <div class="custom-flexcontrol-offscreen" id="031">
+                                        <div class="ff-col-1 ff-label-col"></div>
+                                        <div class="ff-col-2 ff-label-col">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row">
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.0"
+                                                            for="0.3.0">Strongly Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.1"
+                                                            for="0.3.1">Disagree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.2"
+                                                            for="0.3.2">Neutral</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.3"
+                                                            for="0.3.3">Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.4"
+                                                            for="0.3.4">Strongly Agree</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.5"
+                                                            for="0.3.5">Strongly 2</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.6"
+                                                            for="0.3.6">Strongly 3</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.7"
+                                                            for="0.3.7">Strongly 4</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.8"
+                                                            for="0.3.8">Strongly 8</label></div>
+                                                    <div class="container-cell"><label class="matrix-label" data-matrix="0.3.9"
+                                                            for="0.3.9">Strongly 9</label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="" id="032">
+                                        <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(3,15)" for="Contact.OtherLatitude"
+                                                class="ff-label" id="lblContactOtherLatitude">Other Latitude</label></div>
+                                        <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.OtherLatitude"
+                                                placeholder="" name="Contact.OtherLatitude" vatt="DOUBLE(3,15)" class="ff-input-type ff-type-text custom-flexcontrol-offscreen matrix-elem hasSection"
+                                                data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                                data-flexcontrol="integer-matrixlikert" data-matrix-value-steps="1"
+                                                data-matrix-label-isshownlabel="false" data-matrix-columns="10"
+                                                data-matrix="0.3" data-matrix-labels="Strongly Disagree,Disagree,Neutral,Agree,Strongly Agree,Strongly 2,Strongly 3,Strongly 4,Strongly 8,Strongly 9"
+                                                data-requiredmessage="required" data-isupsert="false" data-ishidden="false"
+                                                data-vatt="DOUBLE(3,15)" data-matrix-isprimary="false">
+                                            <div class="container-table matrix-control-container">
+                                                <div class="container-row" id="sizzle1541965050730">
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.0" id="0.3.0" data-value="1" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.1" id="0.3.1" data-value="2" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.2" id="0.3.2" data-value="3" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.3" id="0.3.3" data-value="4" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.4" id="0.3.4" data-value="5" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.5" id="0.3.5" data-value="6" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.6" id="0.3.6" data-value="7" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.7" id="0.3.7" data-value="8" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.8" id="0.3.8" data-value="9" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                    <div class="container-cell"><label class="radio-container ff-radio-li"><input
+                                                                class="matrix-likert" type="radio" name="0.3.4"
+                                                                data-matrix="0.3.9" id="0.3.9" data-value="10" value="on"><span
+                                                                class="radio-checkmark ff-ext-radio-css"></span></label></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="ff-item-row"></div>
+                            <div class="ff-item-row"></div>
+                            <div class="ff-item-row"></div>
+                            <div class="ff-item-row">
+                                <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(18,0)" for="Contact.number_4__c"
+                                        class="ff-label" id="lblContactnumber_4__c">number_4</label></div>
+                                <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.number_4__c"
+                                        placeholder="" name="Contact.number_4__c" vatt="DOUBLE(18,0)" class="ff-input-type ff-type-text"
+                                        data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                        data-flexcontrol="" data-requiredmessage="required" data-isupsert="false"
+                                        data-ishidden="false" data-vatt="DOUBLE(18,0)"></div>
+                            </div>
+                            <div class="ff-item-row">
+                                <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(18,0)" for="Contact.number_1__c"
+                                        class="ff-label" id="lblContactnumber_1__c">number_1</label></div>
+                                <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.number_1__c"
+                                        placeholder="" name="Contact.number_1__c" vatt="DOUBLE(18,0)" class="ff-input-type ff-type-text"
+                                        data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                        data-flexcontrol="" data-requiredmessage="required" data-isupsert="false"
+                                        data-ishidden="false" data-vatt="DOUBLE(18,0)"></div>
+                            </div>
+                            <div class="ff-item-row" style="display: none;">
+                                <div class="ff-col-1 ff-label-col"><label vatt="REFERENCE" for="inputContact.AccountId"
+                                        class="ff-label" id="lblContactAccountId">Account</label></div>
+                                <div class="ff-col-2 ff-field-col"><input type="hidden" id="Contact.AccountId" vatt="REFERENCE"
+                                        readonly="readonly" data-vatt="REFERENCE"><input type="textbox" id="inputContact.AccountId"
+                                        placeholder="" name="inputContact.AccountId" class="ff-input-type ff-type-text"
+                                        readonly="readonly" vatt="REFERENCE" value="" data-lobj="Account" data-robj=""
+                                        data-requiredmessage="required" data-isupsert="false" data-ishidden="true"
+                                        data-vatt="REFERENCE"></div>
+                            </div>
+                            <div class="ff-item-row">
+                                <div class="ff-col-1 ff-label-col"><label vatt="STRING" for="Contact.AssistantName"
+                                        class="ff-label" id="lblContactAssistantName">Assistant's Name</label></div>
+                                <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.AssistantName"
+                                        placeholder="" name="Contact.AssistantName" vatt="STRING" class="ff-input-type ff-type-text"
+                                        data-maxlengthmessage="Maximum 40 characters" maxlength="40" value=""
+                                        data-requiredmessage="required" data-isupsert="false" data-ishidden="false"
+                                        data-vatt="STRING"></div>
+                            </div>
+                        </div>
+                        <div class="ff-item-row">
+                            <div class="ff-col-1 ff-section-col"><label class="ff-section-header" id="sectionLabel0">New
+                                    Section
+                                    Title</label></div>
+                        </div>
+                        <div class="ff-item-row">
+                            <div class="ff-col-1 ff-label-col"><label vatt="STRING" for="Contact.LastName" class="ff-label"
+                                    id="lblContactLastName">Last
+                                    Name</label><span class="requiredSpan ff-required-mark">*</span></div>
+                            <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.LastName" placeholder=""
+                                    name="Contact.LastName" vatt="STRING" class="ff-input-type ff-type-text"
+                                    data-maxlengthmessage="Maximum 80 characters" maxlength="80" value=""
+                                    data-requiredmessage="required" data-isrequired="true" data-isupsert="false"
+                                    data-ishidden="false" data-vatt="STRING"></div>
+                        </div>
+                        <div class="ff-item-row">
+                            <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(3,15)" for="Contact.MailingLongitude"
+                                    class="ff-label" id="lblContactMailingLongitude">Mailing Longitude</label></div>
+                            <div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.MailingLongitude"
+                                    placeholder="" name="Contact.MailingLongitude" vatt="DOUBLE(3,15)" class="ff-input-type ff-type-text"
+                                    data-maxlengthmessage="Maximum 19 characters" maxlength="19" value=""
+                                    data-flexcontrol="integer-matrixlikert" data-flex-min="0" data-flex-max="10"
+                                    data-flex-middle="5" data-flex-minlabel="" data-flex-maxlabel=""
+                                    data-flex-middlelabel="" data-requiredmessage="required" data-isupsert="false"
+                                    data-ishidden="false" data-vatt="DOUBLE(3,15)" data-matrix-columns="5" data-matrix="s1.1"
+                                    data-matrix-value-steps data-matrix-label-isshownlabel="true" data-matrix-labels></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="ff-item-row">
+                    <input type="button" onclick="removeField(this)" value="remove field" />
+                    <input type="button" onclick="addField()" value="Add field" />
+                    <input type="textbox" id="countfield1" value="2">field</input>
+                    <input type="textbox" id="countSection2" value="2">section</input>
+
+                </div>
+            </div>
+    </div>
+    <iframe id="ffIframe" name="ffIframe" style="display:none"></iframe>
+    <div id="dialog">
+    </div>
+    <div id="ffLookupDialog" style="overflow:hidden">
+    </div>
+    <input id="selectedId" type="hidden">
+    </form>
+    <script data-js="fastforms" id="ffJSCode" type="text/javascript"></script>
+    <script data-js="fastforms" type="text/javascript">
+        var verifyCallback = function (response) {
+            fs('#dvFastForms .ff-captcha .ff-invalid-msg').remove();
+        };
+        var onloadCallback = function () {
+            fs('.ff-item-row .ff-captcha').each(function (indx, colItem) {
+                var cId = fs(colItem).find('div[vatt="CAPTCHA"]').attr('id');
+                grecaptcha.render(cId, {
+                    'sitekey': '6Lc18EwUAAAAAOB_uHmFppxqGckUWnMwK0h3fsdp',
+                    'callback': verifyCallback
+                });
+
+            });
+        };
+    </script>
+    <script async="true" data-js="fastforms" defer="true" src="https://www.google.com/recaptcha/api.js?onload=onloadCallback&amp;render=explicit"></script>
+
+    </div>
+
+
+</body>
+
+<script>
+    function addField() {
+        var count = parseInt($('#countfield1').val());
+        var countSection2 = parseInt($('#countSection2').val());
+        var showlabel = '';
+        console.log('sectionId: ' + count);
+        var $input = $(
+            '<div class="ff-item-row">  <div class="ff-col-1 ff-label-col"><label vatt="DOUBLE(3,15)" for="Contact.MailingLongitude" class="ff-label"  id="lblContactMailingLongitude">number 1</label></div><div class="ff-col-2 ff-field-col"><input type="textbox" id="Contact.number" placeholder="" name="Contact.number" vatt="DOUBLE(3,15)" class="ff-input-type ff-type-text" data-maxlengthmessage="Maximum 19 characters" maxlength="19" value="" data-flexcontrol="integer-matrixlikert" data-flex-min="0" data-flex-max="10" data-flex-middle="5" data-flex-minlabel="" data-flex-maxlabel="" data-flex-middlelabel="" data-requiredmessage="required" data-isupsert="false" data-ishidden="false" data-vatt="DOUBLE(3,15)" data-matrix-columns="5" data-matrix="s' +
+            countSection2 + '.' + count + '" data-matrix-value-steps="" data-matrix-label-isshownlabel="' +
+            showlabel + '" data-matrix-labels=""></div></div>');
+        $('#ffSection0').append($input)
+        $('#countfield1').val(count + 1);
+        InitializeForm();
+    }
+</script>
+
+</html>

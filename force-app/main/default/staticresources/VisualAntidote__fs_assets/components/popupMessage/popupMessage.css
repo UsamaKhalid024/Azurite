@@ -1,0 +1,192 @@
+.overlay {
+    background: rgba(30, 30, 30, .8);
+    opacity: .6 !important;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    left: 0;
+    position: fixed;
+    z-index: 500;
+}
+
+.dialogFont {
+    padding: 30px 20px 0 20px;
+}
+
+.dialogFont .primary {
+    color: #052942;
+    font-family: 'Open Sans';
+    font-weight: 500;
+    font-size: 20px;
+}
+
+.dialogFont .secondary {
+    color: #616161;
+    font-family: 'Open Sans';
+    font-weight: 500;
+    font-size: 16px;
+}
+
+.dialogHeader {
+    background-color: #e6ecef;
+    width: 100%;
+    height: 43px;
+    padding: 25px 0 0 20px;
+    border-radius: 10px 10px 0 0;
+    box-sizing: border-box;
+}
+
+.dialogHeaderInner {
+    display: inline-block;
+    padding-left: 20px;
+    margin-top: -23px;
+}
+
+.dialog__icon {
+    height: 36px;
+    width: 36px;
+    border-radius: 36px;
+    background-color: #fff;
+    border: 3px solid #e6ecef;
+    text-align: center;
+}
+
+.dialog__icon--alert {
+    background: #fff url(../images/sprites/publish_option_sprite.png) no-repeat -336px -151px;
+}
+
+.dialog__icon--checkmark {
+    background: #fff url(../images/sprites/publish_option_sprite.png) no-repeat -370px -150px;
+}
+
+.dialog__icon--info {
+    background: #fff url(../images/sprites/publish_option_sprite.png) no-repeat -336px -200px;
+}
+
+.dialogFont .secondary .dialog-row-group {
+    clear: both;
+    overflow: hidden
+}
+
+.dialogFont .secondary .form-col-1 {
+    float: left;
+    width: 35%
+}
+
+.dialogFont .secondary .form-col-2 {
+    float: left;
+    width: 63%
+}
+
+.dialogFont .vabutton1 {
+    color: #fff !important
+}
+
+.ui-widget-overlay {
+    background: none repeat scroll 0 0 #f6f9f9 !important;
+    opacity: .3 !important
+}
+
+.ui-dialog {
+    position: fixed !important;
+    padding: 0 !important;
+    box-shadow: -1px 1px 3px 1px rgba(33, 32, 32, .3);
+    border-radius: 10px;
+    border: 0
+}
+
+.ui-dialog .ui-dialog-content {
+    padding: 0 !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none !important;
+    text-align: center
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    border: none;
+    margin: 35px 0 35px 0 !important
+}
+
+.ui-dialog .ui-dialog-buttonpane button {
+    margin: 0 8px 0 8px !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabutton1,
+.ui-dialog .ui-dialog-buttonpane .vabutton2 {
+    font-family: 'Open Sans' !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 14px !important;
+    border-radius: 6px !important;
+    min-width: 100px !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabuttonLarge {
+    font-family: 'Open Sans' !important;
+    font-weight: 600 !important;
+    text-decoration: none !important;
+    display: inline-block !important;
+    font-size: 16px !important;
+    border-radius: 6px !important;
+    min-width: 100px !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabutton1:hover,
+.ui-dialog .ui-dialog-buttonpane .vabutton2:hover,
+.ui-dialog .ui-dialog-buttonpane .vabuttonLarge:hover {
+    background-color: #139be1 !important;
+    background-image: none !important;
+    color: #fff !important;
+    text-decoration: none;
+    border: solid 1px #139be1 !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabuttonLarge {
+    margin-bottom: -20px !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabuttonLarge:hover {
+    margin-bottom: -20px !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabutton2 {
+    background-color: #fff !important;
+    color: #33aefd !important;
+    background-image: none;
+    border: solid 1px #33aefd !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .vabutton1,
+.ui-dialog .ui-dialog-buttonpane .vabuttonLarge {
+    color: #fff !important;
+    background-color: #33aefd !important;
+    background-image: none;
+    border: solid 1px #33aefd !important
+}
+
+.ui-draggable .ui-dialog-titlebar {
+    display: none
+}
+
+.ui-dialog .content {
+    top: 40% !important;
+    font-size: 20px;
+    height: auto !important
+}
+
+.ui-dialog .ui-dialog-buttonpane .ui-dialog-buttonset {
+    float: none !important;
+    text-align: center
+}
+
+.ui-dialog .ui-dialog-buttonpane {
+    border: none;
+    padding: 0
+}
+
+.ui-draggable .ui-dialog-titlebar {
+    display: none
+}

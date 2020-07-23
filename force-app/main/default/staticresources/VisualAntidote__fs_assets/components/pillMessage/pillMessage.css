@@ -1,0 +1,52 @@
+.fs_pillmessage {
+    padding: 10px;
+    min-width: 540px;
+    max-width: 540px;
+    display: flex;
+    border-radius: 25px;
+    margin: 15px auto;
+    -webkit-box-shadow: 0 4px 6px rgba(8, 52, 80, .15);
+    -moz-box-shadow: 0 4px 6px rgba(8, 52, 80, .15);
+    box-shadow: 0 4px 6px rgba(8, 52, 80, .15);
+}
+
+.fs_pillmessage__text {
+    font-family: 'Open Sans';
+    font-size: 14px;
+    color: #ffffff;
+    width: 100%;
+    display: inline-flex;
+    justify-content: center;
+    flex-direction: column;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.fs_pillmessage__text--center{
+    text-align: center;
+}
+
+.fs_pillmessage__text--left{
+    text-align: left;
+}
+
+.fs_pillmessage__closeIcon, .fs_pillmessage__closeIcon:hover {
+    width: 16px;
+    height: 16px;
+    display: inline-flex;
+    margin: auto;
+    background-image: url(../images/sprites/dash_sprite_v1.png);
+    background-repeat: no-repeat;
+    background-position: -323px -168px;
+    cursor: pointer;
+    background-color: transparent;
+    border: none;
+}
+
+.fs_pillmessage--error {
+    background-color: #d55555;
+}
+
+.fs_pillmessage--success {
+    background-color: #a0d468;
+}

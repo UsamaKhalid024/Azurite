@@ -1,0 +1,184 @@
+@font-face {
+  font-family: "Pacifico";
+  src: url(Pacifico.ttf?orgId=00D2v0000012rL1);
+}
+
+.main-docsign-wrapper {
+  max-width: 800px;
+  margin: 2px auto;
+}
+
+.docsignWrapper, .ff-email-verification .ff-col-2 {
+  height: auto;
+  display: inline-block;
+  width: 53%;
+  float: left;
+}
+
+.ffsign-label, .ff-email-verification .ff-col-1 {
+  float: left;
+  width: 45%;
+  display: inline-block;
+}
+
+.typedSignName, .typedSignDate {
+  height: 55px;
+  padding: 10px 5px 0px 0px;
+  position: absolute;
+  z-index: 90;
+  cursor: default;
+  color: #145394;
+  font-family: 'Pacifico', Times, serif;
+  font-size: 20px;
+  margin-top: 50px;
+}
+
+.docsignWrapper .ff-type-text {
+  float: left;
+}
+
+.docsignWrapper.current .typedInput {
+  display: none;
+}
+
+.docsignWrapper canvas {
+  border-width: 1px;
+  border-color: rgb( 212, 212, 212 );
+  border-style: solid;
+  border-radius: 8px;
+  background-color: #f7f7f7;
+  display: inline-block;
+  float: left;
+  clear: both;
+}
+
+.ff-signwrapper.ff-drawn .docsignWrapper canvas {
+  position: relative;
+  cursor: url("pen.cur"), crosshair;
+  cursor: url("pen.cur") 16 16, crosshair;
+  -ms-touch-action: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+}
+
+.display-none {
+  display: none;
+}
+
+.ff-sign-ul {
+  list-style-type: none;
+}
+
+.ff-signwrapper-outer {
+  border-radius: 5px;
+  border-width: 1px;
+  border-color: rgb( 212, 212, 212 );
+  border-style: solid;
+  clear: both;
+  padding-top: 20px;
+  margin-top: -1px;
+  padding-bottom: 15px;
+}
+
+.ff-sign-ul > li {
+  float: left;
+  z-index: 10;
+  margin-right: 10px;
+}
+
+.ff-sign-ul > li > a {
+  padding: 6px;
+  border: 1px solid #cecece;
+  display: inline-block;
+  background-color: #f6f9f9;
+  width: 92px;
+  text-align: center;
+  border-radius: 5px 5px 0px 0px;
+}
+
+.ff-sign-ul > li > a.current {
+  background: #ffffff;
+  border-bottom-color: #ffffff;
+}
+
+.docsignWrapper .ff-type-text {
+  border-radius: 5px;
+  background: white;
+  border: 1px solid;
+  border-color: #aaa;
+  color: #052942;
+  width: 220px;
+  padding: 6px;
+  font-size: 14px;
+  outline: none;
+  font-family: 'Open Sans', Times, serif;
+  margin-bottom: 10px;
+}
+
+.ff-signwrapper {
+  clear: both;
+}
+
+.ff-sign-block, .ff-chkagree, .ff-email-verification {
+  padding: 10px 30px;
+}
+
+.ff-sign-block {
+  display: inline-block;
+  width: 100%;
+}
+
+.ff-sign-div {
+  overflow: hidden;
+}
+
+.ff-sign-ul, .ffclearButton {
+  float: right;
+  margin: 0px;
+}
+
+.ffclearButton {
+  padding-top: 6px;
+  display: inline-block;
+}
+
+.ff-sign-block p.ff-error {
+  display: block;
+  color: #f33;
+}
+
+.fftypeIt, .ffdrawIt, .ffclearButton {
+  cursor: pointer;
+}
+
+.ff-error, .ff-signature-error {
+  width: 100% !important;
+  min-width: 100% !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+  padding-top: 0px !important;
+  padding-bottom: 0px !important;
+}
+
+.ffs-typed .ff-sign-ul, .ffs-drawn .ff-sign-ul {
+  display: none !important;
+}
+
+.main-docsign-wrapper.ffs-initials .ff-typed .doc-sign-name .ffsignature, .main-docsign-wrapper.ffs-initials .ff-typed .doc-sign-name canvas, .main-docsign-wrapper.ffs-initials .ff-drawn .doc-sign-name canvas {
+  width: 120px;
+}
+
+.main-docsign-wrapper.ffs-initials .ff-typed .doc-sign-name canvas, .main-docsign-wrapper.ffs-initials .ff-drawn .doc-sign-name canvas {
+  height: 57px;
+}
+
+.main-docsign-wrapper.ffs-typed .ff-sign-div {
+  display: none;
+}
+
+.signPadName {
+  background-color: #fff !important;
+}

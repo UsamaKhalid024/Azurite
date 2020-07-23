@@ -1,0 +1,319 @@
+body{
+    background-image: url(../images/iconimages/back.png);
+}
+
+.welcome-to-formstack-page {
+    padding: 29px
+}
+
+.ff-logo {
+    text-align: right;
+    height: 36px;
+    object-fit: contain;
+}
+
+.welcome-to-formstack-content {
+    text-align: center;
+}
+
+.welcome-to-formstack-container {
+    margin: 0 auto;
+    width: 544px;
+    font-size: 15px;
+    display: block;
+    margin-top: 97px;
+    margin-bottom: 400px;
+}
+
+.welcome-to-formstack-box {
+    display: block;
+    background-color: #fff;
+    overflow: hidden;
+    border-radius: 5px;
+    border: 0px;
+    width: 597px;
+    box-shadow: -1.7px 1px 3.1px 0.9px rgba(4, 4, 4, 0.1);
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.welcome-to-fs {
+    height: 136px;
+    object-fit: contain;
+    margin-top: 10px;
+}
+
+.welcome-to-formstack {
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
+    font-family: OpenSans;
+    font-size: 20px;
+    font-weight: normal;
+    font-style: italic;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    color: #6c7a85;
+}
+
+.welcome-to-formstack-text {
+    font-family: OpenSans;
+    margin-left: auto;
+    margin-right: auto;
+    width: 33em;
+    font-size: 14.5px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: left;
+    color: #616161;
+}
+
+.ellipse-container {
+    margin: 22px;
+}
+
+.ellipse {
+    width: 6px;
+    height: 6px;
+    background-color: #e6e9ec;
+    border-radius: 50%;
+    display: inline-block;
+    margin-left: 3px;
+}
+
+.active {
+    background-color: #59adf6;
+}
+
+.help {
+    background-image: url('../images/iconimages/button-sprite.png');
+    background-color: rgba(5, 41, 66, .1);
+    background-position: -331px -3px !important;
+    display: inline-block;
+    border: 1px solid rgba(5, 41, 66, .18);
+    border-radius: 50px;
+    height: 15px !important;
+    margin-left: 6px;
+    margin-top: 6px;
+    width: 15px !important;
+    margin-bottom: -5px;
+}
+
+.edit-icon {
+    width: 20px;
+    position: absolute;
+    height: 20px;
+    display: inline-block;
+    vertical-align: top;
+    background-image: url('../images/iconimages/edit-1.png');
+    cursor: pointer;
+    margin-left: 9px;
+    background-repeat: no-repeat;
+    background-size: 15px;
+    margin-top: 3px;
+}
+
+.phone-img {
+    object-fit: contain;
+    margin: 35px;
+}
+
+.prefer-phone-number-label {
+    width: 160px;
+    text-align: center;
+    -webkit-max-logical-width: -webkit-fill-available;
+    max-width: -webkit-fill-available;
+    font-size: 18.5px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #616161;
+    background-color: #fff;
+    border: 0px;
+    margin-bottom: 5px;
+}
+.prefer-phone-number-label-empty{
+    width: 160px;
+    text-align: center;
+    -webkit-max-logical-width: -webkit-fill-available;
+    max-width: -webkit-fill-available;
+    font-size: 18.5px;
+    font-weight: normal;
+    font-style: italic;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #afafaf;
+    background-color: #fff;
+    border: 0px;
+    margin-bottom: 5px;
+}
+.prefer-phone-number-label::-webkit-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #acacac;
+    font-style: italic;
+    
+}
+.prefer-phone-number-label::-ms-input-placeholder{
+    /* Microsoft Edge */
+    color: #acacac;
+    font-style: italic;
+}
+.prefer-phone-number-label::-ms-input-placeholder{
+    color: #acacac;
+    font-style: italic;
+}
+.prefer-phone-number-label::placeholder {
+    color: #acacac;
+    font-style: italic;
+}
+.prefer-phone-number-text {
+    width: 153px;
+    height: 25px;
+    border-radius: 5px;
+    background-color: #ffffff;
+    border: solid 1px #cecece;
+    color: #616161;
+    padding-left: 6px;
+    padding-right: 6px;
+    font-size: 14px;
+    margin-bottom: 5px;
+}
+.prefer-phone-number-text-error{border-color: #d55555  !important;}
+
+.prefer-phone-number-text::-webkit-input-placeholder {
+    /* Internet Explorer 10-11 */
+    color: #acacac;
+}
+.prefer-phone-number-text::-ms-input-placeholder{
+    /* Microsoft Edge */
+    color: #acacac;
+}
+.prefer-phone-number-text::-ms-input-placeholder{
+    color: #acacac;
+}
+.prefer-phone-number-text::placeholder {
+    color: #acacac;
+}
+
+.prefer-phone-number-validation-button {
+    width: 48px;
+    height: 28px;
+    border-radius: 5px;
+    background-color: #59adf6;
+    border: solid 1px #59adf6;
+    color: #fff;
+    font-size: 14px;
+    margin-left: 3px;
+}
+
+.prefer-phone-number-container {
+    margin: 36px 36px 32px 36px;
+}
+
+.preferred-phone-number .ellipse-container{
+    margin-top: 9px;
+}
+
+.prefer-phone-number-container.edit-on-with-message {
+    margin: 36px 36px 10px 36px;
+}
+.prefer-phone-number-container.edit-off-with-message {
+    margin: 36px 36px 18px  36px;
+}
+.prefer-phone-number-container.edit-on-without-message{
+    margin: 36px 36px 25px 36px
+}
+.prefer-phone-number-confirm-button {
+    width: 100px;
+    height: 28px;
+    border-radius: 5px;
+    border: solid 1px #59adf6;
+    font-size: 14px;
+    font-weight: 400;
+    text-align: center;
+    color: #ffffff;
+    cursor: pointer;
+    background: url(../images/iconimages/right-arrow.png) no-repeat #59adf6;
+    background-position: 82px 8px;
+}
+
+.button-disabled {
+    width: 100px;
+    height: 28px;
+    border-radius: 5px;
+    background-color: #cecece;
+    border: solid 1px #cecece;
+    font-size: 14px;
+    font-weight: 600;
+    text-align: center;
+    color: #ffffff;
+    cursor: not-allowed;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    -ms-border-radius: 5px;
+    -o-border-radius: 5px;
+}
+
+.update-status {
+    font-size: 12px;
+    font-weight: normal;
+    font-style: normal;
+    font-stretch: normal;
+    line-height: normal;
+    letter-spacing: normal;
+    text-align: center;
+    color: #b5b5b5;
+}
+
+.update-status-error {
+    color: #d55555 !important;
+}
+
+
+.assign-to-me-and-proceed-button {
+    width: 203px;
+    height: 28px;
+    border-radius: 5px;
+    border: solid 1px #59adf6;
+    text-align: center;
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 400;
+    cursor: pointer;
+    background: url(../images/iconimages/right-arrow.png) no-repeat #59adf6;
+    background-position: 184px 8px;
+    padding-right: 20px;
+}
+
+.fscontent-table {
+    border: 0px !important;
+   }
+
+   a.blue-tooltip span.blue-tooltip-text, span.blue-tooltip span.blue-tooltip-text {
+    padding: 7px 11px !important;;
+    margin-top: -31px !important;;
+    margin-left: 12px !important;;
+    font-size: 11.5px !important;;
+    line-hight: 12px;
+    -webkit-transition: all .5s ease;
+    transition: all .5s ease;
+    text-align: left !important;
+    line-height: 11pt !important;;
+    font-weight: 300 !important;;
+    -moz-transition: all .5s ease;
+    -ms-transition: all .5s ease;
+    -o-transition: all .5s ease;
+}
+
+.ff-logo { margin-right: 64px;}

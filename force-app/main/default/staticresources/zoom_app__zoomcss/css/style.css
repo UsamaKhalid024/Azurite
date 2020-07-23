@@ -1,0 +1,226 @@
+.pdl-0{
+	padding-left: 0 !important;
+}
+.pdr-0{
+	padding-right: 0 !important;
+}
+.mgb-md{
+	margin-bottom: 12px;
+}
+.mgt-md{
+	margin-top: 12px;
+}
+.mgl-sm{
+	margin-left: 6px;
+}
+label{
+	margin-bottom: 0;
+}
+.form-group{
+	margin-bottom: 20px;
+}
+.help-block{
+	margin-bottom: 0;
+}
+.zm-form-item{
+	margin-bottom: 0;
+}
+.main-contents{
+	border: 1px solid #ccc;
+	border-radius: 5px;
+	min-height: 300px;
+	padding-left: 0;
+	padding-right: 0;
+}
+.section-block{
+	border-bottom: 1px solid #ccc;
+	padding: 24px 15px;
+	padding-right: 30px;
+}
+.my-select[x-placement^=bottom]{
+	margin-top: 0;
+}
+.my-select[x-placement^=bottom] .popper__arrow{
+	display: none;
+}
+.input-append-label{
+	height: 40px;
+    line-height: 40px;
+    font-weight: 400;
+    margin-left: 15px;
+}
+[class*='col-'] + .input-append-label{
+	margin-left: 0;
+}
+.my-select-wrap .zm-select{
+	display: block;
+}
+.sub-content{
+	padding-top: 18px;
+}
+.select-wrap{
+	display: inline-block;
+	width: 80px;
+}
+.section-block .row.form-group:last-child{
+	margin-bottom: 0;
+}
+.zm-radio__input.is-checked+.zm-radio__label,
+.zm-checkbox__input.is-checked+.zm-checkbox__label{
+	color: #737373;
+}
+.vertical-raido > .zm-radio{
+	display: block;
+	margin-bottom: 12px;
+}
+.vertical-raido > .zm-radio + .zm-radio{
+	margin-left: 0;
+}
+.zm-dialog{
+	border-radius: 4px;
+}
+.zm-dialog .zm-dialog__header{
+	border-bottom: 1px solid #ddd;
+}
+.zm-dialog .zm-dialog__footer{
+	border-top: 1px solid #ddd;
+}
+
+.form-item{
+	padding-bottom: 8px;
+	line-height: 28px;
+}
+.my-tooltip.zm-tooltip__popper{
+	border-color: #ddd;
+	max-width: 300px;
+	color: #737373;
+	font-size: 13px;
+}
+.my-tooltip.zm-tooltip__popper.is-light[x-placement^=bottom] .popper__arrow{
+	border-bottom-color: #ddd;
+}
+.my-tooltip.zm-tooltip__popper.is-light[x-placement^=top] .popper__arrow{
+	border-top-color: #ddd;
+}
+
+.icon-version,
+.icon-help,
+.icon-locked{
+	width: 16px;
+    height: 16px;
+    display: inline-block;
+    background-size: 80px auto;
+    background-color: transparent;
+    background-repeat: no-repeat;
+	background-image: url(../imgs/spirit.png);
+}
+.icon-version{
+	background-position: -48px 0;
+}
+.icon-help{
+	background-position: -64px -16px;
+}
+.icon-locked{
+	background-position: 0 -32px;
+}
+
+.form-item .icon-version, 
+.form-item .icon-help, 
+.form-item .icon-locked{
+	position: relative;
+	top: 3px;
+	margin-left: 8px;
+}
+.select-long-width{
+	width: 80%;
+}
+.my-select{
+
+}
+.item-name{
+	margin: 0;
+	line-height: 18px;
+}
+.item-value{
+	line-height: 16px;
+	margin: 0;
+	color: #8492a6; 
+	font-size: 13px
+}
+.my-select.zm-select-dropdown.is-multiple .zm-select-dropdown__item.selected::after{
+	top: 0;
+}
+.my-select.zm-select-dropdown.is-multiple .zm-select-dropdown__item{
+	margin-bottom: 8px;
+}
+.item-label,
+.control-label{
+	color: #919191;
+	font-weight: normal;
+}
+.item-label{
+	padding-left: 30px;
+}
+@media (max-width: 992px){
+	.item-label{
+		padding-left: 15px;
+		margin-bottom: 12px;
+	}
+}
+@media (max-width: 768px){
+	.response-radio-group{
+		width: 90%;
+	}
+	.response-radio-group.zm-radio-group + .icon-locked{
+		margin-left: 0;
+	}
+	.response-radio-group.zm-radio-group .zm-radio{
+		width: 100%;
+	}
+	.response-radio-group.zm-radio-group .zm-radio+.zm-radio{
+		margin-left: 0;
+		margin-top: 12px;
+	}
+}
+.btn-blue{
+	color: #409EFF
+}
+.btn-blue .zm-icon-arrow-up:before{
+	font-weight: bold;
+}
+.zm-icon-arrow-up.is-reverse{
+	-webkit-transform: rotateZ(180deg);
+    -ms-transform: rotate(180deg);
+    transform: rotateZ(180deg);
+}
+
+
+.pmi-tips{
+	border-radius: 5px;
+	padding: 10px 15px;
+	margin-top: 18px;
+	margin-bottom: 0;
+}
+.pmi-tips.bg-success{
+	background-color: #ddf0dd;
+	color: #3f8041;
+}
+.pmi-tips.bg-warning{
+	background-color: #fdf7d6;
+	color: #806e33;
+}
+.pmi-tips a{
+	cursor: pointer;
+}
+.pmi-tips a:hover{
+	text-decoration: none;
+}
+.zm-radio-group + .icon-locked{
+	position: relative;
+	top: 3px;
+	margin-left: 30px;
+}
+.my-select .zm-select-dropdown__empty{
+	padding-left: 10px;
+	padding-right: 10px;
+}
