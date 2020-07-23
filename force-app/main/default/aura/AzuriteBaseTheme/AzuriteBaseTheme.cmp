@@ -1,0 +1,39 @@
+<aura:component implements="forceCommunity:themeLayout">
+    <div class="outer_wrapper">
+        <div class="top_bar">
+            <div class="wrapper">
+            	<div class="slds-grid">
+                	<div class="slds-col slds-size_1-of-1 slds-text-align_right">
+                        <!-- 
+                    	<a href="mailto:info@azurite.com.au">info@azurite.com.au</a>&nbsp;&nbsp;
+                        <a href="tel:0408083566">0408 083 566</a>
+						-->
+                        <p>Already a member ? <a href="#">Login</a></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="wrapper">
+            <div class="slds-grid header">
+                <div class="slds-col slds-col--padded slds-size_1-of-2 slds-p-top_large slds-p-bottom_medium">
+                    <img src="{!$Resource.AzuriteLogo}" />
+                </div>
+            </div> 
+            
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col content">
+                    {!v.body}
+                </div>
+            </div>
+        </div> <!-- @ENDS:wrapper -->
+        
+        <div class="footer slds-m-top_large">
+        	<div class="slds-grid">
+            	<div class="slds-col slds-size_1-of-1 slds-text-align_center slds-p-top_large slds-p-bottom_large">
+                    Copyright Azurite Medical &amp; Wellness 2019
+                </div>
+            </div>
+        </div>
+    </div> <!-- @ENDS:outer_wrapper -->
+</aura:component>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Superannuation__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>If you are seeking the compassionate release of superannuation funding, please attach your referral letter from your qualified GP. This letter is required before we supply our supporting documentation. Please note, if you choose to proceed with an alternative provider, or wish to cancel once approved for funding, you will incur a $500 service fee payable immediately.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>If you are seeking the compassionate release of superannuation funding, please attach your referral letter from your qualified GP. This letter is required before we supply our supporting documentation. Please note, if you choose to proceed with an alterna</inlineHelpText>
+    <label>Superannuation</label>
+    <referenceTo>Superannuation__c</referenceTo>
+    <relationshipLabel>Bookings</relationshipLabel>
+    <relationshipName>Bookings</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

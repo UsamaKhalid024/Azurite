@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Family Medical History --></label>
+    <name>Family_Medical_History__c</name>
+    <picklistValues>
+        <masterLabel>Asthma</masterLabel>
+        <translation><!-- Asthma --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cancer</masterLabel>
+        <translation><!-- Cancer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Diabetes</masterLabel>
+        <translation><!-- Diabetes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Heart Diseases</masterLabel>
+        <translation><!-- Heart Diseases --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hypertension</masterLabel>
+        <translation><!-- Hypertension --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

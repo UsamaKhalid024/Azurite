@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <webLinks>
+        <label><!-- Browse_Dupes --></label>
+        <name>SFSSDupeCatcher__Browse_Dupes</name>
+    </webLinks>
+    <webLinks>
+        <label><!-- Merge_Duplicates --></label>
+        <name>SFSSDupeCatcher__Merge_Duplicates</name>
+    </webLinks>
+</CustomObjectTranslation>

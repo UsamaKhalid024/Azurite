@@ -1,0 +1,206 @@
+A booking by {!NullValue(Contact.Name, "Customer")} has been created. Following is the link to the Salesforce record.
+<br/><br/>
+<table>
+	<tbody>
+<tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Booking Details</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Booking Name:</b> {!Booking__c.Name}
+			</td>
+			<td>
+				<b>Contact:</b> {!Booking__c.Contact__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Az Customer Id:</b> {!Booking__c.az_customer_id__c}
+			</td>
+			<td>
+				<b>Is Passport Uploaded:</b> Not Yet Uploaded
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Desired Implants?:</b> {!Booking__c.Desired_Implants__c}
+			</td>
+			<td>
+				<b>Is medical uploaded?:</b> Not Yet Uploaded
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Last Notify Date Time:</b> {!Booking__c.Last_Notify_Date_Time__c}
+			</td>
+			<td>
+				<b>Is Flight info uploaded?:</b> Not Yet Uploaded
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Status:</b> {!Booking__c.Status__c}
+			</td>
+			<td>
+				<b>Video Consultation:</b> {!IF(Booking__c.Video_Consultation__c, "Yes", "No")}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Total Payables Amount:</b> {!Booking__c.Total_Payables_Amount__c}
+			</td>
+			<td>
+				<b>Video Consultation Date:</b> {!Booking__c.Video_Consultation_Date__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Doctor Paid:</b> {!Booking__c.Doctor_Paid__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Arrival Date Time:</b> {!Booking__c.Arrival_Date_Time__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Departure Date Time:</b> {!Booking__c.Departure_Date_Time__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Surgery Date:</b> {!Booking__c.Surgery_Date__c}
+			</td>
+		</tr>
+                <tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Surgery Details</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Hospital :</b> {!Booking__c.Hospital__c}
+			</td>
+			<td>
+				<b>Procedures Requested (Please Specify) :</b> <br/>
+				{!Booking__c.Procedures_Requested_Please_Specify__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Surgeon :</b> {!Booking__c.Doctor__c} 
+			</td>
+			<td>
+				<b>Procedure Type :</b> {!Booking__c.Procedure_Type__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Personal Assistant :</b> {!Booking__c.Personal_Assistant__c}
+			</td>
+			<td>
+				<b>Current Bra size :</b> {!Booking__c.Current_bra_size__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Preferred Date of Surgery :</b> {!Booking__c.Preferred_Date_of_Surgery__c}
+			</td>
+			<td>
+				<b>Desired Bra Size :</b> {!Booking__c.Desired_bra_size__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Alternate Date of Surgery :</b> {!Booking__c.Alternate_Date_of_Surgery__c}
+			</td>
+			<td>
+				<b>Session :</b> {!Booking__c.Session__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Desired Placement of Implants :</b> {!Booking__c.Desired_placement_of_implants__c}
+			</td>
+			<td>
+				<b>Desired Incision :</b> {!Booking__c.Desired_Incision__c}
+			</td>
+		</tr>
+                 <tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Hotel Stay</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Start Date 1:</b> {!Booking__c.Start_Date__c}
+			</td>
+			<td>
+				<b>End Date 1:</b> {!Booking__c.End_Date__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Start Date 2:</b> {!Booking__c.Start_Date_2__c}
+			</td>
+			<td>
+				<b>End Date 2:</b> {!Booking__c.End_Date_2__c}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Dentist Details</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Dentist:</b> {!Booking__c.Dental__c}
+			</td>
+			<td>
+				<b>Dentist Time:</b> {!Booking__c.Dentist_Time__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Service:</b> {!Booking__c.Service__c}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Superannuation Funding</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Superannuation:</b> {!Booking__c.Superannuation__c}
+			</td>
+		</tr>
+		<tr>
+			<td colspan="2">
+				<h3 style="border-bottom: 2px solid #000; width: 150px;">Travel Companion</h3>
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Companion Name:</b> {!Booking__c.Companion_Name__c}
+			</td>
+			<td>
+				<b>Emergency Contact Name:</b> {!Booking__c.Emergency_Contact_Name__c}
+			</td>
+		</tr>
+		<tr>
+			<td>
+				<b>Companion Date of Birth:</b> {!Booking__c.Companion_Date_of_Birth__c}
+			</td>
+		</tr>
+	</tbody>
+</table>
+<br /><br />
+https://azurite.my.salesforce.com/{!Booking__c.Id}
+<br /><br />
+Warm regards,
+<br /><br />
+The Azurite Angels

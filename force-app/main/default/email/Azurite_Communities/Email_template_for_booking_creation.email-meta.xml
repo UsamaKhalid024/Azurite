@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Email template for booking creation</name>
+    <style>freeForm</style>
+    <subject>New Booking Created for ({!Booking__c.Contact__c})</subject>
+    <textOnly>A booking by {!NullValue(Contact.Name, &quot;Customer&quot;)} has been created. Following is the link to the Salesforce record.
+
+Booking Details
+Booking Name: {!Booking__c.Name}    Contact: {!Booking__c.Contact__c}
+Az Customer Id: {!Booking__c.az_customer_id__c}    Is Passport Uploaded: Not Yet Uploaded
+Desired Implants?: {!Booking__c.Desired_Implants__c}    Is medical uploaded?: Not Yet Uploaded
+Last Notify Date Time: {!Booking__c.Last_Notify_Date_Time__c}    Is Flight info uploaded?: Not Yet Uploaded
+Status: {!Booking__c.Status__c}    Video Consultation: {!IF(Booking__c.Video_Consultation__c, &quot;Yes&quot;, &quot;No&quot;)}
+Total Payables Amount: {!Booking__c.Total_Payables_Amount__c}    Video Consultation Date: {!Booking__c.Video_Consultation_Date__c}
+Doctor Paid: {!Booking__c.Doctor_Paid__c}
+Arrival Date Time: {!Booking__c.Arrival_Date_Time__c}
+Departure Date Time: {!Booking__c.Departure_Date_Time__c}
+Surgery Date: {!Booking__c.Surgery_Date__c}
+Surgery Details
+Hospital : {!Booking__c.Hospital__c}    Procedures Requested (Please Specify) :
+{!Booking__c.Procedures_Requested_Please_Specify__c}
+Surgeon : {!Booking__c.Doctor__c}    Procedure Type : {!Booking__c.Procedure_Type__c}
+Personal Assistant : {!Booking__c.Personal_Assistant__c}    Current Bra size : {!Booking__c.Current_bra_size__c}
+Preferred Date of Surgery : {!Booking__c.Preferred_Date_of_Surgery__c}    Desired Bra Size : {!Booking__c.Desired_bra_size__c}
+Alternate Date of Surgery : {!Booking__c.Alternate_Date_of_Surgery__c}    Session : {!Booking__c.Session__c}
+Desired Placement of Implants : {!Booking__c.Desired_placement_of_implants__c}    Desired Incision : {!Booking__c.Desired_Incision__c}
+Hotel Stay
+Start Date 1: {!Booking__c.Start_Date__c}    End Date 1: {!Booking__c.End_Date__c}
+Start Date 2: {!Booking__c.Start_Date_2__c}    End Date 2: {!Booking__c.End_Date_2__c}
+Dentist Details
+Dentist: {!Booking__c.Dental__c}    Dentist Time: {!Booking__c.Dentist_Time__c}
+Service: {!Booking__c.Service__c}
+Superannuation Funding
+Superannuation: {!Booking__c.Superannuation__c}
+Travel Companion
+Companion Name: {!Booking__c.Companion_Name__c}    Emergency Contact Name: {!Booking__c.Emergency_Contact_Name__c}
+Companion Date of Birth: {!Booking__c.Companion_Date_of_Birth__c}
+
+
+
+https://azurite.my.salesforce.com/{!Booking__c.Id}
+
+Warm regards,
+
+The Azurite Angels</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

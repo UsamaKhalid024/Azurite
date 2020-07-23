@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The type of records triggered the potential duplicate (e.g. Lead, Account, Lead to Contact, etc.) .   
+
+This value always matches the Filter Type of the parent filter. --></help>
+    <label><!-- Filter Type --></label>
+    <name>SFSSDupeCatcher__Scenario_Type__c</name>
+    <picklistValues>
+        <masterLabel>Lead</masterLabel>
+        <translation><!-- Lead --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

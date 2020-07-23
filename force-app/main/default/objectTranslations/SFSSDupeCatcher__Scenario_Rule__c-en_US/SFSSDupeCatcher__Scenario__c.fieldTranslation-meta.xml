@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The filter under which this rule has been created. --></help>
+    <label><!-- Filter --></label>
+    <name>SFSSDupeCatcher__Scenario__c</name>
+    <relationshipLabel><!-- DupeCatcher Filter Rules --></relationshipLabel>
+</CustomFieldTranslation>

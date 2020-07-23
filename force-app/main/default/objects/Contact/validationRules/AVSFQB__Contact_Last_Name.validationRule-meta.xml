@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Contact_Last_Name</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF( LEN( LastName ) &gt; 25, true, false)</errorConditionFormula>
+    <errorMessage>Length of Contact Last Name is too long, please rectify it. (QB Maximum Limit is 25 Chars)</errorMessage>
+</ValidationRule>

@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Suvarnabhumi International Airport</fullName>
+        <default>false</default>
+        <label>Suvarnabhumi International Airport</label>
+    </customValue>
+    <customValue>
+        <fullName>Airport - Drop Off - Don Mueang</fullName>
+        <default>false</default>
+        <label>Airport - Drop Off - Don Mueang</label>
+    </customValue>
+    <masterLabel>Suvarnabhumi International Airport</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

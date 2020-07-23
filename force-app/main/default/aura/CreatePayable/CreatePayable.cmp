@@ -1,0 +1,54 @@
+<aura:component Controller="CreatePayableCtrl" implements="force:appHostable,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes,force:lightningQuickActionwithoutHeader" access="global">
+    <aura:attribute name="recordId" type="string" />
+    <aura:attribute name="contactId" type="string" />
+    <aura:attribute name="showSpinner" type="string" default="true" />
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    <aura:html tag="style">
+        .cuf-content {
+            padding: 0 0rem !important;
+        }
+        .slds-p-around--medium {
+            padding: 0rem !important;
+        }       
+        .slds-modal__content{
+            overflow-y:hidden !important;
+            height:unset !important;
+            max-height:unset !important;
+        }
+    </aura:html>
+    <div class="modal-header slds-modal__header slds-size_1-of-1">
+        <h4 class="title slds-text-heading--medium" >Create New Payable</h4>
+    </div>
+
+    <lightning:recordEditForm
+            onload="{!c.handleOnload}"
+            objectApiName="Payable__c"
+			class="slds-card slds-p-around_medium"
+			aura:id="createPayable"
+			onsubmit="{!c.handleSubmit}"
+			onsuccess="{!c.handleSuccess}"
+			onerror="{!c.handleError}">
+			<div class="slds-grid">
+                
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:inputField fieldName="Status__c" />
+                    <lightning:inputField fieldName="Booking__c" value="{!v.recordId}" />
+                    <lightning:inputField fieldName="Contact__c" value="{!v.contactId}" />
+                </div>
+                <aura:if isTrue="{!v.showSpinner}">
+                    <lightning:spinner />
+                </aura:if>
+                <div class="slds-col slds-size_1-of-2">
+                    <lightning:inputField fieldName="Paid_date__c" />
+                    <lightning:inputField fieldName="Amount__c" required="true" />
+                </div>
+        	</div>
+        <!-- MODAL FOOTER -->
+		<div class="modal-footer slds-modal__footer slds-size_1-of-1">
+            <div class="forceChangeRecordTypeFooter">
+                <lightning:button variant="brand" type="submit" name="save" label="Save" />
+            </div>
+        </div>
+        </lightning:recordEditForm>
+    
+</aura:component>

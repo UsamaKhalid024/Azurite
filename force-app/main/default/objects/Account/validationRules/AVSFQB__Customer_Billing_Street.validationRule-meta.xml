@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Customer_Billing_Street</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF( ISNULL($User.AVSFQB__DBSync_Id__c) ,IF(LEN( BillingStreet ) &gt; 41,true,false),IF(LEN( BillingStreet ) &gt; 500,true,false))</errorConditionFormula>
+    <errorMessage>Length of Billing Street is too long, please rectify it. (QB Desktop: 41 Chars, QB Online: 500 Chars)</errorMessage>
+</ValidationRule>

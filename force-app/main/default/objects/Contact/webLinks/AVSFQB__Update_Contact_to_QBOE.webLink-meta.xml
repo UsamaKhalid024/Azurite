@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Update_Contact_to_QBOE</fullName>
+    <availability>online</availability>
+    <description>Push Salesforce Contact to QBO Customer/Contact (Salesforce Classical)</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>SF Contact &gt;&gt; QBO Customer/Contact</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>var URL=&quot;/apex/AVSFQB__CreateContactFromSF2QBO?id={! Contact.Id }&quot;; 
+window.open(URL,&quot;DBSync&quot;,&quot;menubar=0,resizable=0,width=650,height=300&quot;);</url>
+</WebLink>

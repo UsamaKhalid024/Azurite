@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NavigationMenu xmlns="http://soap.sforce.com/2006/04/metadata">
+    <container>Azurite</container>
+    <containerType>Network</containerType>
+    <label>How to Prepare</label>
+    <navigationMenuItem>
+        <label>Cosmetic Insurance</label>
+        <menuItemBranding>
+            <tileImage>insurance2</tileImage>
+        </menuItemBranding>
+        <position>1</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.globalprotectivesolutions.com/enroll/azurite</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Need help with flights?</label>
+        <menuItemBranding>
+            <tileImage>flights</tileImage>
+        </menuItemBranding>
+        <position>2</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.travelmanagers.com.au/ptm/CaraGardner/</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Mend Supplements</label>
+        <menuItemBranding>
+            <tileImage>Untitled_design_18</tileImage>
+        </menuItemBranding>
+        <position>3</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://mend.me/partner/azurite/</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Pay your medical balance</label>
+        <menuItemBranding>
+            <tileImage>OFX2</tileImage>
+        </menuItemBranding>
+        <position>4</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.ofx.com/en-au/</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Airport Instructions</label>
+        <menuItemBranding>
+            <tileImage>airport</tileImage>
+        </menuItemBranding>
+        <position>5</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.thaihappytaxi.com/WebPage/Services.aspx#div_Suvarnabhumi</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Finance TLC</label>
+        <menuItemBranding>
+            <tileImage>TLC</tileImage>
+        </menuItemBranding>
+        <position>6</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://medical.tlc.com.au/apply-now/?prnid=NTk1</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Purchase Garments</label>
+        <menuItemBranding>
+            <tileImage>makingapracticalbabyregistrygirdles</tileImage>
+        </menuItemBranding>
+        <position>7</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>http://www.makemeheal.com/mmh/home.do</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Need help with your fitness?</label>
+        <menuItemBranding>
+            <tileImage>GroupfitnessatMelbourneUni_425af1b5</tileImage>
+        </menuItemBranding>
+        <position>8</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.thefitaffect.co.nz/?fbclid=IwAR10bW8hK5I5ugeGuFRbghR6NsQ1C6Sr9klV3kkvUrpP5CuMKOX0Jyt4ErU</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+</NavigationMenu>

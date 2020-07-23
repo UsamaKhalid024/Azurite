@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Video_Consultation__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Checkbox for the video consultation. If video consultation is needed if not then leave it empty.</description>
+    <externalId>false</externalId>
+    <label>Video Consultation</label>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

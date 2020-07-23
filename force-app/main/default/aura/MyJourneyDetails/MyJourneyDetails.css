@@ -1,0 +1,11 @@
+.THIS table#detail-table table tr td{
+    padding: 5px 0px 5px 5px;
+}
+.THIS #make-heading{
+    font-weight: bold;
+    font-size: 15px;
+}
+
+.THIS .upload_buttons_group .slds-button{
+     font-size: .8125rem !important; 
+}

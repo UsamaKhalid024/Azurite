@@ -1,0 +1,5 @@
+<p>Hi,</p>
+
+<p>The form URL: <a href="{!cf123__Form_Send_Log__c.cf123__Full_Form_Url__c}" target="_blank">{!cf123__Form_Send_Log__c.cf123__Full_Form_Url__c}</a>.</p>
+
+<p>Thanks</p>

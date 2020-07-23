@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <brand>
+        <headerColor>#56B279</headerColor>
+        <logo>VisualAntidote__formstack_for_salesforce</logo>
+        <logoVersion>2</logoVersion>
+        <shouldOverrideOrgTheme>false</shouldOverrideOrgTheme>
+    </brand>
+    <description>Formstack for Salesforce</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>Formstack</label>
+    <navType>Standard</navType>
+    <tabs>VisualAntidote__FastForms</tabs>
+    <tabs>VisualAntidote__Submission_Dashboard</tabs>
+    <uiType>Lightning</uiType>
+    <utilityBar>VisualAntidote__Formstack_UtilityBar</utilityBar>
+</CustomApplication>

@@ -1,0 +1,62 @@
+<aura:component Controller="OneTeamCtrl" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" extensible="true">
+    
+    <aura:attribute name="Personal_Assistants" type="Contact[]"  />
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+  
+	<div class="slds-scope">
+    <!-- Our Team Panel -->
+    	<aura:iteration var="Assis_Info" items="{!v.Personal_Assistants}" indexVar="indx">
+              <!-- Odd -->
+              <aura:if isTrue="{! (mod(indx,2)==1) ? 'true':'false'}">
+                <div class="slds-grid slds-wrap">
+                  <div class="slds-col slds-small-size--1-of-1 slds-medium-size--4-of-4 slds-large-size--3-of-6 order2">
+                      <div style="{!'position: relative;background:url(/azurite/servlet/servlet.FileDownload?file='+Assis_Info.Profile_Picture__c+') no-repeat;background-position: center;background-size: cover;'}" >
+                          <div class="inner-space"></div>
+                      </div>  
+                  </div>
+                  <div class="slds-col slds-small-size--1-of-1 slds-medium-size--4-of-4 slds-large-size--3-of-6 order1" id="back-change">
+                    <span>
+                        <div class="slds-section__title">
+                            <h3>
+                               {!Assis_Info.FirstName} &nbsp; {!Assis_Info.LastName}
+                            </h3>
+                            <!--{!Assis_Info.Profile_Picture_Test__c}-->
+                        </div>
+                        <div class="slds-text-body--regular" id="body-content">
+                            {!Assis_Info.About__c}
+                        </div>
+                    </span>
+                  </div>
+                </div>
+             </aura:if>
+             <!-- End -->
+             <!-- Even -->
+             <aura:if isTrue="{! (mod(indx,2)==0) ? 'true':'false'}">
+                 <div class="slds-grid slds-wrap">
+                     <div class="slds-col slds-small-size--1-of-1 slds-medium-size--4-of-4 slds-large-size--3-of-6">
+                         <div style="{!'position: relative;background:url(/azurite/servlet/servlet.FileDownload?file='+Assis_Info.Profile_Picture__c+') no-repeat;background-position: center;background-size: cover;'}" >
+                             <div class="inner-space"></div>
+                         </div>  
+                     </div>
+                     <div class="slds-col slds-small-size--1-of-1 slds-medium-size--4-of-4 slds-large-size--3-of-6" id="back-change">
+                         <span>
+                             <div class="slds-section__title">
+                                 <h3>
+                                     {!Assis_Info.FirstName} {!Assis_Info.LastName}
+                                 </h3>
+                                 <!--{!Assis_Info.Profile_Picture_Test__c}-->
+                             </div>
+                             <div class="slds-text-body--regular" id="body-content">
+                                 {!Assis_Info.About__c}
+                             </div>
+                         </span>
+                     </div>
+                 </div>
+             </aura:if>
+             <!-- End -->
+    	</aura:iteration>
+        
+        
+    <!-- Our Team Panel End -->
+    </div>
+</aura:component>

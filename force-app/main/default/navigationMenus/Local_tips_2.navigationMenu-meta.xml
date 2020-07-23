@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<NavigationMenu xmlns="http://soap.sforce.com/2006/04/metadata">
+    <container>Azurite</container>
+    <containerType>Network</containerType>
+    <label>Upgrade hotels</label>
+    <navigationMenuItem>
+        <label>Avista Hideaway</label>
+        <menuItemBranding>
+            <tileImage>V0A7346edit</tileImage>
+        </menuItemBranding>
+        <position>1</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.avista-hideaway-phuket-patong.com/</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Peninsula Bangkok</label>
+        <menuItemBranding>
+            <tileImage>Screen_Shot_20191118_at_21115_pm</tileImage>
+        </menuItemBranding>
+        <position>2</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.peninsula.com/en/bangkok/luxury-hotel-room-suite-types</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+    <navigationMenuItem>
+        <label>Chatrium Residence Sathorn</label>
+        <menuItemBranding>
+            <tileImage>chr_picture_for_web_2019_crst_01</tileImage>
+        </menuItemBranding>
+        <position>3</position>
+        <publiclyAvailable>true</publiclyAvailable>
+        <target>https://www.chatrium.com/chatrium/sathonbangkok/exclusive-free-breakfast-offer.html?gclid=EAIaIQobChMIuJbng-fy5QIVmQVyCh0KwA-lEAAYASAAEgIvw_D_BwE</target>
+        <type>ExternalLink</type>
+    </navigationMenuItem>
+</NavigationMenu>

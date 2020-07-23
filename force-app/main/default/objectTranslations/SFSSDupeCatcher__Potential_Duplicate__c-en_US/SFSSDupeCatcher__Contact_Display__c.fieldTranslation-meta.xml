@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- A link to the Contact record associated with this potential duplicate record. --></help>
+    <label><!-- Contact Record --></label>
+    <name>SFSSDupeCatcher__Contact_Display__c</name>
+</CustomFieldTranslation>

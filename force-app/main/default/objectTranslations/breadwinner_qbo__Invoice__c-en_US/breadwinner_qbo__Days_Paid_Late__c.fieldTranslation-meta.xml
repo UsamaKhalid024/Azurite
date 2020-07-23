@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The number of days late an invoice has been paid. If a negative number, this is the number of days early. If 0, the Invoice was paid on time. If blank, the Invoice has not been paid yet or has no due date --></help>
+    <label><!-- Days Paid Late --></label>
+    <name>breadwinner_qbo__Days_Paid_Late__c</name>
+</CustomFieldTranslation>

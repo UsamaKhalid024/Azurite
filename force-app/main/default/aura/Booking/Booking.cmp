@@ -1,0 +1,753 @@
+<aura:component controller="CommunityLoggedInUserInfo" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" access="global" >
+
+   	<aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    
+    <aura:attribute type="Integer" name="currentStep" default="1" />
+    <aura:attribute type="Integer" name="totalSteps" default="7" />
+    <aura:attribute type="boolean" name="validationEnabled" default="true" />
+    <aura:attribute type="Map" name="mLead" default="{}" />
+    <aura:attribute type="Date" name="companion_DOB" />
+    <aura:attribute type="Date" name="prefDateOfSurgery" />
+    <aura:attribute type="Date" name="altDateOfSurgery" />
+    <aura:attribute type="Date" name="dob" />
+    <aura:attribute type="Date" name="breastfedDate" />
+    <aura:attribute type="string" name="attachmentname" />
+    
+    <aura:attribute type="string" name="Superannuation"/>
+    <aura:attribute type="boolean" name="SuperannuationCheck" default="false" />
+    
+    <aura:attribute type="boolean" name="SpinnerCheck" default="false" />
+    
+    <form method="POST" action="https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8">
+        
+       <!-- This is spinner check -->
+        <aura:renderIf isTrue="{!v.SpinnerCheck}">
+            <div class="exampleHolder">
+                <lightning:spinner alternativeText="Loading" size="large" />
+            </div>
+        </aura:renderIf>
+       <!-- End of spinner check -->
+        
+        
+        <div style="padding-left: 30%">
+            <div style="text-align: left">
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" name="options" id="checkbox-unique-id-termsCond" value="checkbox-unique-id-termsCond" checked=""  required="true" />
+                            <label class="slds-checkbox__label" for="checkbox-unique-id-termsCond">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">I have read and agree to the <a href="https://azurite.com.au/azurite-terms-conditions">Azurite Terms and Conditions</a></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" name="options" id="checkbox-unique-id-constRelease" value="checkbox-unique-id-constRelease" checked=""  required="true" />
+                            <label class="slds-checkbox__label" for="checkbox-unique-id-constRelease">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">I have read and agree to the <a href="https://azurite.com.au/client-consent-and-release">Azurite Client Consent and Release</a></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" name="options" id="checkbox-unique-id-NDA" value="checkbox-unique-id-NDA" checked=""  required="true" />
+                            <label class="slds-checkbox__label" for="checkbox-unique-id-NDA">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">I have read and agree to the <a href="https://azurite.com.au/non-disclosure-terms-and-conditions">Azurite Non-Disclosure Terms and Conditions</a></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-form-element">
+                    <div class="slds-form-element__control">
+                        <div class="slds-checkbox">
+                            <input type="checkbox" name="options" id="checkbox-unique-id-clientAgmt" value="checkbox-unique-id-clientAgmt" checked="" required="true" />
+                            <label class="slds-checkbox__label" for="checkbox-unique-id-clientAgmt">
+                                <span class="slds-checkbox_faux"></span>
+                                <span class="slds-form-element__label">I have read and agree to the <a href="https://azurite.com.au/disclaimer">Azurite Client Agreement</a></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br />
+        <div class="slds-grid">
+            <div class="slds-col slds-size_1-of-1">
+                
+                <div class="slds-path slds-custom-nav">
+                    <div class="slds-grid slds-path__track slds-p-left_none slds-p-right_none">
+                        <div class="slds-grid slds-path__scroller-container">
+                            <div class="slds-path__scroller" role="application">
+                                <div class="slds-path__scroller_inner">
+                                    <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                        <li class="slds-path__item slds-is-current slds-is-active" aura:id="1" role="presentation"> 
+                                            <a class="slds-path__link" href="javascript:void(0);" id="1" onclick="{!c.goToStep}" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Customer Information</span>
+                                                </span>
+                                                <span class="slds-path__title">Customer Information</span>
+                                            </a>
+                                        </li>
+                                        <!-- 
+                                    <li class="slds-path__item slds-is-current slds-is-active" role="presentation"> 
+                                        <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" role="option" tabindex="-1">
+                                            <span class="slds-path__stage">
+                                                <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                <span class="slds-assistive-text">Contact Information</span>
+                                            </span>
+                                            <span class="slds-path__title">Contact Information</span>
+                                        </a>
+                                    </li>
+         -->
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="2" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="2" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Procedures/Services Description</span>
+                                                </span>
+                                                <span class="slds-path__title">Procedures/Services Description</span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="3" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="3" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Travel Companion &amp; Emergency Contact</span>
+                                                </span>
+                                                <span class="slds-path__title">Travel Companion &amp; Emergency Contact</span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="4" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="4" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Medical Background</span>
+                                                </span>
+                                                <span class="slds-path__title">Medical Background</span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="5" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="5" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Medications/Supplements</span>
+                                                </span>
+                                                <span class="slds-path__title">Medications/Supplements</span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="6" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="6" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Drinking/Smoking</span>
+                                                </span>
+                                                <span class="slds-path__title">Drinking/Smoking</span>
+                                            </a>
+                                        </li>
+                                        <li class="slds-path__item slds-is-incomplete" aura:id="7" role="presentation"> 
+                                            <a aria-selected="false" class="slds-path__link" id="7" onclick="{!c.goToStep}" href="javascript:void(0);" role="option" tabindex="-1">
+                                                <span class="slds-path__stage">
+                                                    <lightning:icon iconName="utility:check" variant="check" size="xx-small"/>
+                                                    <span class="slds-assistive-text">Questions for Women</span>
+                                                </span>
+                                                <span class="slds-path__title">Questions for Women</span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- @END:path/wizard -->
+        
+        <div class="slds-grid slds-footer slds-m-top_medium">
+            <div class="slds-col slds-text-align_right">
+                <aura:if isTrue="{!greaterthan(v.currentStep , 1)}">
+                    <lightning:button label="Back" title="Back" onclick="{!c.goBack}" />
+                    <aura:set attribute="else">
+                        <lightning:button label="Back" title="Back" />
+                    </aura:set>
+                </aura:if>
+                <aura:if isTrue="{!lessthan(v.currentStep , v.totalSteps)}">
+                    <lightning:button label="Next" variant="brand" onclick="{!c.goToNext}" class="" title="Next"/>
+                </aura:if>
+                <aura:if isTrue="{!v.currentStep == v.totalSteps}">
+                    <input type="Submit" class="slds-button slds-button_destructive " value="Submit" />
+                </aura:if>
+            </div>
+        </div>
+        
+        <aura:if isTrue="{!v.currentStep == 1}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Customer Information</div>
+                    <p>Please provide the Azurite contact information.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" Id="FirstName" label="First Name (as per passport)" value="{!v.mLead.first_name}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" Id="LastName" label="Last Name (as per passport)" value="{!v.mLead.last_name}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" Id="country" label="Passport Country" value="{!v.mLead.passportCountry}" name="country" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Date" Id="dob" label="Date of Birth" value="{!v.dob}" onchange="{!c.DOB}" name="dob" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Gender" required="true" value="{!v.mLead.gender}">
+                        <option value="">Select One</option>
+                        <option value="Male">Male</option>
+                        <option value="Female">Female</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Street" value="{!v.mLead.street}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="City" value="{!v.mLead.city}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="State" value="{!v.mLead.state}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Post Code" value="{!v.mLead.zip}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Country" value="{!v.mLead.country}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Email" value="{!v.mLead.email}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Phone" value="{!v.mLead.phone}" class="field" required="true"/>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step1 -->
+        
+        <aura:if isTrue="{!v.currentStep == 2}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Procedures / Services Description</div>
+                    <p>Please provide the Procedures / Services Description.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Date" formate="dd/mm/yyyy" label="Preferred Date of Surgery" value="{!v.prefDateOfSurgery}" onchange="{!c.DateOfSurgery}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Date" label="Alternate Date of Surgery" value="{!v.altDateOfSurgery}" onchange="{!c.AltDateOfSurgery}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Procedure Type" required="true" value="{!v.mLead.procedureType}">
+                        <option value="">--None--</option>
+                        <option value="General">General</option>
+                        <option value="Dental Only">Dental Only</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:textarea value="{!v.mLead.procedureRequested}" label="Procedures Requested (Please Specify)" />
+                </div>
+            </div>
+            
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Superannuation Funding</div>
+                    <p>If you are seeking the compassionate release of superannuation funding, please attach your referral letter from your qualified GP. 
+                        This letter is required before we supply our supporting documentation. 
+                        Please note, if you choose to proceed with an alternative provider, or wish to cancel once approved for funding, you will incur a $500 service fee 
+                        immediately.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="fileId" type="file" onchange="{!c.fileuploadcheck}" name="GPfileuploader" label="Upload Attachment" multiple="false" required="true"/>
+                	<span><b>{!v.attachmentname}</b></span>
+                </div>
+            </div>
+        </aura:if> <!-- END:step2 -->
+        
+        <aura:if isTrue="{!v.currentStep == 3}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Travel Companion and Emergency Contact</div>
+                    <p>Please provide the Travel Companion and Emergency Contact.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Companion's First name on their passport" value="{!v.mLead.companionFirstName}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Companion's Last name on their passport" value="{!v.mLead.companionLastName}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" format="dd/MM/yyyy" type="Date"  label="Companion's Date of Birth" value="{!v.companion_DOB}" onchange="{!c.onChange}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Emergency Contact Name" value="{!v.mLead.emergencyContactName}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Phone" label="Emergency Contact Phone" value="{!v.mLead.emergencyContactPhone}" class="field" required="false"/>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step3 -->
+        
+        <aura:if isTrue="{!v.currentStep == 4}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Medical Background</div>
+                    <p>Please provide the Medical Background information.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Number" label="Your Height (cm)" value="{!v.mLead.height}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="Number" label="Your Weight (kg)" value="{!v.mLead.weight}" class="field" required="true"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Blood Group" required="true" value="{!v.mLead.bloodGrp}">
+                        <option value="">--None--</option><option value="Unsure">Unsure</option>
+                        <option value="A">A</option>
+                        <option value="B">B</option>
+                        <option value="O">O</option>
+                        <option value="AB">AB</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="RH" required="true" value="{!v.mLead.rh}">
+                        <option value="">--None--</option><option value="Unsure">Unsure</option>
+                        <option value="Negative">Negative</option>
+                        <option value="Positive">Positive</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Family Medical History" required="false" value="{!v.mLead.famMedicalHistory}">
+                        <option value="">--None--</option>
+                        <option value="Asthma">Asthma</option>
+                        <option value="Cancer">Cancer</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="Heart Diseases">Heart Diseases</option>
+                        <option value="Hypertension">Hypertension</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="If cancer was selected, specify the location in the body" value="{!v.mLead.ifFamilyCancerDetails}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Please indicate Your Medical History" required="false" value="{!v.mLead.medicalHistory}">
+                        <option value="">--None--</option>
+                        <option value="Asthma">Asthma</option>
+                        <option value="Bleeding Tendency">Bleeding Tendency</option>
+                        <option value="Cancer">Cancer</option>
+                        <option value="Cardio Vascular Accidents">Cardio Vascular Accidents</option>
+                        <option value="Deep Vein Thrombosis">Deep Vein Thrombosis</option>
+                        <option value="Diabetes">Diabetes</option>
+                        <option value="HIV">HIV</option>
+                        <option value="Heart Disease">Heart Disease</option>
+                        <option value="Hepatitis B">Hepatitis B</option>
+                        <option value="Hypertension">Hypertension</option>
+                        <option value="Hyperthyroidism">Hyperthyroidism</option>
+                        <option value="Keloid Scarring">Keloid Scarring</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="If cancer was selected, specify the location in the body" value="{!v.mLead.ifCancerDetails}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify any major operations you have undergone" value="{!v.mLead.majOperation}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Condition major accident" value="{!v.mLead.majAccidents}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify any underlying diseases you have" value="{!v.mLead.underDesease}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify any drug alergies you have" value="{!v.mLead.drugAllergies}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify any food alergies you have" value="{!v.mLead.foodAllergies}" class="field" required="false"/>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step4 -->
+        
+        <aura:if isTrue="{!v.currentStep == 5}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Medications / Supplements</div>
+                    <p>Please provide the Medications / Supplements information.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify current medications being taken" value="{!v.mLead.currentMedications}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify vitamins or supplements being taken" value="{!v.mLead.vitaminsOrSuppliments}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="If Yes, specify medications" value="{!v.mLead.ifYesMedicationsDetails}" class="field" required="false"/>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step5 -->
+        
+        <aura:if isTrue="{!v.currentStep == 6}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Drinking / Smoking</div>
+                    <p>Please provide the Drinking / Smoking information.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Do you smoke.?" required="true" value="{!v.mLead.smoke}">
+                        <option value="">--None--</option><option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Please specify history of smoking (ie. how many years)" value="{!v.mLead.smokeHist}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Do you have alcohol dependency?" required="true" value="{!v.mLead.alcoholDep}">
+                        <option value="">--None--</option><option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step6 -->
+        
+        <aura:if isTrue="{!v.currentStep == 7}">
+            <div class="slds-grid">
+                <div class="slds-col slds-size_1-of-1 slds-section">
+                    <div class="slds-section-title">Some Questions for Women</div>
+                    <p>Please provide following answers.</p>
+                </div>
+            </div>
+            <div class="slds-grid slds-wrap">
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Do you have breast implants?" value="{!v.mLead.breastImpl}">
+                        <option value="">--None--</option><option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="If Yes, please specify method" value="{!v.mLead.ifYesImplantsMethod}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Are you on birth control?" value="{!v.mLead.birthControl}">
+                        <option value="">--None--</option><option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="HRT Medications / Hormone Patch?" value="{!v.mLead.hrtHormone}">
+                        <option value="">--None--</option><option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="number" label="Age of youngest child" value="{!v.mLead.childAge}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Current bra size" value="{!v.mLead.braSize}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField" type="text" label="Desired bra size" value="{!v.mLead.desiredBraSize}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Desired placement of implants?" value="{!v.mLead.desiredPlace}">
+                        <option value="">--None--</option>
+                        <option value="Behind of muscle">Behind of muscle</option>
+                        <option value="In-front of muscle">In-front of muscle</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Desired Implants?" value="{!v.mLead.desiredImpl}">
+                        <option value="">--None--</option>
+                        <option value="Saline">Saline</option>
+                        <option value="Silicone Gel">Silicone Gel</option>
+                        <option value="Unsure">Unsure</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Desired Incision?" value="{!v.mLead.desiredIncision}">
+                        <option value="">--None--</option>
+                        <option value="Armpits">Armpits</option>
+                        <option value="Under Breast Crease">Under Breast Crease</option>
+                        <option value="Lower edge of Areola">Lower edge of Areola</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Have you had a mammogram?" value="{!v.mLead.mamogram}">
+                        <option value="">--None--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField"  type="text" label="Please specify results (patients over 40)" value="{!v.mLead.mamogramResult}" class="field" required="false"/>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Are you pregnant now?" required="true" value="{!v.mLead.pregnant}">
+                        <option value="">--None--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    
+                    <lightning:select aura:id="inputField" label="Are you planning for more pregnancies?" required="true" value="{!v.mLead.morePregnancies}">
+                        <option value="">--None--</option>
+                        <option value="Yes">Yes</option>
+                        <option value="No">No</option>
+                    </lightning:select>
+                </div>
+                
+                <div class="slds-col slds-size_1-of-2 slds-p-right_large slds-p-bottom_small">
+                    <lightning:input aura:id="inputField"  type="date" label="Date you last breastfed" value="{!v.breastfedDate}" class="field" onchange="{!c.breastfedDate}" required="false"/>
+                </div>
+                
+            </div>
+        </aura:if> <!-- END:step7 -->
+        
+        <div class="slds-grid slds-footer slds-m-top_medium">
+            <div class="slds-col slds-text-align_right">
+                <aura:if isTrue="{!greaterthan(v.currentStep , 1)}">
+                    <lightning:button label="Back" title="Back" onclick="{!c.goBack}" />
+                    <aura:set attribute="else">
+                        <lightning:button label="Back" title="Back" />
+                    </aura:set>
+                </aura:if>
+                <aura:if isTrue="{!lessthan(v.currentStep , v.totalSteps)}">
+                    <lightning:button label="Next" variant="brand" onclick="{!c.goToNext}" class="" title="Next"/>
+                </aura:if>
+                <aura:if isTrue="{!v.currentStep == v.totalSteps}">
+                    <input type="Submit" class="slds-button slds-button_destructive " value="Submit" />
+                </aura:if>
+            </div>
+        </div>
+        
+        <div style="height:50px; visibility:hidden; overflow: scroll;">
+            
+            <input type="hidden" name="oid" value="00D2v0000012rL1"/>
+            <input type="hidden" name="retURL" value="https://azurite.force.com/azurite/s/thank-you-booking"/>
+            <input type="hidden" name="lead_source" value="Community Booking"/>
+            <!--  **********************************************************************  -->
+            <!--  NOTE: These fields are optional debugging elements. Please uncomment    -->
+            <!--  these lines if you wish to test in debug mode.                          -->
+            <!--  <input type="hidden" name="debug" value="1" />                          -->
+            <!--input type="hidden" name="debugEmail" value="" />                         -->
+            <!--  **********************************************************************  -->
+            
+            
+            <input type="text" name="first_name" value="{!v.mLead.first_name}"/>
+            
+            <label for="last_name">Last Name</label><input  id="last_name" maxlength="80" name="last_name" size="20" type="text" value="{!v.mLead.last_name}" /><br />
+            
+            Superannuation Id : <input id="00N2v00000Ux8TW" name="00N2v00000Ux8TW" type="text" value="{!v.mLead.SuperannutionId}" /> <br />
+            
+            Passport Country:<input  id="00N2v00000Ux8TN" maxlength="255" name="00N2v00000Ux8TN" size="20" type="text" value="{!v.mLead.passportCountry}" /><br />
+            
+            Date of Birth:<span class="dateInput dateOnlyInput"><input  id="00N2v00000Ux8Sx" value="{!v.mLead.dob}" name="00N2v00000Ux8Sx" size="12" type="text" /></span><br />
+            
+            Gender:<input  id="00N2v00000Ux8TB" maxlength="255" name="00N2v00000Ux8TB" value="{!v.mLead.gender}" size="20" type="text" /><br />
+            
+            <label for="street">Street</label><input type="text" value="{!v.mLead.street}" name="street" /><br />
+            
+            <label for="city">City</label><input  id="city" value="{!v.mLead.city}" maxlength="40" name="city" size="20" type="text" /><br />
+            
+            <label for="state">State/Province</label><input  id="state" value="{!v.mLead.state}" maxlength="20" name="state" size="20" type="text" /><br />
+            
+            <label for="zip">Zip</label><input  id="zip" maxlength="20" name="zip" value="{!v.mLead.zip}" size="20" type="text" /><br />
+            
+            <label for="country">Country</label><input  id="country" maxlength="40" name="country" size="20" type="text" value="{!v.mLead.country}" /><br />
+            
+            <label for="email">Email</label><input  id="email" maxlength="80" name="email" value="{!v.mLead.email}" size="20" type="text" /><br />
+            
+            <label for="phone">Phone</label><input  id="phone" maxlength="40" name="phone" value="{!v.mLead.phone}" size="20" type="text" /><br />
+            
+            Preferred Date of Surgery:<span class="dateInput dateOnlyInput"><input  id="00N2v00000Ux8TS" name="00N2v00000Ux8TS" size="12" type="text" value="{!v.mLead.prefDateOfSurgery}" /></span><br />
+            
+            Alternate Date of Surgery:<span class="dateInput dateOnlyInput"><input  id="00N2v00000Ux8Sl" name="00N2v00000Ux8Sl" size="12" type="text" value="{!v.mLead.altDateOfSurgery}" /></span><br />
+            
+            Procedure Type:<input type="text"  id="00N2v00000Ux8TT" name="00N2v00000Ux8TT" title="Procedure Type" value="{!v.mLead.procedureType}" /><br />
+            
+            Procedures Requested:<textarea  id="00N2v00000Ux8TU" name="00N2v00000Ux8TU" type="text" wrap="soft" value="{!v.mLead.procedureRequested}"></textarea><br />
+            
+            Travel Companion First Name:<input  id="00N2v00000Ux8TY" maxlength="255" name="00N2v00000Ux8TY" size="20" type="text" value="{!v.mLead.companionFirstName}" /><br />
+            
+            Travel Companion Last Name:<input  id="00N2v00000Ux8TZ" maxlength="255" name="00N2v00000Ux8TZ" size="20" type="text" value="{!v.mLead.companionLastName}" /><br />
+            
+            Travel Companion Date of Birth:<span class="dateInput dateOnlyInput">
+            	<input  id="00N2v00000Ux8TX" name="00N2v00000Ux8TX" size="12" type="text" value="{!v.mLead.companionDOB}" /></span><br />
+				
+            
+            Emergency Contact Name:<input  id="00N2v00000Ux8T7" maxlength="255" name="00N2v00000Ux8T7" size="20" type="text" value="{!v.mLead.emergencyContactName}" /><br />
+            
+            Emergency Contact Phone:<input  id="00N2v00000Ux8T8" maxlength="255" name="00N2v00000Ux8T8" size="20" type="text" value="{!v.mLead.emergencyContactPhone}" /><br />
+            
+            Height:<input  id="00N2v00000Ux8TE" maxlength="255" name="00N2v00000Ux8TE" size="20" type="text" value="{!v.mLead.height}" /><br />
+            
+            Weight:<input  id="00N2v00000Ux8Tc" maxlength="255" name="00N2v00000Ux8Tc" size="20" type="text" value="{!v.mLead.weight}" /><br />
+            
+            Blood Group:<input type="text"  id="00N2v00000Ux8Ss" name="00N2v00000Ux8Ss" title="Blood Group" value="{!v.mLead.bloodGrp}" /><br />
+            
+            RH:<input type="text"  id="00N2v00000Ux8TV" name="00N2v00000Ux8TV" title="RH" value="{!v.mLead.rh}" /><br />
+            
+            Family Medical History:<input type="text" id="00N2v00000Ux8T9" multiple="multiple" name="00N2v00000Ux8T9" title="Family Medical History" value="{!v.mLead.famMedicalHistory}" /><br />
+            
+            If cancer, specify location in the body:<input  id="00N2v00000Ux8St" maxlength="255" name="00N2v00000Ux8St" size="20" type="text" value="{!v.mLead.ifFamilyCancerDetails}" /><br />
+            
+            If cancer, specify location in the body:<input  id="00N2v00000Ux8TI" maxlength="255" name="00N2v00000Ux8TI" size="20" type="text" value="{!v.mLead.ifCancerDetails}" /><br />
+            
+            Medical History:<input type="text"  id="00N2v00000Ux8TL" multiple="multiple" name="00N2v00000Ux8TL" title="Medical History" value="{!v.mLead.medicalHistory}" /><br />
+            
+            Major operations you have undergone:<input  id="00N2v00000Ux8TK" maxlength="255" name="00N2v00000Ux8TK" size="20" type="text" value="{!v.mLead.majOperation}" /><br />
+            
+            Please accidents experienced:<input  id="00N2v00000Ux8Su" maxlength="255" name="00N2v00000Ux8Su" size="20" type="text" value="{!v.mLead.majAccidents}" /><br />
+            
+            Any underlying diseases?:<input  id="00N2v00000Ux8So" maxlength="255" name="00N2v00000Ux8So" size="20" type="text" value="{!v.mLead.underDesease}" /><br />
+            
+            Any drug allergies?:<input  id="00N2v00000Ux8Sm" maxlength="255" name="00N2v00000Ux8Sm" size="20" type="text" value="{!v.mLead.drugAllergies}" /><br />
+            
+            Any food allergies?:<input  id="00N2v00000Ux8Sn" maxlength="255" name="00N2v00000Ux8Sn" size="20" type="text" value="{!v.mLead.foodAllergies}" /><br />
+            
+            Current medications being taken:<input  id="00N2v00000Ux8Sw" maxlength="255" name="00N2v00000Ux8Sw" size="20" type="text" value="{!v.mLead.currentMedications}" /><br />
+            
+            Vitamins or supplements being taken:<textarea  id="00N2v00000Ux8Tb" name="00N2v00000Ux8Tb" type="text" wrap="soft" value="{!v.mLead.vitaminsOrSuppliments}" ></textarea><br />
+            
+            If Yes, specify medications:<textarea  id="00N2v00000Ux8TH" name="00N2v00000Ux8TH" type="text" wrap="soft" value="{!v.mLead.ifYesMedicationsDetails}" ></textarea><br />
+            
+            Do you smoke?:<input type="text" id="00N2v00000Ux8T6" name="00N2v00000Ux8T6" title="Do you smoke?" value="{!v.mLead.smoke}" /><br />
+            
+            Please specify history of smoking:<textarea  id="00N2v00000Ux8TP" name="00N2v00000Ux8TP" type="text" wrap="soft" value="{!v.mLead.smokeHist}"></textarea><br />
+            
+            Do you have alcohol dependency?:<input type="text" id="00N2v00000Ux8T4" name="00N2v00000Ux8T4" title="Do you have alcohol dependency?" value="{!v.mLead.alcoholDep}" /><br />
+            
+            Do you have breast implants?:<select  id="00N2v00000Ux8T5" name="00N2v00000Ux8T5" title="Do you have breast implants?" value="{!v.mLead.breastImpl}" />
+            
+            If YES please specify method:<textarea  id="00N2v00000Ux8TG" name="00N2v00000Ux8TG" type="text" wrap="soft" value="{!v.mLead.ifYesImplantsMethod}"></textarea><br />
+            
+            Are you on birth control?:<input type="text" id="00N2v00000Ux8Sp" name="00N2v00000Ux8Sp" title="Are you on birth control?" value="{!v.mLead.birthControl}" />
+            
+            HRT Medications/Hormone Patch:<input type="text" id="00N2v00000Ux8TC" name="00N2v00000Ux8TC" title="HRT Medications/Hormone Patch" value="{!v.mLead.hrtHormone}" />
+            
+            Age of youngest child:<input  id="00N2v00000Ux8Sk" name="00N2v00000Ux8Sk" size="20" type="text" value="{!v.mLead.childAge}" /><br />
+            
+            Current bra size:<input  id="00N2v00000Ux8Sv" maxlength="255" name="00N2v00000Ux8Sv" size="20" type="text" value="{!v.mLead.braSize}" /><br />
+            
+            Desired bra size:<input  id="00N2v00000Ux8T0" maxlength="255" name="00N2v00000Ux8T0" size="20" type="text" value="{!v.mLead.desiredBraSize}" /><br />
+            
+            Desired placement of implants?:<input type="text" id="00N2v00000Ux8T3" name="00N2v00000Ux8T3" title="Desired placement of implants?" value="{!v.mLead.desiredPlace}" />
+            
+            Desired implants?:<input type="text"  id="00N2v00000Ux8T1" name="00N2v00000Ux8T1" title="Desired implants?" value="{!v.mLead.desiredImpl}" />
+            
+            Desired incision?:<select  id="00N2v00000Ux8T2" name="00N2v00000Ux8T2" title="Desired incision?" value="{!v.mLead.desiredIncision}" />
+            
+            Have you had a mammogram?:<input type="text" id="00N2v00000Ux8TD" name="00N2v00000Ux8TD" title="Have you had a mammogram?" value="{!v.mLead.mamogram}" />
+            
+            Please specify results(patients over 40):<input  id="00N2v00000Ux8TR" maxlength="255" name="00N2v00000Ux8TR" size="20" type="text" value="{!v.mLead.mamogramResult}" /><br />
+            
+            Are you pregnant now?:<input type="text" id="00N2v00000Ux8Sr" name="00N2v00000Ux8Sr" title="Are you pregnant now?" value="{!v.mLead.pregnant}" />
+            
+            Are you planning for more pregnancies?:<input type="text" id="00N2v00000Ux8Sq" name="00N2v00000Ux8Sq" title="Are you planning for more pregnancies?" value="{!v.mLead.morePregnancies}" />
+            
+            Last breastfed on (date)?:<span class="dateInput dateOnlyInput"><input  id="00N2v00000Ux8TJ" name="00N2v00000Ux8TJ" size="12" type="text" value="{!v.mLead.breastfedDate}" /></span><br />
+            
+            
+        </div>
+    </form>
+</aura:component>

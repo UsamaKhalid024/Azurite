@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Type --></label>
+    <name>AVSFQB__Type__c</name>
+    <picklistValues>
+        <masterLabel>Estimate</masterLabel>
+        <translation><!-- Estimate --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Invoice</masterLabel>
+        <translation><!-- Invoice --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>SalesOrder</masterLabel>
+        <translation><!-- SalesOrder --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

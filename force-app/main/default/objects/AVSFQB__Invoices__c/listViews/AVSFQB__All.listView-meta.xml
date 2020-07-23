@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__All</fullName>
+    <columns>NAME</columns>
+    <columns>AVSFQB__Invoice_Number__c</columns>
+    <columns>AVSFQB__Opportunity__c</columns>
+    <columns>AVSFQB__Total_Invoice_Amount__c</columns>
+    <columns>AVSFQB__Payments__c</columns>
+    <columns>AVSFQB__Balance__c</columns>
+    <columns>AVSFQB__Days_Outstanding__c</columns>
+    <columns>UPDATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

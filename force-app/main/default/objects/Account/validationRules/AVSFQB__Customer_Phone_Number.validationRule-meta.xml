@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Customer_Phone_Number</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF( LEN( Phone ) &gt; 21, true, false)</errorConditionFormula>
+    <errorMessage>Length of Customer Phone Number is too long, please rectify it. (QB Maximum Limit is 21 Chars)</errorMessage>
+</ValidationRule>

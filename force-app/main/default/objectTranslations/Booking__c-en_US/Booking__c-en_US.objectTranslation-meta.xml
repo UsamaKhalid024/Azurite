@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Booking</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Bookings</value>
+    </caseValues>
+    <layouts>
+        <layout>Booking Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Dental Details --></label>
+            <section>Dental Details</section>
+        </sections>
+        <sections>
+            <label><!-- Hotel Stay --></label>
+            <section>Hotel Stay</section>
+        </sections>
+        <sections>
+            <label><!-- Superannuation Funding --></label>
+            <section>Superannuation Funding</section>
+        </sections>
+        <sections>
+            <label><!-- Surgery Detail --></label>
+            <section>Surgery Detail</section>
+        </sections>
+        <sections>
+            <label><!-- Travel Companion --></label>
+            <section>Travel Companion</section>
+        </sections>
+    </layouts>
+    <layouts>
+        <layout>Booking Layout Customer</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Dental Details --></label>
+            <section>Dental Details</section>
+        </sections>
+        <sections>
+            <label><!-- Hotel Stay --></label>
+            <section>Hotel Stay</section>
+        </sections>
+        <sections>
+            <label><!-- Surgery Detail --></label>
+            <section>Surgery Detail</section>
+        </sections>
+        <sections>
+            <label><!-- Travel Companion --></label>
+            <section>Travel Companion</section>
+        </sections>
+    </layouts>
+    <quickActions>
+        <label><!-- Create Payable --></label>
+        <name>Create_Payable</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- New Itenrary --></label>
+        <name>New_Itenrary</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Package Calculator --></label>
+        <name>Package_Calculator</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Flight Info --></label>
+        <name>Upload_Flight_Info</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Medical Tests --></label>
+        <name>Upload_Medical_Tests</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Passport --></label>
+        <name>Upload_Passport</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Visa --></label>
+        <name>Upload_Visa</name>
+    </quickActions>
+    <quickActions>
+        <label><!-- Upload Waiver --></label>
+        <name>Upload_waiver</name>
+    </quickActions>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

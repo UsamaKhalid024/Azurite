@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Classes provide a way to track different segments of the business, this can be enabled in Quick Books Online --></help>
+    <label><!-- Class --></label>
+    <name>breadwinner_qbo__Class__c</name>
+</CustomFieldTranslation>

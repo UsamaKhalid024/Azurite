@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The action DupeCatcher takes on identifying a potential duplicate when a new record is updated. --></help>
+    <label><!-- Match On Update Action --></label>
+    <name>SFSSDupeCatcher__Match_On_Update_Action__c</name>
+    <picklistValues>
+        <masterLabel>Do Not Update</masterLabel>
+        <translation><!-- Do Not Update --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Do Nothing</masterLabel>
+        <translation><!-- Do Nothing --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Report Duplicate</masterLabel>
+        <translation><!-- Report Duplicate --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

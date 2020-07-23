@@ -1,0 +1,52 @@
+.THIS .slds-form-element__label{
+	font-size: 15px;
+}
+
+.THIS .slds-section-title{
+	border-bottom: 1px solid #ccc;
+    font-size: 20px;
+    font-weight: bold;
+    margin:15px 0px 15px 0px;
+}
+
+.THIS .slds-accordion__summary{
+    background: #F4F6F9;
+    padding: 10px 15px;
+    border-radius: 2px;
+}
+
+.THIS .slds-accordion__section{
+	padding: 0px;
+}
+
+.THIS .slds-accordion__list-item {
+	margin-bottom: 5px;
+	border: 0px;
+}
+
+.THIS .slds-accordion__content{
+	padding: 0px 15px 0px 15px;
+}
+
+.THIS .slds-summary-section-title{
+    border-bottom: 1px solid #cccccc;
+    font-weight: bold;
+    margin-bottom: 10px;    
+    font-size: 14px;
+}
+
+.THIS .slds-summary-wrap .slds-col{
+    margin-bottom: 7px;
+    margin-top: 7px;
+}
+
+.THIS .slds-section-title{
+	border-bottom: 1px solid #ccc;
+    font-size: 20px;
+    font-weight: bold;
+    margin:15px 0px 15px 0px;
+}
+
+.THIS input, .THIS select, .THIS textarea{
+    font-size:14px;
+}

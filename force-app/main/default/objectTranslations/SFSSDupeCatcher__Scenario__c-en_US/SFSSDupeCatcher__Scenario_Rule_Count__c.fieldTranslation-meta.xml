@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The number of rules that are part of a the filter. --></help>
+    <label><!-- Filter Rule Count --></label>
+    <name>SFSSDupeCatcher__Scenario_Rule_Count__c</name>
+</CustomFieldTranslation>

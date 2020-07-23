@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The field used by the rule to identify duplicates for Lead to Account or Lead to Contact scenarios. --></help>
+    <label><!-- Target Field --></label>
+    <name>SFSSDupeCatcher__Target_Match_Field__c</name>
+    <picklistValues>
+        <masterLabel>Account ID</masterLabel>
+        <translation><!-- Account ID --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Account Name</masterLabel>
+        <translation><!-- Account Name --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Account Number</masterLabel>
+        <translation><!-- Account Number --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Billing City</masterLabel>
+        <translation><!-- Billing City --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Billing Country</masterLabel>
+        <translation><!-- Billing Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Billing Postal Code</masterLabel>
+        <translation><!-- Billing Postal Code --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Billing State</masterLabel>
+        <translation><!-- Billing State --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Billing Street</masterLabel>
+        <translation><!-- Billing Street --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>City</masterLabel>
+        <translation><!-- City --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Company</masterLabel>
+        <translation><!-- Company --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Country</masterLabel>
+        <translation><!-- Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Email</masterLabel>
+        <translation><!-- Email --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Fax</masterLabel>
+        <translation><!-- Fax --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>First Name</masterLabel>
+        <translation><!-- First Name --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Home Phone</masterLabel>
+        <translation><!-- Home Phone --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Last Name</masterLabel>
+        <translation><!-- Last Name --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mailing City</masterLabel>
+        <translation><!-- Mailing City --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mailing Country</masterLabel>
+        <translation><!-- Mailing Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mailing Postal</masterLabel>
+        <translation><!-- Mailing Postal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mailing State</masterLabel>
+        <translation><!-- Mailing State --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mailing Street</masterLabel>
+        <translation><!-- Mailing Street --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Mobile Phone</masterLabel>
+        <translation><!-- Mobile Phone --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other City</masterLabel>
+        <translation><!-- Other City --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other Country</masterLabel>
+        <translation><!-- Other Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other Phone</masterLabel>
+        <translation><!-- Other Phone --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other Postal Code</masterLabel>
+        <translation><!-- Other Postal Code --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other State</masterLabel>
+        <translation><!-- Other State --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Other Street</masterLabel>
+        <translation><!-- Other Street --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Owner ID</masterLabel>
+        <translation><!-- Owner ID --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Phone</masterLabel>
+        <translation><!-- Phone --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Postal Code</masterLabel>
+        <translation><!-- Postal Code --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Record Type</masterLabel>
+        <translation><!-- Record Type --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shipping City</masterLabel>
+        <translation><!-- Shipping City --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shipping Country</masterLabel>
+        <translation><!-- Shipping Country --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shipping Postal</masterLabel>
+        <translation><!-- Shipping Postal --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shipping State</masterLabel>
+        <translation><!-- Shipping State --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Shipping Street</masterLabel>
+        <translation><!-- Shipping Street --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Site</masterLabel>
+        <translation><!-- Site --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>State</masterLabel>
+        <translation><!-- State --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Street</masterLabel>
+        <translation><!-- Street --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Ticker Symbol</masterLabel>
+        <translation><!-- Ticker Symbol --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Website</masterLabel>
+        <translation><!-- Website --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Azurite Customer Review</name>
+    <style>freeForm</style>
+    <subject>Your Experience With Azurite</subject>
+    <textOnly>Dear {!NullValue(Contact.FirstName, &quot;Customer&quot;)},
+
+We hope you enjoyed your recent Azurite journey. We absolutely love watching clients change their lives for the better. Now that your journey is over, we&#39;d love for you to share some love and rate us here and on our Facebook page.
+
+
+https://g.page/azuritemedicalandwellness/review?gm
+
+https://www.facebook.com/pg/azuritemedicalandwellness/reviews/?ref=page_internal
+
+
+
+Warm regards,
+
+The Azurite Angels</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

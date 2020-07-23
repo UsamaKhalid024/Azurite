@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Medical</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Medicals</value>
+    </caseValues>
+    <layouts>
+        <layout>Medical Layout</layout>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+        <sections>
+            <label><!-- Drinking / Smoking --></label>
+            <section>Drinking / Smoking</section>
+        </sections>
+        <sections>
+            <label><!-- Medical Background --></label>
+            <section>Medical Background</section>
+        </sections>
+        <sections>
+            <label><!-- Medications / Supplements --></label>
+            <section>Medications / Supplements</section>
+        </sections>
+        <sections>
+            <label><!-- Questions for Women --></label>
+            <section>Questions for Women</section>
+        </sections>
+    </layouts>
+    <startsWith>Consonant</startsWith>
+</CustomObjectTranslation>

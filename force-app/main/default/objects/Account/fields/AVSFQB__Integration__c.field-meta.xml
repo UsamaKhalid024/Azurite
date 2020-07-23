@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Integration__c</fullName>
+    <deprecated>false</deprecated>
+    <description>Change to Request Sync to Update in QuickBooks Online</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Change to Request Sync to Update in QuickBooks Online</inlineHelpText>
+    <label>Integration</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>None</fullName>
+                <default>false</default>
+                <label>None</label>
+            </value>
+            <value>
+                <fullName>Request Sync</fullName>
+                <default>false</default>
+                <label>Request Sync</label>
+            </value>
+            <value>
+                <fullName>In Sync</fullName>
+                <default>false</default>
+                <label>In Sync</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

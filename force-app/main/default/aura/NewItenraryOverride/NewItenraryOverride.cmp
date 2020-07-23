@@ -1,0 +1,52 @@
+<aura:component Controller="NewItenraryOverrideCtrl" implements="force:hasRecordId,lightning:actionOverride,force:hasSObjectName,force:lightningQuickAction" >
+	
+    
+    <aura:html tag="style">
+        .slds .modal-footer .slds-modal__footer {
+        display:none;
+        }
+        div.modal-footer div.slds-modal__footer {
+        display:none;
+        }
+        div.slds-modal__footer {
+        display:none;
+        }
+        div.modal-footer {
+        display:none;
+        }
+        footer{
+        width: 100%;
+        z-index: 1000;
+        left: 0;
+        right: 0;
+        position:fixed;
+        }
+        .footer_mobile_button button{
+			float: right !important;
+        }
+        
+        .slds-modal__header{
+        	display:none;
+        }
+    </aura:html>
+    
+    
+    
+    <aura:attribute name="recordId" type="String" />
+    <aura:handler name="init" value="{!this}" action="{!c.doinit}" />
+    <aura:attribute name="contactId" type="String" />
+    <aura:attribute name="contactName" type="String" />
+    <aura:attribute name="Spinner" type="boolean" default="false" />
+    <aura:attribute name="errordisplay" type="boolean" default="false" />
+    <aura:attribute name="mitinerary" type="Itenrary__c" default="{'sobjectType':'Itenrary__c', 'Customer_contact__c':'003O000001L8xht'}" />
+    
+    <aura:if isTrue="{!v.Spinner}">
+        <div aura:id="spinnerId" class="slds-spinner_container">
+            <div class="slds-spinner--brand  slds-spinner slds-spinner--large slds-is-relative" role="alert">
+                <span class="slds-assistive-text">Loading</span>
+                <div class="slds-spinner__dot-a"></div>
+                <div class="slds-spinner__dot-b"></div>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

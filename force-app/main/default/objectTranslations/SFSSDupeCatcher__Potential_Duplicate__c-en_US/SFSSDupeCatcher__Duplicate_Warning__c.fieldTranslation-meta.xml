@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- A link to the Duplicate Alert record that is the parent of this record --></help>
+    <label><!-- Duplicate Alert --></label>
+    <name>SFSSDupeCatcher__Duplicate_Warning__c</name>
+    <relationshipLabel><!-- DupeCatcher Potential Duplicates --></relationshipLabel>
+</CustomFieldTranslation>

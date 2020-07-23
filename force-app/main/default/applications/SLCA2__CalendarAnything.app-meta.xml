@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <defaultLandingTab>standard-home</defaultLandingTab>
+    <description>This application includes the Calendar tab. You can also add the Calendar tab to any other custom applications.</description>
+    <formFactors>Large</formFactors>
+    <isNavAutoTempTabsDisabled>false</isNavAutoTempTabsDisabled>
+    <isNavPersonalizationDisabled>false</isNavPersonalizationDisabled>
+    <label>CalendarAnything</label>
+    <logo>SLCA2__CalendarAnything/SLCA2__Logo.png</logo>
+    <tabs>SLCA2__Calendar_Anything</tabs>
+    <tabs>Customer__c</tabs>
+    <tabs>Booking__c</tabs>
+    <tabs>Itenrary__c</tabs>
+    <tabs>Medical__c</tabs>
+    <tabs>Superannuation__c</tabs>
+    <tabs>Hotel_Reservation__c</tabs>
+    <tabs>Taxi_Booking__c</tabs>
+    <tabs>CRN_Number__c</tabs>
+</CustomApplication>

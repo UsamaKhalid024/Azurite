@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Indicates the type of matching that will be used on the chosen field(s). --></help>
+    <label><!-- Matching Technique --></label>
+    <name>SFSSDupeCatcher__Mapping_Approach__c</name>
+    <picklistValues>
+        <masterLabel>Clean Name</masterLabel>
+        <translation><!-- Clean Name --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Country Match</masterLabel>
+        <translation><!-- Country Match --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Domain</masterLabel>
+        <translation><!-- Domain --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Exact</masterLabel>
+        <translation><!-- Exact --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>First 5 Zip</masterLabel>
+        <translation><!-- First 5 Zip --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>First N Letters</masterLabel>
+        <translation><!-- First N Letters --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>First N Words</masterLabel>
+        <translation><!-- First N Words --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>First Name</masterLabel>
+        <translation><!-- First Name --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Numeric Only</masterLabel>
+        <translation><!-- Numeric Only --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Relaxed NA Phone</masterLabel>
+        <translation><!-- Relaxed NA Phone --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Street Address Match</masterLabel>
+        <translation><!-- Street Address Match --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

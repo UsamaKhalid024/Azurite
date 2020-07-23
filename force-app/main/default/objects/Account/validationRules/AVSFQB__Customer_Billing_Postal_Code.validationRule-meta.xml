@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Customer_Billing_Postal_Code</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF( ISNULL($User.AVSFQB__DBSync_Id__c) ,IF(LEN( BillingPostalCode ) &gt; 13,true,false),IF(LEN( BillingPostalCode ) &gt; 30,true,false))</errorConditionFormula>
+    <errorMessage>Length of Billing Postal Code is too long, please rectify it. (QB Desktop: 13 Chars, QB Online: 30 Chars)</errorMessage>
+</ValidationRule>

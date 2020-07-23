@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>Airport - Don Mueang</fullName>
+        <default>false</default>
+        <label>Airport - Don Mueang</label>
+    </customValue>
+    <customValue>
+        <fullName>Airport - Suvarnabhumi International</fullName>
+        <default>false</default>
+        <label>Airport - Suvarnabhumi International</label>
+    </customValue>
+    <description>Multiple Calendars</description>
+    <masterLabel>Calendars</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

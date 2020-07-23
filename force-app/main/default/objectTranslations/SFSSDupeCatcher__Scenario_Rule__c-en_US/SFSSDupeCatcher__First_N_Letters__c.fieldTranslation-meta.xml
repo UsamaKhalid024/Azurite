@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- The number of initial letters or words you would like to match in the chosen field(s). --></help>
+    <label><!-- First N --></label>
+    <name>SFSSDupeCatcher__First_N_Letters__c</name>
+</CustomFieldTranslation>

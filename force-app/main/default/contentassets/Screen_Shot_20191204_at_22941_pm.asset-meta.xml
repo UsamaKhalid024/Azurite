@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ContentAsset xmlns="http://soap.sforce.com/2006/04/metadata">
+    <isVisibleByExternalUsers>false</isVisibleByExternalUsers>
+    <language>en_US</language>
+    <masterLabel>Screen_Shot_20191204_at_22941_pm</masterLabel>
+    <relationships>
+        <network>
+            <access>VIEWER</access>
+            <name>Azurite</name>
+        </network>
+        <workspace>
+            <access>INFERRED</access>
+            <isManagingWorkspace>true</isManagingWorkspace>
+            <name>sfdc_asset_company_assets</name>
+        </workspace>
+    </relationships>
+    <versions>
+        <version>
+            <number>1</number>
+            <pathOnClient>Screen Shot 2019-12-04 at 2.29.41 pm.png</pathOnClient>
+        </version>
+    </versions>
+</ContentAsset>

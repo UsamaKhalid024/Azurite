@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Indicates whether a task is to be created and who it will be assigned to. --></help>
+    <label><!-- Create Tasks for Alerts --></label>
+    <name>SFSSDupeCatcher__Create_Tasks_for_Warnings__c</name>
+    <picklistValues>
+        <masterLabel>No</masterLabel>
+        <translation><!-- No --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yes - Filter Owner</masterLabel>
+        <translation><!-- Yes - Filter Owner --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Yes - User</masterLabel>
+        <translation><!-- Yes - User --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

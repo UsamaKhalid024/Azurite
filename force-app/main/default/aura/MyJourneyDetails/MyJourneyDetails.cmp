@@ -1,0 +1,483 @@
+<aura:component Controller="MyJourneyCtrl" implements="flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" extensible="true">
+	
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+    <aura:attribute name="UserId" type="String" />
+    <aura:attribute name="BookingInfo" type="Booking__c[]" />
+    <aura:attribute name="DoctorId" type="string" />
+    <aura:attribute name="attachmentpicturesId" type="String[]" />
+    <aura:attribute name="checkbooking" type="boolean" default="true" />
+    <aura:attribute name="AssignedSugeon" type="String[]" />
+    <aura:attribute name="HospitalDetails" type="String[]" />
+    <aura:attribute name="FirstSessionDetails" type="String[]" />
+    <aura:attribute name="SurgeryStartDate" type="Date" />
+    <aura:attribute name="SurgeryEndDate" type="Date" />
+    <aura:attribute name="AssSurgon" type="boolean" default="false" />
+    <aura:attribute name="HospandMed" type="boolean" default="false" />
+    <aura:attribute name="PersonalAssis" type="boolean" default="false" />
+    <aura:attribute name="DentalDet" type="boolean" default="false" />
+    <aura:attribute name="isOpen" type="boolean" default="false" />
+    <aura:attribute name="UploadsHeading" type="String" />
+    <aura:attribute name="CurrentBookingId" type="Id" />
+    <aura:attribute name="rerender" type="boolean" default="false" />
+    <aura:attribute name="SessionsInfo" type="List" default="[]" />
+    
+    <aura:html tag="style">
+    	.slds-dropdown-trigger{
+        	background-color:#ffff !important;
+        }
+        .slds-dropdown-trigger div ul li a span {
+        	color: rgba(195, 160, 125, 0.62) !important;
+        }
+        #surg-sess-tab td, #surg-sess-tab th {
+        	border: 1px solid #ddd;
+        	padding: 8px;
+        }
+        #surg-sess-tab th span {
+        	font-size:14px;
+        }
+        #surg-sess-tab tr:nth-child(even){background-color: #f2f2f2;}
+        #surg-sess-tab tr:hover {background-color: #e4e4e4;}
+    </aura:html>
+    
+    <aura:if isTrue="{!v.checkbooking}">
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" style="background: #eef1f6;">
+                    <span class="slds-truncate" title="Section Title">Surgery Details</span>
+                    <div style="position: absolute; right: 0px;">
+                    <lightning:buttonGroup class="upload_buttons_group">
+                    	<lightning:button aura:id="buttonsize" label="Upload Passport" title="Upload Passport" onclick="{! c.UploadPassport }" />
+                        <lightning:button aura:id="buttonsize" label="Upload Medical Tests" title="Upload Medical Tests" onclick="{! c.UploadMedicalTests }"/>
+                        <lightning:button aura:id="buttonsize" label="Upload Flight Info" title="Upload Flight Info" onclick="{! c.UploadFlightInfo }"/>
+                        <lightning:buttonMenu aura:id="buttonsize-dropdown" alternativeText="Show menu" class="slds-button_last" onselect="{! c.UploadWaiver }">
+                            <lightning:menuItem label="Upload Waiver" value="Upload_Waiver" />
+                        </lightning:buttonMenu>
+                    </lightning:buttonGroup>
+                    </div>
+                </button>
+            </h3>
+            
+            
+            
+            
+            
+            
+            
+            <aura:if isTrue="{!v.isOpen}">
+            <!--###### MODAL BOX Start######--> 
+            <section role="dialog" tabindex="-1" aria-labelledby="modal-heading-01" aria-modal="true" aria-describedby="modal-content-id-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- ###### MODAL BOX HEADER Start ######-->
+                    <header class="slds-modal__header">
+                        <lightning:buttonIcon iconName="utility:close"
+                                              onclick="{! c.closeModel }"
+                                              alternativeText="close"
+                                              variant="bare-inverse"
+                                              class="slds-modal__close"/>
+                        <h2 id="modal-heading-01" class="slds-text-heading_medium slds-hyphenate">
+                            {!v.UploadsHeading}
+                        </h2>
+                    </header>
+                    <!--###### MODAL BOX BODY Part Start######-->
+                    <div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+                        <lightning:flow aura:id="UploadVisa"  onstatuschange="{! c.statuschangeVisa }" />
+                        <lightning:flow aura:id="UploadMedTests"  onstatuschange="{! c.statuschangeMedTests }" />
+                        <lightning:flow aura:id="UploadFlightInfo"  onstatuschange="{! c.statuschangeflight }" />
+                        <lightning:flow aura:id="UploadWaiver"  onstatuschange="{! c.statuschangeWaiver }" />
+                    </div>
+                    <!--###### MODAL BOX FOOTER Part Start ######-->
+                    <!--<footer class="slds-modal__footer">
+                        <lightning:button variant="neutral" 
+                                          label="Cancel"
+                                          title="Cancel"
+                                          onclick="{! c.closeModel }"/>
+                        <lightning:button variant="brand" 
+                                          label="Like and Close"
+                                          title="Like and Close"
+                                          onclick="{! c.likenClose }"/>
+                    </footer>-->
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+            <!--###### MODAL BOX Part END Here ######-->
+            </aura:if>
+            
+            
+            
+            
+            
+            
+            
+            
+            
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                    <div class="slds-form-element">
+                        
+                        
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                                            <div class="slds-panel__header">
+                                                <h2 class="slds-panel__header-title slds-text-heading_small slds-truncate" title="Panel Header">Assigned Surgeon</h2>
+                                            </div>
+                                            <aura:if isTrue="{!v.AssSurgon}">
+                                                <div class="slds-notify slds-notify_toast slds-theme_error">
+                                                    <span class="slds-assistive-text">error</span>
+                                                    <div class="slds-notify__content">
+                                                        <p class="slds-align_absolute-center">
+                                                        	Surgon is not assigned.
+                                                        </p>                
+                                                    </div>
+                                                </div>
+                                                <aura:set attribute="else">
+                                                    <div class="slds-panel__body">
+                                                        <td style="width:17%; text-align:center; border-right: 1px solid #cccccc;">
+                                                            <img style="width:120px; border: 1px solid #e1e1e1;" src = "{!'/azurite/servlet/servlet.FileDownload?file='+v.AssignedSugeon[0].Profile_Picture__c}" />
+                                                        </td>
+                                                        <td style="padding:5px 10px 5px 10px; vertical-align:top;">
+                                                            <h2>
+                                                                <b>{!v.AssignedSugeon[0].FirstName}&nbsp;{!v.AssignedSugeon[0].LastName}</b>
+                                                            </h2>
+                                                            <p style="text-align: justify;">{!v.AssignedSugeon[0].About__c}</p>
+                                                        </td>
+                                                    </div>
+                                                </aura:set>
+                                            </aura:if>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <!--
+                        	<div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                            <div class="slds-panel__header">
+                                <h2 class="slds-panel__header-title slds-text-heading_small slds-truncate" title="Panel Header">Hospital Details</h2>
+                            </div>
+                            <div class="slds-panel__body">
+                                
+                                        <table id="detail-table">
+                                            <tr>
+                                                <td style="width:33%;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td id='make-heading' style="text-align:center; width:40%;">
+                                                                    Hospital: 
+                                                                </td>
+                                                                <td>
+                                                                    <aura:if isTrue="{!v.HospandMed}">
+                                                                        <div class="slds-notify slds-notify_toast slds-theme_error" style="min-width: 10rem !important;">
+                                                                            <span class="slds-assistive-text">error</span>
+                                                                            <div class="slds-notify__content">
+                                                                                <p class="slds-align_absolute-center">
+                                                                                    Not Found.
+                                                                                </p>                
+                                                                            </div>
+                                                                        </div>
+                                                                        <aura:set attribute="else">
+                                                                    		{!v.HospitalDetails[0].Name}
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td style="width:33%;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td id='make-heading' style="text-align:center; width:45%;">
+                                                                    Hospital Location: 
+                                                                </td>
+                                                                <td>
+                                                                    <aura:if isTrue="{!v.HospandMed}">
+                                                                        <div class="slds-notify slds-notify_toast slds-theme_error" style="min-width: 10rem !important;">
+                                                                            <span class="slds-assistive-text">error</span>
+                                                                            <div class="slds-notify__content">
+                                                                                <p class="slds-align_absolute-center">
+                                                                                    Not Found.
+                                                                                </p>                
+                                                                            </div>
+                                                                        </div>
+                                                                        <aura:set attribute="else">
+                                                                            <address>
+                                                                                {!v.HospitalDetails[0].BillingStreet},{!v.HospitalDetails[0].BillingCity},<br/>{!v.HospitalDetails[0].BillingCountry}
+                                                                            </address>
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td  style="width:33%;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td id='make-heading' style="text-align:center; width:51%;">
+                                                                    Confirmed Procedure: 
+                                                                </td>
+                                                                <td>
+                                                                    <aura:if isTrue="{!v.HospandMed}">
+                                                                        <div class="slds-notify slds-notify_toast slds-theme_error" style="min-width: 10rem !important;">
+                                                                            <span class="slds-assistive-text">error</span>
+                                                                            <div class="slds-notify__content">
+                                                                                <p class="slds-align_absolute-center">
+                                                                                    Not Found.
+                                                                                </p>                
+                                                                            </div>
+                                                                        </div>
+                                                                        <aura:set attribute="else">
+                                                                    		{!v.FirstSessionDetails[0].Procedures__c}
+                                                                        </aura:set>
+                                                                    </aura:if>
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width:33%;">
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td id='make-heading' style="text-align:center; width:57%;">
+                                                                    Medical Balance: 
+                                                                </td>
+                                                                <td>
+                                                                    <ui:outputCurrency currencySymbol="AUD" value="{!v.BookingInfo[0].Total_Medical_Balance__c}"/>	
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
+                                                </td>
+                                                <td>
+                                                    <table>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td id='make-heading' style="text-align:center; width:45%;">
+                                                                    Surgery: 
+                                                                </td>
+                                                                <td>
+                                                                    <ui:outputDate value="{!v.SurgeryStartDate}" /> - <ui:outputDate value="{!v.SurgeryEndDate}" />
+                                                                </td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>                                        
+                                                </td>
+                                            </tr>
+</table>
+                                    
+                            </div>
+                        </div>
+                        -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        
+        <!-- Surgery Session -->
+        
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" style="background: #eef1f6;">
+                    <span class="slds-truncate" title="Section Title">Surgery Sessions</span>
+                </button>
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                    <div class="slds-form-element">
+                        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                            <div class="slds-panel__body" >
+                                
+                                <table border="1" id="surg-sess-tab">
+                                    <thead>
+                                    	<tr style="height:43px;">
+                                            <th><span><b></b></span></th>
+                                        	<th><span><b>Hospital Name</b></span></th>
+                                            <th><span><b>Doctor Name</b></span></th>
+                                            <th><span><b>Confirmed Procedure</b></span></th>
+                                            <th><span><b>Medical Balance</b></span></th>
+                                            <th><span><b>Start Date</b></span></th>
+                                            <th><span><b>End Date</b></span></th>
+                                            <th><span><b>Session Days</b></span></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <aura:iteration items="{!v.SessionsInfo}" var="info" indexVar="indx">
+                                            <tr>
+                                                <td><ui:outputText value="{!indx + 1}"/></td>
+                                                <td><ui:outputText value="{!info.Hospital__r.Name}"/></td>
+                                                <td><ui:outputText value="{!info.Doctor__r.Firstname}"/> <ui:outputText value="{!info.Doctor__r.LastName}"/></td>
+                                                <td><ui:outputText value="{!info.Procedures__c}"/></td>
+                                                <td><ui:outputCurrency currencySymbol="{!info.CurrencyIsoCode}" value="{!info.Medical_Balance__c}"/></td>
+                                                <td><ui:outputDate value="{!info.Start_Date__c}" /></td>
+                                                <td><ui:outputDate value="{!info.End_Date__c}" /></td>
+                                                <td><ui:outputText value="{!info.Session_days__c}" /></td>
+                                            </tr>
+                                        </aura:iteration>
+                                        
+                                    </tbody>
+                                </table>
+                                
+                                
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Surgery Session End -->
+        
+        
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" style="background: #eef1f6;">
+                    <span class="slds-truncate" title="Section Title">Assigned Personal Assistant</span>
+                </button>
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                    <div class="slds-form-element">
+                        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                            <div class="slds-panel__body">
+                                <aura:if isTrue="{!v.PersonalAssis}">
+                                    <div class="slds-notify slds-notify_toast slds-theme_error">
+                                        <span class="slds-assistive-text">error</span>
+                                        <div class="slds-notify__content">
+                                            <p class="slds-align_absolute-center">
+                                                Personal Assistent is not assigned.
+                                            </p>                
+                                        </div>
+                                    </div>
+                                    <aura:set attribute="else">
+                                        <table>
+                                            <tbody>
+                                                <tr>
+                                                    <td style="width:17%; text-align:center; border-right: 1px solid #cccccc;">
+                                                        <img style="width:120px; border: 1px solid #e1e1e1;" src = "{!'/azurite/servlet/servlet.FileDownload?file='+v.BookingInfo[0].Personal_Assistant__r.Profile_Picture__c}" />
+                                                    </td>
+                                                    <td style="padding:5px 10px 5px 10px; vertical-align:top;">
+                                                        <h2>
+                                                            <b>{!v.BookingInfo[0].Personal_Assistant__r.FirstName}&nbsp;{!v.BookingInfo[0].Personal_Assistant__r.LastName}</b>
+                                                        </h2>
+                                                        <p style="text-align: justify;">{!v.BookingInfo[0].Personal_Assistant__r.About__c}</p>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" style="background: #eef1f6;">
+                    <span class="slds-truncate" title="Section Title">My Photos</span>
+                </button>
+            </h3>
+            
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                    <div class="slds-form-element">
+                        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                            <div class="slds-panel__body">
+                                <div class="slds-grid slds-gutters slds-wrap">
+                                    <aura:iteration items="{!v.attachmentpicturesId}" var="attachIds">
+                                        <div class="slds-col slds-size_3-of-12" style="margin-bottom:20px !important;">
+                                            <div style="border: 1px solid #e6e5e5 !important; padding: 6px 6px 6px 6px !important;">
+                                                <div style="{! 'background: url(https://azurite.my.salesforce.com/sfc/servlet.shepherd/version/download/'+attachIds+') no-repeat;-webkit-background-size: cover; -moz-background-size: cover; -o-background-size: cover; background-size: cover; width: auto; height: 153px;'}"></div>
+                                            </div>
+                                        </div>
+                                    </aura:iteration>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="slds-section slds-is-open">
+            <h3 class="slds-section__title">
+                <button aria-controls="expando-unique-id" aria-expanded="true" class="slds-button slds-section__title-action" style="background: #eef1f6;">
+                    <span class="slds-truncate" title="Section Title">Dental Details</span>
+                </button>
+            </h3>
+            <div aria-hidden="false" class="slds-section__content" id="expando-unique-id">
+                <div class="slds-form--stacked slds-p-around--medium slds-m-bottom--x-small">
+                    <div class="slds-form-element">
+                        <div class="slds-panel slds-size_medium slds-panel_docked slds-panel_docked-left slds-is-open" aria-hidden="false" style="width: 100%; box-shadow: rgba(0, 0, 0, 0.25) 0px 0px 3px;">
+                            <div class="slds-panel__body">
+                                <aura:if isTrue="{!v.DentalDet}">
+                                    <div class="slds-notify slds-notify_toast slds-theme_error">
+                                        <span class="slds-assistive-text">error</span>
+                                        <div class="slds-notify__content">
+                                            <p class="slds-align_absolute-center">
+                                                Dentist is not assigned.
+                                            </p>                
+                                        </div>
+                                    </div>
+                                    <aura:set attribute="else"> 
+                                        <table>
+                                            <tr>
+                                                <td id='make-heading' style="text-align:center; width:17%;">
+                                                    Dentist Location: 
+                                                </td>
+                                                <td>
+                                                    <address>
+                                                        {!v.BookingInfo[0].Dental__r.Account.BillingStreet}, {!v.BookingInfo[0].Dental__r.Account.BillingCity},<br/>{!v.BookingInfo[0].Dental__r.Account.BillingCountry}
+                                                    </address>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td>
+                                                </td>
+                                                <td id='make-heading' style="text-align:center; width:17%;">
+                                                    Dental Time: 
+                                                </td>
+                                                <td>
+                                                    <ui:outputDateTime aura:id="oDateTime" value="{!v.BookingInfo[0].Dentist_Time__c}"  />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td id='make-heading' style="text-align:center; padding: 18px 0px 18px 0px;">
+                                                    Dental Services: 
+                                                </td>
+                                                <td colspan="5" style="padding: 18px 0px 18px 0px;">
+                                                    {!v.BookingInfo[0].Service__c}
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </aura:set>
+                                </aura:if>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <aura:set attribute="else">
+            <div class="slds-notify slds-notify_toast slds-theme_error" style="width: 100%;">
+                <span class="slds-assistive-text">error</span>
+                <div class="slds-notify__content">
+                    <h5 class="slds-text-heading_small slds-align_absolute-center">Error Message </h5>
+                    <br/>
+                    <p class="slds-align_absolute-center">Booking of this user does not exist.</p>                
+                </div>
+            </div>
+        </aura:set>
+    </aura:if>
+</aura:component>

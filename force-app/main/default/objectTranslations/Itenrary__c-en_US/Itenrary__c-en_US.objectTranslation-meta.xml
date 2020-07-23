@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObjectTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <caseValues>
+        <plural>false</plural>
+        <value>Itinerary</value>
+    </caseValues>
+    <caseValues>
+        <plural>true</plural>
+        <value>Itineraries</value>
+    </caseValues>
+    <layouts>
+        <layout>Itenrary Layout</layout>
+        <sections>
+            <label><!-- Airport Instructions --></label>
+            <section>Airport Instructions</section>
+        </sections>
+        <sections>
+            <label><!-- Custom Links --></label>
+            <section>Custom Links</section>
+        </sections>
+    </layouts>
+    <startsWith>Vowel</startsWith>
+    <webLinks>
+        <label><!-- Generate_Itinerary_PDF --></label>
+        <name>Generate_Itinerary_PDF</name>
+    </webLinks>
+</CustomObjectTranslation>

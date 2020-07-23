@@ -1,0 +1,18 @@
+.THIS .wrapper{
+    max-width:1170px;
+    margin:0 auto;
+}
+
+.THIS .top_bar{
+    background: rgba(0,0,0,0.03) !important;
+    padding: 8px;
+}
+
+.THIS .content{
+    min-height:600px;
+}
+
+.THIS .footer{
+    background:#23272a;
+    color:#ffffff;
+}

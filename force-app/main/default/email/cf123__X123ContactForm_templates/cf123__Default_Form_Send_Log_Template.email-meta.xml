@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Default Form Send Log Template</name>
+    <style>none</style>
+    <subject>Form Send Log</subject>
+    <textOnly>Hi,
+
+The form URL: {!cf123__Form_Send_Log__c.cf123__Full_Form_Url__c}.
+
+Thanks</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

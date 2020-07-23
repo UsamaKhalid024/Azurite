@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Medical History --></label>
+    <name>Medical_History__c</name>
+    <picklistValues>
+        <masterLabel>Asthma</masterLabel>
+        <translation><!-- Asthma --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Bleeding Tendency</masterLabel>
+        <translation><!-- Bleeding Tendency --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cancer</masterLabel>
+        <translation><!-- Cancer --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Cardio Vascular Accidents</masterLabel>
+        <translation><!-- Cardio Vascular Accidents --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Deep Vein Thrombosis</masterLabel>
+        <translation><!-- Deep Vein Thrombosis --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Diabetes</masterLabel>
+        <translation><!-- Diabetes --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>HIV</masterLabel>
+        <translation><!-- HIV --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Heart Disease</masterLabel>
+        <translation><!-- Heart Disease --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hepatitis B</masterLabel>
+        <translation><!-- Hepatitis B --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hypertension</masterLabel>
+        <translation><!-- Hypertension --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Hyperthyroidism</masterLabel>
+        <translation><!-- Hyperthyroidism --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Keloid Scarring</masterLabel>
+        <translation><!-- Keloid Scarring --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

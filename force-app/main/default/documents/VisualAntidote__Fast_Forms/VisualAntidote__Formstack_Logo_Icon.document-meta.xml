@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Document xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Formstack logo in icon format, used in Formstack and Submission Dashboard tabs.</description>
+    <internalUseOnly>false</internalUseOnly>
+    <keywords>Formstack, Logo</keywords>
+    <name>Formstack_Logo_Icon</name>
+    <public>true</public>
+</Document>

@@ -1,0 +1,23 @@
+<html style="overflow-y: hidden;">
+<head>
+	<title></title>
+</head>
+<body style="height: auto; min-height: auto;"><!--StartFragment--><span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">Dear Sir / Madam,&nbsp;<br />
+<br />
+Could you please make reservation/s at your hotel for Azurite for the following,&nbsp;<br />
+<br />
+Name: <b>{{{Booking__c.Contact__c}}}</b></span></span><br />
+<span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">No. Guests:<br />
+1: Bedroom Suite<br />
+<br />
+Arriving: </span></span>{{{Booking__c.Start_Date__c}}}<br />
+<span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">Leaving: </span></span>{{{Booking__c.End_Date__c}}}<br />
+<br />
+<span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">Arriving: </span></span>{{{Booking__c.Start_Date_2__c}}}<br />
+<span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">Leaving: </span></span>{{{Booking__c.End_Date_2__c}}}<br />
+<br />
+<span><span style="font-size: 14.6666666666667px; font-family: Arial; color: rgb(0, 0, 0); vertical-align: baseline; white-space: pre-wrap; background-color: transparent;">Thank you&nbsp;</span></span><br />
+--<br />
+{{{Sender.Name}}}<br />
+<img alt="LOGO-223x37" src="https://azurite--amsndbx--c.documentforce.com/file-asset-public/LOGO223x37?oid=00DO0000004umV8" style="max-width: 380.24938659667964px" title="LOGO-223x37" /><!--EndFragment--></body>
+</html>
