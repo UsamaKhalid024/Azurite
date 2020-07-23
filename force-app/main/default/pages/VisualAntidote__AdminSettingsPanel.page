@@ -1,0 +1,437 @@
+<apex:page title="Formstack Admin Settings Panel" controller="VisualAntidote.AdminSettingsPanelController" extensions="VisualAntidote.SandboxManagementController,VisualAntidote.PlatformConnectionController" action="{!checkPermissions}"
+    sidebar="false" standardStylesheets="false"> 
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__Base,'base.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__Base,'style/base.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.ffcommon,'styles/fscommon.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__fs_assets, 'pages/adminSettingsPanel.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__fs_assets, 'pages/SandboxManagement.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__fs_assets, 'pages/integrationSettings.min.css')}" />
+    <script type="text/javascript">
+        setFSNSVariable('SessionKey', '{!$Api.Session_ID}');
+        /* user management script */
+        var REMOTE_ACTIONS = {
+            addUser: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.addUser)}",
+            getAuthorizationLink: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.getAuthorizationLink)}",
+            getAllUsers: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.getAllUsers)}",
+            getUsersByName: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.getUsersByName)}",
+            removeUser: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.removeUser)}",
+            isUserPrimaryLicenseHolder:"{!URLENCODE($RemoteAction.AdminSettingsPanelController.isUserPrimaryLicenseHolder)}",
+            updateEngineToken: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.updateEngineToken)}",
+            resetAssignedSeatsCount: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.resetAssignedSeatsCount)}",
+            assignPermissionSetToUser: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.assignPermissionSetToUser)}",
+            updateRemoteSitesettingsForCallouts: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.updateRemoteSitesettingsForCallouts)}",
+            addFSPermissionSet: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.addFSPermissionSet)}",
+            checkTokenNotifications: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.checkTokenNotifications)}",
+            removeFSPermissionSet: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.removeFSPermissionSet)}",
+            submitFailedSubmissions: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.submitFailedSubmissions)}",
+            GetListOfOrgs: "{!URLENCODE($RemoteAction.SandboxManagementController.remoteGetListOfOrgs)}",
+            AddOrg: "{!URLENCODE($RemoteAction.SandboxManagementController.remoteAddOrg)}",
+            RemoveOrg: "{!URLENCODE($RemoteAction.SandboxManagementController.remoteRemoveOrg)}",
+            initializeSandboxPage: "{!URLENCODE($RemoteAction.SandboxManagementController.remoteInitializeSandboxPage)}",
+            getAllIntegrations: "{!URLENCODE($RemoteAction.PlatformConnectionController.getAllPlatformConnection)}",
+            updateIntegration: "{!URLENCODE($RemoteAction.PlatformConnectionController.updatePlatformConnectionAndGetPlatformConnectionResponse)}",
+            deleteIntegration: "{!URLENCODE($RemoteAction.PlatformConnectionController.deletePlatformConnection)}",
+            publishIntegration: "{!URLENCODE($RemoteAction.PlatformConnectionController.publishPlatformConnection)}",
+            createSharingRules: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.remoteCreateSharingRules)}",
+            hasSharingSettingRulesRecordsExist: "{!URLENCODE($RemoteAction.AdminSettingsPanelController.hasSharingSettingRulesRecordsExist)}",
+            createCommunitySharingRules : "{!URLENCODE($RemoteAction.AdminSettingsPanelController.remoteCreateCommunitySharingRules)}"};
+   
+        var SFCurrentUserId = "{!$User.Id}";
+        var packageTier = "{!packageTier}";
+        var engineEndpoint = "{!engineEndpoint}"
+        var dropboxKey = '{!dropboxKey}';
+    </script>
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__fs_assets,'pages/adminSettingsPanel.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__fs_assets,'pages/SandboxManagement.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__fs_assets,'pages/integrationSettings.min.js')}" />
+
+    <apex:form id="fsform" styleClass="fsform">
+        <div class="FastFormsWrapper">
+            <apex:pageMessages />
+            <!-- TODO: Make this header section a component (JS/Apex) as we use this in different pages -->
+            <div class="mainHeader" style="height: 50px;">
+                <div class="mainHeaderInner">
+                    <div class="bread-crumb">
+                        <div class="bread-crumb navbar">
+                            <div class="navbar-inner">
+                                <div class="navcontainer">
+                                    <ul class="nav-wizard">
+                                        <li>
+                                            <a class="vfns-link" href="/apex/{!NameSpace}FormMenu" id="breadcrumb-dashboard">Dashboard</a>
+                                        </li>
+                                        <li class="li-arrow-seperator"></li>
+                                        <li class="active">
+                                            <span id="breadcrumb-formeditor" style="padding: 0px 0px 0px 20px;">
+                                                <span>Admin Settings</span>
+                                            </span>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),true,false)}">
+                        <div class="fs-style ff-logo-box" style="display:block;">
+                            <div class="fs-ff-logo">
+                                <img alt="Formstack NativeCloud" title="Formstack NativeCloud" src="{!URLFOR($Resource.logos,'native-cloud-fs.png')}" height="51"
+                                />
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),false,true)}">
+                        <div class="fs-style ff-logo-box" style="display:block;">
+                            <div class="ff-logo">
+                                <img class="fs-logo-img" src="{!URLFOR($Resource.logos,'color_logo_only_fs.png')}" />
+                            </div>
+                            <div class="ff-logo-title">
+                                <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier=='EnterprisePlus'),true,false)}">Enterprise Plus</apex:outputPanel>
+                                <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier!='EnterprisePlus'),true,false)}">{!packageTier}</apex:outputPanel>
+                                <br />
+                                <span class="ffsub" style="padding-top: 5px;">Edition</span>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                </div>
+            </div>
+
+        <div class="leftPanel">
+            <ul class='ul-left-panel'>
+                <li class="li-left-panel li-left-panel-selected" PanelId="userManagement" showPanel="1">User Management</li>
+                <apex:outputText rendered="{!enableSandboxManagement}">
+                     <li class="li-left-panel" PanelId="sandboxManagement" showPanel="2"  >Sandbox Management</li>
+                </apex:outputText>
+                <li class="li-left-panel" PanelId="integrationSettings" showPanel="3"  >Integration Credentials</li>
+            </ul>
+        </div>
+ 
+        <div class="rightPanel">
+
+            <apex:outputPanel id="panelControl">
+                <!-- Start User management -->
+                <div id="user-management" >
+                    <div id="adminNotificationBox" class="notification-box-outer"></div>
+                    <apex:outputPanel layout="block" id="announcementPanel" styleClass="unassigned-primary-license form-container margin-left-100">
+                        <apex:outputPanel layout="block" styleClass="announcement-box mt50" rendered="{!IF(userLicenses.size==0,true,false)}">
+                            <div class="announcement-box__header">
+                                <div class="announcement-box__header--graphic-icon"></div>
+                                <div class="announcement-box__header--short-message">
+                                    <h2 style="font-style:italic;">Welcome to Formstack!</h2>
+                                </div>
+                            </div>
+                            <div class="announcement-box__body">
+                                <p>Before you get started, please assign a license to be the Primary User. This user will be
+                                    the default record owner for new records created through form submissions.
+                                    <br/>If you don't want to assign this license to yourself, please ask another user to assign
+                                    themselves as the Primary User.</p>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" id="licenseHeaderInfo" styleClass="unassigned-primary-license form-container margin-left-100">
+                        <apex:outputPanel layout="block" styleClass="announcement-box mt50" rendered="{!IF(userLicenses.size==0,false,true)}">
+                            <h1>License Management</h1>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <div class="fs_pillmessage_cmp"></div>
+                    <div class="fsheader-wrapper-outer margin-left-100">
+                        <div class="fsheader-wrapper">
+                            <div class="fsheader-wrapper-inner ">
+                                <div class="license-header">
+                                    <div class="edition-box">
+                                        <div class="edition-box-inner">
+                                            <h2 class="mb20">{!packageTierFormatted} Edition</h2>
+                                        </div>
+                                    </div>
+                                    <div class="license-count-status-box">
+                                        <apex:outputPanel layout="block" id="licenseInfoBox" styleClass="license-count-status-box-inner">
+                                            <script>
+                                                var availableLicenseCount = parseFloat("{!availableUserLicenseCount}");
+                                                var assignedUserLicensePercent = parseFloat("{!assignedUserLicensePercent}");
+                                            </script>
+                                            <div class="license-count-status-box__summary">
+                                                <div class="license-count-status-box__summary-text">
+                                                    <span>Licenses Purchased</span>
+                                                    <span class="license-count">{!userLicenseLimit}</span>
+                                                </div>
+                                                <div class="license-count-status-box__summary-text">
+                                                    <span>Unassigned Licenses</span>
+                                                    <span class="license-count">
+                                                        <span class="available-license-count">{!availableUserLicenseCount}</span>&nbsp;/&nbsp;{!userLicenseLimit}</span>
+                                                </div>
+                                            </div>
+                                            <div id="assignedUserLicenseProgress" />
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                                <apex:outputPanel layout="block" id="unassignedLicensesPanel" styleClass="unassigned-primary-license">
+                                    <apex:outputPanel layout="block" styleClass="fscontent-table" rendered="{!IF(isPrimaryUnassigned,true,false)}">
+                                        <div class="gr-content-row">
+                                            <div class="content-td">
+                                                <b style="font-family:'Open Sans Bold'">Unassigned</b>
+                                                <span layout="block" class="primary-license community-badge blue-tooltip">
+                                                    <span class="blue-tooltip-text -mt100 -ml40">This is the default record owner for new records created through form
+                                                        submissions. Only the Primary User can refresh the Formstack authentication
+                                                        token.</span>
+                                                    <span class="draft-text">Primary User</span>
+                                                </span>
+                                            </div>
+                                            <div class="content-td">
+                                                <div class="vabutton2" data-authurl="{!linkToAuthorizeApp}" onclick="confirmAndAssignPermissionSetToMe(this);return false;"
+                                                    style="display: inline-block;">
+                                                    <span class="btnText">Assign to me</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+
+                                <apex:outputPanel layout="block" id="assignedLicensesPanel" styleClass="assigned-primary-license form-container">
+                                    <apex:outputPanel layout="block" styleClass="fscontent-table" rendered="{!IF(userLicenses.size==0,false,true)}">
+                                        <apex:repeat value="{!userLicenses}" var="userLicense" id="theRepeat">
+                                            <div class="gr-content-row  {!IF(AND(isPrimaryLicenseUserInactive, userLicense.license.Type__c == 'Primary'), 'inactive','')}">
+                                                <div class="content-td user-info-col user-{!userLicense.license.User__c}  {!IF(!userLicense.isActive, 'user-row_standard--inactive','')}">
+                                                    <span class="td-warning-icon" style="{!IF(AND(isPrimaryLicenseUserInactive, userLicense.license.Type__c == 'Primary'), '','display:none;')}"></span>
+                                                    <a class="{!IF(AND(userLicense.license.Type__c == 'Primary', !userLicense.isActive), 'a--white','a--blue')}" href="/{!userLicense.license.User__c}">{!HTMLEncode(userLicense.userDisplayName)}</a>
+                                                    <apex:outputText styleClass="you" rendered="{!userLicense.license.VisualAntidote__User__c == $User.Id}" value="(you)" />
+                                                    <apex:outputText styleClass="you" rendered="{!!userLicense.isActive}" value="(inactive)" />
+
+                                                    <apex:outputPanel html-data-userid="{!IF(userLicense.license.VisualAntidote__User__c == $User.Id,userLicense.license.VisualAntidote__User__c,'')}" rendered="{!userLicense.license.VisualAntidote__Type__c == 'Primary'}"
+                                                        styleClass="primary-license community-badge blue-tooltip">
+                                                        <span class="blue-tooltip-text -mt100 -ml40">This is the default record owner for new records created through
+                                                            form submissions. Only the Primary User can refresh the Formstack
+                                                            authentication token.
+                                                        </span>
+                                                        <span class="draft-text">Primary User</span>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                <div class="content-td">
+                                                    <apex:outputPanel styleclass="vabutton2" html-data-authurl="{!linkToAuthorizeApp}" rendered="{!AND(userLicense.license.VisualAntidote__Type__c == 'Primary', userLicense.license.VisualAntidote__User__c != $User.Id)}"
+                                                        onclick="confirmAndAssignPermissionSetToMe(this);return false;">Assign to me</apex:outputPanel>
+                                                    <apex:outputPanel styleclass="vabutton2" rendered="{!AND(hasManagePackageLicensePermission,userLicense.license.VisualAntidote__Type__c != 'Primary')}"
+                                                        onclick="removeUser('{!userLicense.license.VisualAntidote__User__c}');">Remove</apex:outputPanel>
+                                                </div>
+                                            </div>
+                                        </apex:repeat>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+
+
+                                <apex:outputPanel layout="block" id="userSearchPanel" styleClass="user-search">
+                                    <apex:outputPanel layout="block" styleClass="user-search--inner" rendered="{!AND(hasManagePackageLicensePermission,availableUserLicenseCount > 0)}">
+                                        <div class="user-search__row">
+                                            <div class="user-search__row--td">
+                                                <input id="inputTextUserNames" type="text" class="user-name" placeholder="Select a user to add" />
+                                                <span id="suggestionList" class="user-suggestion-list"></span>
+                                                <br/>
+                                                <div class="license-available">
+                                                    <span class="available-license-count">{!IF(availableUserLicenseCount == 0, 'No', availableUserLicenseCount)}</span>&nbsp;license{!IF(availableUserLicenseCount
+                                                    == 1, '', 's')} available</div>
+                                            </div>
+                                            <div class="user-search__row--td">
+                                                <div class="vabutton1 add-user" onclick="addUser(this);return false;" style="display: inline-block;">
+                                                    <span class="btnText">Add User</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:actionFunction name="resetLicenseListJs" action="{!resetLicenseList}" rerender="errorMessages,licenseHeaderInfo,announcementPanel,licenseInfoBox,unassignedLicensesPanel,assignedLicensesPanel,userSearchPanel"
+                                    oncomplete="initializePageComponents();" />
+                                <apex:pageMessages id="errorMessages" />
+                            </div>
+                        </div>
+                    </div>
+                    <apex:outputPanel layout="block" styleClass="form-container margin-left-100" rendered="{! IF(AND(OR(packageTier == 'EnterprisePlus',packageTier == 'NativeCloud'), userLicenses.size != 0), true, false) }">
+                        <div class="form-container-inner">
+                            <div class="box-m25">
+                                <h1>Community Prefill Permissions</h1>
+                            </div>
+                            <div class="shadow-box">
+                                <div class="shadow-box__column70">
+                                    <p>To enable prefill on Community forms, your community sites must be registered in the
+                                        Remote Site Settings page. You can add all existing sites now.
+                                    </p>
+                                    <p>
+                                        <strong>Note:</strong> You can manually add individual Community sites or make changes to
+                                        Remote Site Settings as well.
+                                        <a class="a--blue" target="_blank" href="https://sfapphelp.formstack.com/hc/en-us/articles/360018480252-Prefilling-Community-Forms-from-Logged-in-User"
+                                            title="Learn more">Learn more</a>
+                                    </p>
+                                </div>
+                                <div class="shadow-box__column30">
+                                    <a class="vabutton1 mt20 mr15" title="Update Sites" onclick="addRemoteSitesForApexCallouts(this)">Update Sites</a>
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                    <apex:outputPanel layout="block" styleClass="form-container margin-left-100">
+                        <div class="form-container-inner critical_Update_container">
+                            <div class="box-m25">
+                                <h1>Sharing Rules for Site Guest Users</h1>
+                            </div>
+                            <div class="shadow-box ">
+                                <div class="shadow-box_table critical_Update {! IF(isSharingSettingEnable,'','hide-element')}">
+                                        <div class="shadow-box_sub_title">
+                                            <span class="shadow-box-fail"></span>
+                                            <p class="shadow-box-circle-title">Salesforce Critical Update</p>
+                                        </div>
+                                        <p class="shadow-box_description">Follow the steps below to create sharing rules so that community users can maintain access to Formstack Forms.</p>
+                                </div>
+
+                                <div class="shadow-box__column70">
+                                    <p>Publicly accessible Community Forms and all NativeCloud forms are accessed by the Salesforce Guest user. 
+                                        Sharing rules are required due to a <a class="a--blue" target="_blank" href="https://releasenotes.docs.salesforce.com/en-us/winter20/release-notes/rn_cruc.htm"
+                                        title="Salesforce critical update.">Salesforce critical update.</a> To enable access, follow the steps below.
+                                    </p>
+                                </div>
+                               <div class="shadow-box_table">
+                                <div class="shadow-box__column50">
+                                    <div class="shadow-box_sub_title">
+                                        <span class="shadow-box-circle">1</span>
+                                        <p class="shadow-box-circle-title">Create Sharing Rules</p>
+                                    </div>
+                                    <p class="shadow-box_description">If we detect any missing Sharing Rules, will create them for all applicable objects.</p>
+                                    <a id='btnSharingRules' class="{!IF(isSharingSettingEnable,'','disable-button')} vabutton1 mt20 mr15 " title="Create Sharing Rules" onclick="addSharingRules(this);">Create Sharing Rules</a>
+                                    <div class="license-available {! IF(isSharingSettingEnable,'hide-element','')}">
+                                        No sharing rules missing.</div>
+                                </div>
+                                <div class="shadow-box__column50">
+                                    <div class="shadow-box_subTitle">
+                                        <span class="shadow-box-circle">2</span>
+                                        <p class="shadow-box-circle-title" >Re-calculate</p>
+                                    </div>
+                                    <p class="shadow-box_description">
+                                        To apply Sharing Settings please re-calculate sharing rules following the steps in our
+                                        <a class="a--blue" target="_blank" href="https://sfapphelp.formstack.com/hc/en-us/articles/360038062751-Salesforce-Winter-20-and-Sharing-Rules"
+                                        title="Learn more">support article.</a>
+                                    </p>
+                                </div>
+
+                               </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                    <apex:outputPanel layout="block" styleClass="form-container margin-left-100">
+                        <div class="form-container-inner critical_Update_container">
+                            <div class="box-m25">
+                                <h1>Sharing Rules for Community Portal Users</h1>
+                            </div>
+                            <div class="shadow-box ">
+                                <div class="shadow-box__column70">
+                                    <p>By default, Formstack managed package objects have Org-Wide Defaults set to <a class="a--blue" target="_blank" href="https://help.salesforce.com/articleView?id=security_owd_external_setting.htm"
+                                        title="Salesforce critical update.">Private.</a> This prevents logged-in Community users from accessing Community Forms.  
+                                        Sharing Rules must be created to allow this access. To enable access, follow the steps below.
+                                    </p>
+                                </div>
+                               <div class="shadow-box_table">
+                                <div class="shadow-box__column50">
+                                    <div class="shadow-box_sub_title">
+                                        <span class="shadow-box-circle">1</span>
+                                        <p class="shadow-box-circle-title">Create Sharing Rules</p>
+                                    </div>
+                                    <p class="shadow-box_description">If we detect any missing Sharing Rules, will create them for all applicable objects.</p>
+                                    <a id='btnCommunitySharingRules' class=" vabutton1 mt20 mr15 " title="Create Sharing Rules" onclick="addCommunitySharingRules(this);">Create Sharing Rules</a>
+                                    <div class="license-available hide-element">
+                                        No sharing rules missing.</div>
+                                </div>
+                                <div class="shadow-box__column50">
+                                    <div class="shadow-box_subTitle">
+                                        <span class="shadow-box-circle">2</span>
+                                        <p class="shadow-box-circle-title" >Re-calculate</p>
+                                    </div>
+                                    <p class="shadow-box_description">
+                                        To apply Sharing Settings please re-calculate sharing rules following the steps in our
+                                        <a class="a--blue" target="_blank" href="https://sfapphelp.formstack.com/hc/en-us/articles/360038062751-Salesforce-Winter-20-and-Sharing-Rules"
+                                        title="Learn more">support article.</a>
+                                    </p>
+                                </div>
+
+                               </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                </div>
+                <!-- End User management -->
+                <!-- Start Sandbox management -->
+                <div id="sandbox-management" style="display:none" >
+
+
+                    <apex:outputPanel layout="block" id="sandboxHeaderInfo" styleClass="form-container margin-left-100" >
+                        <apex:outputPanel layout="block" styleClass="announcement-box mt50">
+                            <h1>Sandbox Management</h1>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" id="FSGridPanel" styleClass="form-container margin-left-100" rendered="{!enableSandboxManagement}">
+                        <div id="FSGrid-sandbox"></div>
+                    </apex:outputPanel>
+                    <!-- Begin Lightbox -->
+                    <div id="fsLightbox3387782" class="fsLightbox" style="display:none;">
+                        <div align="right" class="header">
+                            <span class="header-text">Contact Us</span>
+                            <a id="fsLightboxClose3387782" href="#" class="close" title="close">Close</a>
+                        </div>
+                        <div id="fsLightboxContent3387782" style="width:676px; height:641px; padding-top:0px; overflow:auto;">
+                            <!-- <script type="text/javascript" src="https://formstackhq.formstack.com/forms/js.php/callrequest_sfapp_sandbox_request"></script> -->
+                            <iframe style="border: none;" src="https://realdata.formstack.com/forms/callrequest_sfapp_sandbox_request" title="Call Request | SF App | Sandbox Request"
+                                width="676" height="100%"></iframe>
+
+                        </div>
+                    </div>
+                    <script type="text/javascript">
+                        var fsLightbox3387782 = new FSLightbox({
+                            form: 3387782,
+                            handleText: "Call Request | SF App | Sandbox Request",
+                            handlePosition: "left",
+                            handleImage: "https://realdata.formstack.com/forms/lightboxHandle.php?str=Call+Request+%7C+SF+App+%7C+Sandbox+Request",
+                            handle: null
+                        });
+                    </script>
+                    <!-- Use fsLightbox3387782.show() or set handle: "ID" to open lightbox without using predefined handle -->
+                    <!-- End Lightbox -->
+
+ 
+                </div>
+                <div id="integration-settings" style="display:none" >
+
+                    <apex:outputPanel layout="block" id="integrationHeaderInfo" styleClass="form-container margin-left-100" >
+                        <apex:outputPanel layout="block" styleClass="announcement-box mt50">
+                            <h1 style='margin-bottom:24px'>Integration Credentials</h1>
+                            <div class='integrationPillMessage'></div>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block" id="FSGridIntegrationPanel" styleClass="form-container margin-left-100">
+                        <div id="FSGrid-integration"></div>
+                        <script>
+                            fs.ISP.refreshIntegrations(function(resultElements){
+                                var outputElement = document.getElementById('FSGrid-integration');
+                                resultElements.forEach(function(element){outputElement.appendChild(element)});
+                            },true,false,engineEndpoint);
+                        </script>
+                    </apex:outputPanel>
+ 
+                </div>
+            </apex:outputPanel>
+
+            <!-- End Sandbox management -->
+            <!-- ALERTS -->
+            <div id="dialog-error"></div> 
+            <!-- End Alerts -->
+        </div>
+
+    </div> <!-- End FastFormsWrapper -->
+    </apex:form>
+    <c:DeskChatComponent ></c:DeskChatComponent>
+
+</apex:page>

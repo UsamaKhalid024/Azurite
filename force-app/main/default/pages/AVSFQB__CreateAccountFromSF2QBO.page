@@ -1,0 +1,16 @@
+<apex:page standardController="Account" showHeader="false" showChat="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <apex:slds />
+        </head>
+        <body>
+            <div class="slds-scope">
+                <div class="slds-box slds-theme--default">
+                    The button is deprecated instead use <b>'Integration'</b> field and choose <b>'Request Sync'</b> to sync this record
+                </div>
+            </div>
+        </body>
+    </html>
+</apex:page>

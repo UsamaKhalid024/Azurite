@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__Fields_List__c</fullName>
+    <defaultValue>&quot;id,Name,VisualAntidote__Form__r.Name,VisualAntidote__Objects_XML__c,VisualAntidote__Submission_Date__c,VisualAntidote__IP_Address__c,VisualAntidote__User_Content_ID__c,VisualAntidote__E_Sign__c ,VisualAntidote__Status__c,VisualAntidote__Record_Created_Updated__c&quot;</defaultValue>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Fields List</label>
+    <length>2000</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

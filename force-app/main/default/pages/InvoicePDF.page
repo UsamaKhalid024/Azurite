@@ -1,0 +1,744 @@
+<apex:page extensions="InvoicePDFCtrl" standardController="breadwinner_qbo__Invoice__c" renderAs="pdf" applyBodyTag="false" showHeader="false" sidebar="false" standardStylesheets="false">
+    
+    <head>
+        <style>
+            table {
+              border-collapse: collapse;
+              width:100%;
+            }
+            td{
+                font-family:'SansSerif';
+                color:#000;
+            font-size:13px;
+            }
+            tr#hadings td{
+                font-family:'SansSerif';
+                color:white;
+                padding:20px 0px 20px 0px;
+                font-size:13px;
+            }
+            @page{
+                margin-left:-0.2cm;
+                margin-right:-0.2cm;
+            }
+            .pdf-margins{
+                margin-left:1cm;
+                margin-right:1cm;
+            }
+            .table-margins tr td{
+                padding: 7px 8px 12px 8px;
+                font-size:13px;
+            }
+            tr#sections td{
+                padding: 7px 8px 7px 8px;
+                font-size:13px;
+            	color:white;
+            }
+            .table-margins tr#hadings td{
+            	text-align:center;
+            }
+            #table-first-body tr td{
+                padding: 18px 8px 18px 8px;
+                font-size:13px;
+            }
+            #total{
+                width: 100%; 
+                float:left; 
+                margin-top:150px;
+            }
+            #total tr td{
+                border-top:1px solid #8ec7cc;
+                border-bottom:1px solid #8ec7cc;
+                color:#26909b;
+                padding:10px 0px 10px 0px;
+            }
+            ul.First-panel-info li::before {
+            	content: "*";
+  				display: inline-block; width: 1em;
+  				margin-left: -1em;
+            	font-weight: bold;
+            }
+            ul.First-panel-info li{
+            	margin-left: -27px;
+            }
+            
+            ol.Second-panel-info >li {
+              margin-left: -44px;
+              padding:0 0 0 2em;
+              text-indent:-2em;
+              list-style-type:none;
+              counter-increment:item;
+            }
+             
+            ol.Second-panel-info >li:before {
+              display:inline-block;
+              width:1.5em;
+              padding-right:0.5em;
+              font-weight:bold;
+              color:black;
+              text-align:right;
+              content:counter(item) ".";
+            }
+            table.Azurite_Terms_and_Conditions tr td{
+            	color:#2f2f2f;
+            }
+            table.Client_Consent_and_Release tr td{
+            	color:#2f2f2f;
+            }
+            table.Azurite_Non_Disclosure_Terms_and_Conditions tr td{
+            	color:#2f2f2f;
+            }
+            table.Client_Agreement tr td{
+            	color:#2f2f2f;
+            }
+            table.Client_Agreement tr td ol li ol{
+            	counter-reset: listStyle;
+            }
+            table.Client_Agreement tr td ol li ol > li {
+            	counter-increment: listStyle;
+            }
+            table.Client_Agreement tr td ol li ol > li::before {
+  				content: counter(listStyle, lower-alpha)")";
+            }
+            tr.bllir-info td div.billers-deatils{
+            	border: 2px solid #012d6a !important;
+            	padding: 20px 0px 19px 5px;
+            }
+            .billers-Info {
+            	color: #012d6a;
+            }
+            ol {
+            	list-style-type: upper-roman;
+            }
+        </style>
+    </head>
+    <apex:form >
+        <div class="pdf-margins"> 
+        <table style="width:100%;" id="table-first-body">
+            <tbody>
+                <tr>
+                    <td style="width:150px; padding: 0px 8px 0px 78px;" colspan="5">
+                        <apex:image style="width:130px;" value="{!URLFOR($Resource.Azuright_Logo_2)}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="width:40%; padding: 0px 8px 0px 8px;">
+                        <span style="font-weight:bold;">
+                            <apex:outputText >Azurite Medical and Wellness</apex:outputText>
+                        </span>
+                        <br/>
+                        <apex:outputText value="Open Source Consulting Pty. Ltd." />
+                        <br />
+                        <apex:outputText value="48/143 Corrimal St.,"/>
+                        <br />
+                        <apex:outputText value="Wollongong,"/>
+                        <br />
+                        <apex:outputText value="NSW 2500," />
+                        <br />
+                        <apex:outputText value="Australia" />
+                    </td>
+                    <!--<td style="width:120px;">
+                        (03) 1234 5678
+                        trina@azurite.com.au azurite.com.au A.B.N. 87138794920
+                    </td>-->
+                    <td style="width:30%;">
+                    </td>
+                    <td>
+                        <table>
+                            <tr>
+                            	<td>
+                                    <span style="float:right;">
+                                        <b>Invoice number:</b> #<apex:outputText value="{!InvoiceObj.Name}" />
+                                        <b>Date:</b> &nbsp; <apex:outputText value="{0, date,d MMM yyyy}"> <apex:param value="{!InvoiceObj.CreatedDate}" /> </apex:outputText> <br/>
+                                        <b>ABN:</b> &nbsp; <apex:outputText value="{!'87138794920'}" ></apex:outputText>
+                                    </span>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        </div>
+        <div class="pdf-margins"> 
+            <table style="width: 100%; float: left;" class="table-margins">
+                <tr id="sections" style="background:#3d56a9;">
+                    <td style="color:white !important;">
+                        Client Information
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <apex:outputText >{!Invoiceobj.breadwinner_qbo__Customer_Name__c}</apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="pdf-margins">
+            <table style="width: 100%; float: left;" class="table-margins">
+                <tr id="sections" style="background:#3d56a9; color:white !important;">
+                    <td style="width:33%;">
+                        Coordinator
+                    </td>
+                    <td style="width:33%;">
+                        Payment Terms
+                    </td>
+                    <td style="width:33%;">
+                        Due Date
+                    </td>
+                </tr>
+                <tr>
+                	<td valign="top">
+                        Trina Eliassen
+                    </td>
+                    <td valign="top">
+                        Deposit by Bank Transfer, BPAY or Credit
+                        Card. Additional procedures agreed to in
+                        final surgery consultation require a credit
+                        card payment directly to the hospital.
+                        Terms Net 7
+                    </td>
+                    <td valign="top">
+                        Payment is required to secure desired
+                        surgery date.
+                        <br/>
+                        Due Date: &nbsp; <apex:outputText value="{0, date,d/MM/yyyy}"> <apex:param value="{!InvoiceObj.breadwinner_qbo__Due_Date__c}" /> </apex:outputText>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        
+        <div class="pdf-margins">
+            <table class="" style="margin-top:190px;">
+                <tr id="sections">
+                    <td style="width:20%; color:#000;" valign="top">
+                        <h3 style="margin-bottom: 2px;">Account Name</h3>
+                        <b>BSB:</b> <apex:outputText >032 – 605</apex:outputText>
+                        <br/>
+                        <b>Bank:</b> Westpac 
+                        <br/>
+                        <b>Bank Address</b>
+                    </td>
+                    <td style="width:25%; color:#000;" valign="top">
+                        <h3 style="margin-bottom: 2px;">Open Source Consulting</h3>
+                        <b>Account Number:</b> 246552
+                        <br/>
+                        <b>Swift Code:</b> WPACAU2S
+                        <br/>
+                        Shop 1066 Stockland Mall,
+                        Shellharbour, NSW 2529
+                    </td>
+                    <td style="width:33%; color:#000;">
+                        <table>
+                            <tr class="bllir-info">
+                                <td style="width:32px; padding-left:0px; padding-right:0px; padding-bottom: 1px;">
+                                	<apex:image style="width:52px;" value="{!URLFOR($Resource.Bllir_Pays_Logo)}"/>
+                                </td>
+                            	<td style="padding-left: 2px; padding-bottom: 1px; padding-right:0px;">
+                                    <div class="billers-deatils">
+                                        <span style="color:#012d6a; font-weight:600; font-family: 'Sans-serif' !important; font-size:15px;">
+                                            Biller Code: XXXXXXX
+                                        </span>
+                                        <br />
+                                        <span style="color:#012d6a; font-weight:700;  font-family: 'Sans-serif' !important; font-size:15px;">
+                                            <apex:outputPanel rendered="{!InvoiceObj.CRN_Number__c != ''}">
+                                                CRN: &nbsp; <apex:outputText value="{!InvoiceObj.CRN_Number__c}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!InvoiceObj.CRN_Number__c == ''}">
+                                                CRN: &nbsp; <apex:outputText value="{!InvoiceObj.CRN_Number__c}" />
+                                            </apex:outputPanel>
+                                        </span>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td colspan="2">
+                                    <div class="billers-Info" style="text-align:justify;">
+                                		<b>Telephone &amp; Internet Banking – B<span style="font-size: 10px;">PAY</span>&reg;</b>
+                                    	<br/>
+                                        Contact your bank or financial institution to make this
+                                        payment from your cheque, savings, debit, crdit card,
+                                        or transaction account. More Info: www.bpay.com.au
+                                    </div> 
+                               </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                	<td colspan="3" style="padding:0px 0px 0px 50px;">
+                    	<h3>
+                            Surgery Package Includes:
+                        </h3>
+                        <p>
+                            Accommodation at Chatrium Residence Sathorn and daily buffet breakfast<br/>
+                            Anaesthesiology, hospital fees and medical testing (routine testing only)<br/>
+                            Azurite on-site assistance<br/>
+                            Facilitation fee<br/>
+                            Airport &amp; surgical consult/hospital transfers<br/>
+                            Companion included (N/C)
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <p style="page-break-after:always;"> </p>
+        <div class="pdf-margins">
+          <table style="width: 100%; float: left;" class="table-margins">
+            <tr id="sections" style="background:#3d56a9; color:white !important;">
+                <td>
+                    Surgery/Service Date
+                </td>
+                <td>
+                    Service
+                </td>
+                <td>
+                    Service Description
+                </td>
+                <td>
+                    Amount AUD
+                </td>
+            </tr>
+            <apex:repeat value="{!InvoiceLineItems}" var="LineItems" id="theRepeat">
+                <tr>
+                    <td style="width:10%;">
+                        <apex:outputText value="{0, date,d/MM/yyyy}"> 
+                            <apex:param value="{!LineItems.breadwinner_qbo__Service_Date__c}" /> 
+                        </apex:outputText>
+                    </td>
+                    <td style="width:20%;">
+                        <apex:outputText value="{!LineItems.breadwinner_qbo__Product_Service__c}"/>
+                    </td>
+                    <td style="width:60%;">
+                        <apex:outputText value="{!LineItems.breadwinner_qbo__Description__c}"/>
+                    </td>
+                    <td  style="width:10%;">
+                        <apex:outputField value="{!LineItems.breadwinner_qbo__Amount__c}" />
+                    </td>
+                </tr>
+            </apex:repeat>
+            <tr>
+               <td style="width:70%;" colspan="2">
+               </td>
+               <td style="width:30%;" colspan="2">
+                     <table>
+                     	<tr>
+                        	<td style="width:87%; padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:right; font-weight: bold;">
+                                	Subtotal
+                                </span>
+                            </td>
+                            <td style="width:15%; padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:left;">
+                                	<apex:outputField value="{!InvoiceObj.breadwinner_qbo__Sub_Total__c}" />
+                                </span>
+                            </td>
+                        </tr> 
+                         <tr>
+                        	<td style="width:87%; padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:right; font-weight: bold;">
+                                	Discount
+                                </span>
+                            </td>
+                            <td style="width:15%;  padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:left;">
+                                	<apex:outputField value="{!InvoiceObj.breadwinner_qbo__Discount_Amount__c}" />
+                                </span>
+                            </td>
+                        </tr> 
+                         <tr>
+                        	<td style="width:87%; padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:right; font-weight: bold;">
+                                	Amount Paid
+                                </span>
+                            </td>
+                            <td style="width:15%;  padding: 0px 16px 0px 8px;">
+                                <span style="font-size: initial; float:left;">
+                                	<apex:outputField value="{!InvoiceObj.breadwinner_qbo__Total__c}" />
+                                </span>
+                            </td>
+                        </tr> 
+                         <tr>
+                        	<td style="width:87%; padding: 0px 16px 0px 8px;">
+                            	<span style="font-size: initial; float:right; font-weight: bold;">
+                                	Total AUD Package Price
+                                </span>
+                            </td>
+                            <td style="width:15%;">
+                            	
+                            </td>
+                        </tr> 
+                   	 </table>
+               </td>
+            </tr>
+           	<tr>
+            	<td style="width: 10%;" colspan="1"></td>
+                <td style="width: 80%;" colspan="2">
+                    <span style="font-size: initial; font-weight: bold;">
+                		Please note your quote is based on today's exchange rate and is only valid until the stated due date above to pay in full to the nominated AUD bank account.
+                    </span>
+                </td>
+                <td style="width: 10%;"></td>
+            </tr>
+        </table>
+        </div>
+        
+		<div class="pdf-margins">
+            <table style="margin-top:300px;">
+                <tbody>
+                <tr>
+                	<td style="padding:0px 95px 0px 50px;">
+                    	<span>
+                        	Alternatively, you can pay in two instalments. To pay in two instalments you can make an initial payment of your 'quoted surgery package price' to the AUD account and then pay the outstanding quoted USD medical balance to the below surgeon's details account. For more information, please contact <a href="mailto:info@azurite.com.au" target="_top">info@azurite.com.au</a>
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="padding:10px 75px 10px 50px;">
+                        If paying medical balance separately we suggest sending payment through OFX: <br/>
+                        <apex:outputLink value="{!'https://www.ofx.com/enau/?cid=2269&gclid=CjwKCAiApOvwBRBUEiwAcZGdGB7qiXEPGHSVNxpK4m7FTg5eey0eRJ
+zVDR2SS8tw8ubsjIvqr1V5kRoC5EIQAvD_BwE&gclsrc=aw.ds'}" >
+                        	https://www.ofx.com/enau/?cid=2269&amp;gclid=CjwKCAiApOvwBRBUEiwAcZGdGB7qiXEPGHSVNxpK4m7FTg5eey0eRJ
+zVDR2SS8tw8ubsjIvqr1V5kRoC5EIQAvD_BwE&amp;gclsrc=aw.ds
+                        </apex:outputLink>
+                    </td>
+                </tr>
+                    
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                        <table border="1">
+                            <tr>
+                            	<td style="width: 50%; padding-left:10px;">
+                                    <span style="font-size: initial; float:left; font-weight: bold;">
+                                		Bangkok Bank
+                                    </span>
+                                </td>
+                                <td>
+                                	Bangkok Bank PCL 333 Silom Road Bangkok 10500 Thailand
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td style="width: 50%; padding-left:10px;">
+                                    <span style="font-size: initial; float:left; font-weight: bold;">
+                                		Swift Code
+                                    </span>
+                                </td>
+                                <td>
+                                	BKKBTHBK
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td style="width: 50%; padding-left:10px;">
+                                    <span style="font-size: initial; float:left; font-weight: bold;">
+                                		Recipient Address
+                                    </span>
+                                </td>
+                                <td>
+                                    Dr Theerapong Poonyakariysgorn 998 Rim <br/> Klong Samsen Rd., Bangkok <br/> Thailand *...* 10310
+                                </td>
+                            </tr>
+                            <tr>
+                            	<td style="width: 50%; padding-left:10px;">
+                                    <span style="font-size: initial; float:left; font-weight: bold;">
+                                		Email
+                                    </span>
+                                </td>
+                                <td>
+                                	<apex:outputLink value="mailto:{!'drtheerapong@azurite.com.au'}" >drtheerapong@azurite.com.au</apex:outputLink>
+                                </td>
+                            </tr>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td>
+                    	<center>
+                        	<h3>
+                                Azurite Terms and Conditions
+                            </h3>
+                        </center>
+                    </td>
+               	</tr>
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                    	<ol style="Margin-top:-10px;">
+                            <li>
+                                Azurite is a facilitator of surgery on the client's behalf. All surgery items listed above will be
+                                paid directly to the selected surgeon's financial institution. If you choose not to proceed with a
+                                particular procedure, you will be refunded the specific 'surgeon only fee' for that surgery
+                                based on the currency conversion and less any multi surgery discounts applied at the time.
+                            </li>
+                            <li>
+                                If you are seeking the compassionate release of superannuation through Azurite, we will
+                                provide the supporting documentation once you have received approval from a qualified GP.
+                                However, if you choose to proceed with an alternative provider or wish to cancel, you will
+                                incur a $500 service fee payable immediately.
+                            </li>
+                            <li>
+                                PLEASE NOTE: We have a set amount of times that are standard for each surgery and once
+                                you are sent back to the hotel, you are supposed to be mobile and be able to take care of
+                                yourself.
+                            </li>
+                            <li>
+                                If you have not brought a companion and feel you need more attentive service, we have
+                                available full-time care at your room for an additional fee. Please contact us for more
+                                information.
+                            </li>
+                            <li>
+                                ALSO NOTE: Pre-existing medical conditions which require extra medication or stay are the
+                                responsibility of the Client.
+                            </li>
+                        </ol>
+                    </td>
+                </tr>
+                    
+                <tr>
+                    <td>
+                    	<center>
+                        	<h3>
+                                Azurite Terms and Conditions
+                            </h3>
+                        </center>
+                    </td>
+               	</tr>
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                    	<p style="text-align:Justify; Margin-top:-10px;">
+                            Azurite is proud of its reputation as having one of the highest customer satisfaction rates in the industry
+                            and will make every effort to ensure your successful surgery and recovery. It is intended that these
+                            Terms and Conditions are legally binding on you and us. By completing the Client Registration Form
+                            and proceeding with payment (full and in part), you are deemed to accepting these Terms and
+                            Conditions, which together with the Privacy Statement govern Azurite’s relationship with you in relation
+                            to your surgery package. Azurite may change the content of the Surgery Guide, Terms and Conditions
+                            and Privacy Statement at our discretion and without notice. By continuing to proceed with the surgery
+                            quoted (or billed) you accept the Terms and Conditions as they apply from time to time. Your
+                            engagement with Azurite Medical and Wellness and any dispute arising out of the engagement is
+                            subject to the laws of New South Wales, Australia. Quality of the final result of surgery is also dependent
+                            on the customer/ client closely following any health and healing recommendations given by Azurite or
+                            their affiliated surgeons. In the unlikely event that the outcome of the surgery is less than should be
+                            expected and is attributable to the surgical error, Azurite will pursue remediation of the surgery at no
+                            extra medical cost to the customer. However, Azurite has no legal jurisdiction in any countries which
+                            surgery is conducted and any disputes arising out of surgical error is to be relayed to your Customer
+                            Representative immediately to ensure efficient handling of the matter. Azurite will do its best to 
+                            ensurethat any disputes occurring out of surgical error are addressed and remediated however Azurite waives
+                            the responsibility for any post-operative issues caused by negligence or omission of the customer/
+                            client.
+                        </p>
+                    </td>
+                </tr>
+                
+                <tr>
+                    <td>
+                    	<center>
+                        	<h3>
+                                Customer/ Client Consent and Release
+                            </h3>
+                        </center>
+                    </td>
+               	</tr>
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                    	<p style="text-align:Justify; Margin-top:-10px;">
+                            Written consent forms are the norm at any treatment provider and such consent forms will need to be
+                            read and signed before any kind of surgery or procedure can start. This is to inform the customer/
+                            client of the risks and benefits associated with receiving medical treatment abroad which includes the
+                            risks and consequences of treatment and travel. Azurite Medical and Wellness do not promise or
+                            guarantee any outcome. The contractual agreement to have surgery is between the surgeon and their
+                            nominated hospital and the individual customer/ client. Azurite is not a part in the contract between
+                            the client and surgeon or their nominated hospital.
+                        </p>
+                        <ol>
+                            <li>
+                                The role of Azurite is to act as a third-party facilitator between the customer/ client and
+                                affiliated surgeons and their nominated medical facilities. Prior to completing the booking
+                                process, clients are strongly urged to get approval from their GP’s in testament to their
+                                physical and mental wellbeing to undertake the surgeries requested, this may include a
+                                psychological test which may be required at Azurites request to continue with the booking
+                            </li>
+                            <li>
+                                Azurite is not held liable nor responsible for any loss or injury that the customer/ client may
+                                experience due to, the failing to expose or omission of, any health issues that the customer/
+                                client may have prior to the surgery
+                            </li>
+                            <li>
+                                Azurite strongly suggests that clients obtain both travel and medical/ cosmetic surgery
+                                insurance with coverage beyond six (6) months
+                            </li>
+                            <li>
+                                Azurite is not responsible for any loss or injury caused by anyone or service outside of our
+                                service provision stated herein or expressly offered within the final package quoted and paid
+                            </li>
+                            <li>
+                                Azurite is not liable, for any reason for any claim made by the customer for loss or injury
+                                sustained by them or in connection to them through the commencement of the customer/
+                                client engagement
+                            </li>
+                            <li>
+                                In the event of a dispute between yourself and the surgeon or their nominated medical facility,
+                                this will be under the governance of the country in which the surgery was carried out. Azurite
+                                Medical and Wellness is indemnified for all medical responsibility for any claims, litigation
+                                and/ or compensation for any personal injury or loss of life caused by the process of medical
+                                consultation, diagnosis, tests or treatment at or by the medical facility where your surgery was
+                                performed
+                            </li>
+                            <li>
+                                Azurite may use any posts made by members of the Azurite private members forum on social
+                                media, to promote or engage in marketing material. No unauthorised use of customer/ client
+                                data will be used inline with the Australian Privacy Act 9. Customers/ clients will be invited to
+                                the Azurite private members forum on various social media channels. For all Azurite
+                                customers/ clients, a Non Disclosure Agreement must be entered prior to being permitted
+                                access to the social media channel
+                            </li>
+                        </ol>
+                    </td>
+                </tr>
+                    
+                    
+                <tr>
+                    <td>
+                    	<center>
+                        	<h3>
+                                Azurite Non-Disclosure Terms and Conditions
+                            </h3>
+                        </center>
+                    </td>
+               	</tr>
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                    	<p style="text-align:Justify; Margin-top:-10px;">
+                            At Azurite Medical and Wellness, we strive for our Customers/ Clients to be happy with the surgery
+                            that they have undergone. Should any issues arise, we want to be your first point of contact so that
+                            we can efficiently try to remediate. However, Azurite customers agree to the condition that they
+                            cannot discuss Azurite affiliated Surgeons, service or their nominated medical centres or hospitals
+                            without prior, written approval outside the Azurite cosmetic surgery forum, on the internet, radio,
+                            television or newspapers and all other media. Azurite is bound by the Australian Privacy Act to ensure
+                            that all your data is held within the correct modes to ensure your privacy. During your booking and
+                            engagement process, you must not:
+                        </p>
+                        <ol>
+                            <li>
+                                Attempt to record the video or audio of your consultation call, or content from the Azurite
+                                members forum, or to take screenshots or copies of images of your video call, for use outside
+                                of those expressly named in the customer/ client Consent and Release
+                            </li>
+                            <li>
+                                Abuse, threaten, intimidate or otherwise violate those using, or delivering the video call
+                                through consultation or participating on the Azurite member forum
+                            </li>
+                            <li>
+                                Engage in behaviour that is pornographic, violent, discriminatory or otherwise offensive. Act
+                                in any way contrary to any rules or regulations given by the Azurite staff on any social media
+                                channels.
+                            </li>
+                        </ol>
+                    </td>
+                </tr>
+                    
+               	<tr>
+                    <td>
+                    	<center>
+                        	<h3>
+                               	Client Agreement
+                            </h3>
+                        </center>
+                    </td>
+               	</tr>
+                <tr>
+                    <td style="padding:10px 95px 10px 50px;">
+                    	<p style="Margin-top:-10px;">
+                            The purpose of this agreement is to set out the commercial terms between the customer and Azurite
+                            as third party facilitator This is to also assist you in understanding what Azurite’s responsibilities are to
+                            you as the client, and what your responsibilities are as the client.
+                            <br/><br/>
+                            All payments to Azurite must adhere to the payment terms included with your quote.
+                            <br/><br/>
+                            Azurite’s Cancellation policy is:
+                        </p>
+                        <ol>
+                            <li>
+                                Cancellation with 30 or more days’ notice: Deposit is fully refundable (exclusive of booked
+                                airfares)
+                            </li>
+                            <li>
+                                Cancellation within 29 days or less: 50% of deposit is forfeited, or one time complimentary
+                                reschedule of Azurite Package.
+                            </li>
+                            <li>
+                               	Cancellation within 7 days: Cost of surgery is forfeited unless Azurite Package is rescheduled
+                            </li>
+                            <li>
+                                Cancellation on the day of surgery: Cost of surgery is forfeited unless Azurite Package is
+                                rescheduled within the travel time window (departure flight window)
+                            </li>
+                        </ol>
+                        <p style="Margin-top:-10px;">
+                            The ‘Pre-Consultation’ quote is subject to change upon your consultation at the hospital. This situation
+                            may arise if additional procedures are required, any procedures are removed, or if any unknown
+                            underlying medical conditions are discovered and require treatment prior to surgery.
+                            <br/><br/>
+                            Services included in the ‘Pre-Consultation’ quote are as follows:
+                        </p>
+                        <ol>
+                            <li>
+                                Charges for additional nights at the hospital
+                            </li>
+                            <li>
+                                Charges for an extra bed at the hotel
+                            </li>
+                            <li>
+                                Special nursing, phone charges and additional meals and drinks at the hotel (whether in-room
+                                or out of room) outside of those stated in your package
+                            </li>
+                            <li>
+                                Pre-operative studies such as laboratory tests, radiology studies etc for pre-existing diseases
+                                or conditions
+                            </li>
+                            <li>
+                            	Treatment of underlying conditions
+                            </li>
+                            <li>
+                                Unforeseen complications that might arise indirectly from your surgical procedure post
+                                operatively g) Flights to and from country of origin
+                            </li>
+                            <li>
+                            	Insurance of any kind
+                            </li>
+                            <li>
+                            	Tours or outings
+                            </li>
+                            <li>
+                                Any time spent in the hotel or hospital beyond the specified dates in the ‘Pre-Consultation’
+                                quote and final confirmation
+                            </li>
+                            <li>
+                                Any time spent in the hotel or hospital beyond the specified dates in the ‘Pre-Consultation’
+                                quote and final confirmation
+                            </li>
+                            <li>
+                            	Airport or departure taxes, laundry services, road tolls
+                            </li>
+                            <li>
+                                Cost of visas, passport issuance or any other travel related costs not included in the ‘Pre
+                                Consultation’ quote.
+                            </li>
+                            <li>
+                                Costs incurred by factors outside Azurite’s control such as poor weather, security risk, strikes,
+                                war or conflict or defective transport services or otherwise acts of God (Force Majeure)
+                            </li>
+                        </ol>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        
+            
+    </apex:form>
+</apex:page>

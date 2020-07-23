@@ -1,0 +1,173 @@
+<apex:page sidebar="false" showHeader="false" controller="zoom_app.ZoomVoiceLoginController">
+	<apex:includeScript value="{! $Resource.Vuejs }" />
+	<apex:includeScript value="{! $Resource.ZoomDialCommon}" />
+	<head>
+		<apex:slds />
+	</head>
+
+	<html xmlns:v-bind="http://vue.org" xmlns:v-on="http://vue.org">
+
+	<body>
+		<style type="text/css">
+			.main-panel {
+				width: 200px;
+				height: 500px;
+				border-radius: 5px;
+				background-color: #ffffff;
+				border: solid 1px #e4e4ed;
+			}
+
+			.sign-in {
+				width: 120px;
+				height: 30px;
+				font-family: OpenSans;
+				font-size: 14px;
+				font-weight: bold;
+				font-style: normal;
+				font-stretch: normal;
+				line-height: 1.43;
+				letter-spacing: normal;
+				text-align: center;
+				color: #ffffff;
+			}
+
+			.zoom {
+				width: 110px;
+				height: 24px;
+				object-fit: contain;
+				margin: 50px auto auto 40px;
+			}
+
+			
+
+			.sign-in-button {
+				width: 92px;
+				height: 32px;
+				border-radius: 8px;
+				background-color: #0E71EB;
+				background-image: none;
+				border: 0px;
+				cursor: pointer;
+			}
+
+			.logo-banner {
+				padding-top: 81px;
+			}
+			.login-panel {
+				margin: 63px 48px;
+			}
+
+		</style>
+		<div class="slds-scope">
+			<div id="login-app">
+				<div class="main-panel" v-bind:style="{'height': getHeight}">
+					<div v-show="!isLoading">
+						<div class="logo-banner">
+							<img src="{! $Resource.zoomLogo }" class="zoom" />
+						</div>
+						<div class="login-panel">
+							<button class="sign-in-button" v-on:click="oauth">
+								<span class="sign-in">Sign In</span>
+							</button>
+						</div>
+
+						
+					</div>
+					
+
+					<div style="height: 6rem;" v-show="isLoading">
+						<div role="status" class="slds-spinner slds-spinner_medium">
+							<span class="slds-assistive-text">Loading</span>
+							<div class="slds-spinner__dot-a"></div>
+							<div class="slds-spinner__dot-b"></div>
+						</div>
+					</div>
+					
+				</div>
+			</div>
+		</div>
+
+		<script type="text/javascript">
+			
+			var app = new Vue({
+				el: '#login-app',
+				data:{
+					isLoading: true,
+				},
+				methods: {
+					oauth: function () {
+						console.log('baseUrl:'+'{!baseURL}');
+						window.open('{!zoomOauthURL}'+"/oauth/authorize?" + // https://devpbx.zoomdev.us/oauth/authorize
+							"client_id={!oauthClientID}" + //j3JkC9D6RbKSA5yP20jaog" + //qd4lK9JWQ1qbOTqyENtsA
+							"&response_type=code" +
+							"&redirect_uri=" + '{!baseURL}' + "/apex/{!ns}ZoomVoiceOAuthSuccess");
+					}
+				},
+				computed: {
+					getHeight: function() {
+						var isLightning = window.location.href.indexOf('lightning') >= 0;
+						if(isLightning) {
+							return '482px';
+						}
+					}
+				}, 
+				mounted() {
+					
+					var errorCode = localStorage.getItem('errorCode');
+					console.log('ErrorCode: ' + errorCode);
+					var params = parseUrlQueryString(location.search);
+					if(errorCode) {
+						params.errorCode = errorCode;
+						redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceLoginError', params);
+					}
+					var sfdcEmail = '{!$User.Email}';
+					//console.log('SFDC Email: ' + sfdcEmail);
+					var userEmail = localStorage.getItem(sfdcEmail);
+					//console.log('zoom Email: ' + userEmail);
+					if (userEmail == null) {
+						//first login
+						this.isLoading = false;
+						this.isZoomVoiceUser = true;
+					} else {
+						
+						Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceLoginController.loginCurrentUser}',
+							userEmail,
+							function (result, event) {
+								if (event.status) {
+									if (result) {
+										app.isLoading = false;
+										var loginFlag = result.loginFlag;
+										var hasCallingPlan = result.hasCallingPlan;
+										console.log('loginFlag: ' + loginFlag);
+										console.log('hasCallingPlan: ' + hasCallingPlan);
+										var params = parseUrlQueryString(location.search);
+										if (!hasCallingPlan) {
+											
+											params.errorCode = 3002;										
+											redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceLoginError', params);
+										}
+										else {
+											if(loginFlag) {
+												app.isLoading = true;								
+												redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceDial', params);
+											}
+										}	
+									}
+								} else if (event.type === 'exception') {
+									// document.getElementById("responseErrors").innerHTML = 
+									// 	event.message + "<br/>\n<pre>" + event.where + "</pre>";
+								} else {
+									// document.getElementById("responseErrors").innerHTML = event.message;
+								}
+							},
+							{ escape: true }
+						);
+					}
+			
+				}
+			});
+		</script>
+	</body>
+
+	</html>
+</apex:page>

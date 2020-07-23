@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Amount_value_is_required</fullName>
+    <active>true</active>
+    <description>Amount value for invoice is required and must be greater than zero.</description>
+    <errorConditionFormula>ISPICKVAL( AVSFQB__Generate_Object__c ,&quot;Invoice&quot;) &amp;&amp; Amount = 0</errorConditionFormula>
+    <errorMessage>You must enter an invoice amount greater than zero.</errorMessage>
+</ValidationRule>

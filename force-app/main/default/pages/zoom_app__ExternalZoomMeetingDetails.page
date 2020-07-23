@@ -1,0 +1,120 @@
+<apex:page standardController="event" extensions="zoom_app.ExternalZoomMeetingDetailsCtrl" sidebar="false" lightningStylesheets="true">
+    <apex:outputPanel rendered="{!isLightning}">
+        <apex:slds />
+  
+            <style>
+            .bold{font-weight: bold !important;text-align: center !important;border: 1px #E3E6FA solid !important;}
+            .borderColor{border: 1px #E3E6FA solid !important;}
+            .lightningbutton{background-color:  #00BFFF !important; color: white !important; border-radius: 8px !important;}
+            body input[type="text"], .slds-scope input[type="text"]{ min-width: 5rem;} <!-- below are for pick list-->
+            body select, body select[size="0"], body select[size="1"], .slds-scope select, .slds-scope select[size="0"], .slds-scope select[size="1"] { min-width: 2rem;}
+            body .pbHeader .pbTitle:last-child, body .pbHeader .pbButton:last-child, .slds-scope .pbHeader .pbTitle:last-child, .slds-scope .pbHeader .pbButton:last-child {  text-align: inherit;}
+            body .pbBody, .slds-scope .pbBody {    overflow: inherit !important;}
+            body .bPageBlock.apexDefaultPageBlock, body .bPageBlock.bDetailBlock, body .bPageBlock.bEditBlock, .slds-scope .bPageBlock.apexDefaultPageBlock, .slds-scope .bPageBlock.bDetailBlock, .slds-scope .bPageBlock.bEditBlock {
+            padding: 0rem !important;}
+            .slds-scope .slds-lookup__menu {width: 150% !important;    display: grid;}
+            .slds-scope .slds-p-top--medium, .slds-scope .slds-p-top_medium { padding-top: 0px !important;}
+            .apexp { padding-top: 13px;}
+            body .bPageBlock.apexDefaultPageBlock, body .bPageBlock.bDetailBlock, body .bPageBlock.bEditBlock, .slds-scope .bPageBlock.apexDefaultPageBlock, .slds-scope .bPageBlock.bDetailBlock, .slds-scope .bPageBlock.bEditBlock{ border: none !important;}
+            .messageText{color: black !important;}
+            </style>
+               <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.0/jquery.min.js"></script>
+        <script>
+            $(document)
+                .ready(function ()
+                {
+                    // code after document ready
+                });
+                $('body').click(function() {
+                   // do something here
+                   closePopup();
+                });
+             // custom functions here 
+             function closePopup()
+             {
+                 
+                 $('.slds-lookup__menu').css("display",  'none');
+             };
+        </script>
+    </apex:outputPanel>
+    <apex:form id="fm1">
+        <apex:outputPanel id="msgPannel">
+            <apex:pageMessages ></apex:pageMessages>
+            <apex:pageMessage severity="info" strength="1" id="msg3" rendered="{!subjectCheck}" summary="{!$Label.zoom_app__subject_required}"></apex:pageMessage>
+            <apex:pageMessage severity="info" strength="2" id="msg1" rendered="{!IsIncomplete}" summary="{!$Label.zoom_app__maxlimitmessage}"></apex:pageMessage>
+            <apex:pageMessage severity="warning" strength="2" id="msg2" rendered="{!NOT(configCheck)}" summary="{!errorMsg}"></apex:pageMessage>
+        </apex:outputPanel>
+        <apex:pageBlock >
+            <apex:pageBlockSection columns="2">
+                <apex:inputField value="{!evnt.ActivityDate}" label="StartDate" showDatePicker="true" />
+                <apex:inputField value="{!evnt1.ActivityDate}" label="EndDate" />
+            </apex:pageBlockSection>
+            <center>
+                <apex:commandButton action="{!getDetails}" value="Get Details" reRender="fm1" status="status2" styleClass="lightningbutton" oncomplete="closePopup();" />&nbsp;
+
+            </center>
+            <center>
+                <apex:actionStatus id="status2" startText="processing">
+                    <apex:facet name="start">
+                        <!-- SPINNER -->
+                        <b> Please Wait....... </b>
+                        <img src="http://upload.wikimedia.org/wikipedia/commons/e/ed/Cursor_Windows_Vista.gif" />
+                        <!-- / SPINNER -->
+                    </apex:facet>
+                </apex:actionStatus>
+            </center>
+        </apex:pageBlock>
+        <apex:actionFunction name="getDetails" action="{!getDetails}" status="status1" reRender="block1" />
+        <apex:pageBlock id="block1">
+            <div style="text-align:center;">
+                <apex:pageBlockButtons location="top">
+                    <apex:commandButton value="Create Events" action="{!generateEvents}" oncomplete="getDetails();" reRender="msgPannel" styleClass="lightningbutton"  />
+                </apex:pageBlockButtons>
+            </div>
+            <apex:actionFunction name="checkAll" action="{!checkAll}" reRender="table1" status="status1" />
+            <apex:actionStatus id="status1" startText="Please Wait......."></apex:actionStatus>
+            <apex:outputPanel id="panel1">
+                <apex:actionFunction name="rerenderOptions" reRender="cmpnt" />
+                <apex:variable var="i" value="{!0}" />
+                <apex:pageBlockTable value="{!meetings}" var="m" id="table1" headerClass="bold">
+                    <apex:column >
+                        <apex:facet name="header">
+                            <apex:inputCheckbox value="{!headerCheck}" id="hdcheck" onChange="checkAll();" />
+                        </apex:facet>
+                        <apex:inputCheckbox value="{!m.selected}" />
+                    </apex:column>
+                    <apex:column headerValue="Relate to Contact / Lead" styleClass="borderColor">
+                        <apex:inputField value="{!m.evt.WhoId}" rendered="{!!isLightning}" />
+                        <apex:outputPanel id="Lookupcomponent" rendered="{!isLightning}">
+                            <div style="display: inline-block;vertical-align: middle;">
+                                <apex:selectList label="Select Object" onchange="rerenderOptions();" value="{!m.selObjType}" size="1" id="pickList">
+                                    <apex:selectOption itemValue="Lead" itemLabel="Lead" />
+                                    <apex:selectOption itemValue="Contact" itemLabel="Contact" />
+                                </apex:selectList>
+                            </div>
+                            <div style="display: inline-block;vertical-align: middle;">
+                                <apex:outputPanel layout="block" styleclass="slds-form-element slds-p-top--medium " id="cmpnt">
+                                    <apex:outputPanel layout="block" styleclass="slds-form-element slds-p-top--medium " rendered="{!m.selObjType== 'Lead'}">
+                                        <c:Lookup_Component SelectedID="{!m.evt.WhoId}" CmpId="ULookupComp{!m.indexVal}" oncompleteaction="cosole.log();" SelectedValue="{!m.selectedLead}" ObjectApi="Lead" Fields="{!fields}"></c:Lookup_Component>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" styleclass="slds-form-element slds-p-top--medium " rendered="{!m.selObjType== 'Contact'}">
+                                        <c:Lookup_Component SelectedID="{!m.evt.WhoId}" CmpId="ULookupComp{!m.indexVal}" oncompleteaction="cosole.log();" SelectedValue="{!m.selectedLead}" ObjectApi="Contact" Fields="{!ContactFields}"></c:Lookup_Component>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:column>
+                    <apex:column headerValue="Subject" styleClass="borderColor">
+                        <apex:inputField value="{!m.evt.subject}" onclick="closePopup();"/>
+                    </apex:column>
+                    <apex:column value="{!m.participants}" headerValue="Participants" styleClass="borderColor" />
+                    <apex:column value="{!m.metrics.duration}" headerValue="Duration" styleClass="borderColor" />
+                    <apex:column value="{!m.metrics.id}" headerValue="Meeting Id" styleClass="borderColor" />
+                    <apex:column value="{!m.localStartTime}" headerValue="Start Time" styleClass="borderColor" />
+                    <apex:column value="{!m.localEndTime}" headerValue="End Time" styleClass="borderColor" />
+                    <apex:column value="{!m.metrics.uuid}" headerValue="uuid" styleClass="borderColor" />
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

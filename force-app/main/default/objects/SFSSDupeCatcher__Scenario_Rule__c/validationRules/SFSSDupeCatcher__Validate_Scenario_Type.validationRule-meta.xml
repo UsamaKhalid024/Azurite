@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Validate_Scenario_Type</fullName>
+    <active>true</active>
+    <description>This field should match the scenario type for the parent scenario.</description>
+    <errorConditionFormula>CASE(SFSSDupeCatcher__Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, &quot;Account (Person)&quot;, 6, &quot;Lead to Account (Person)&quot;, 7, &quot;Lead (Person)&quot; ,8 ,100 ) &lt;&gt; CASE( SFSSDupeCatcher__Scenario__r.SFSSDupeCatcher__Scenario_Type__c, &quot;Account&quot;, 1, &quot;Contact&quot;, 2, &quot;Lead&quot;, 3, &quot;Lead to Account&quot;, 4, &quot;Lead to Contact&quot;, 5, &quot;Account (Person)&quot;, 6, &quot;Lead to Account (Person)&quot;, 7, &quot;Lead (Person)&quot;,8, 99 )</errorConditionFormula>
+    <errorDisplayField>SFSSDupeCatcher__Scenario_Type__c</errorDisplayField>
+    <errorMessage>This field should match the scenario type for the parent scenario.</errorMessage>
+</ValidationRule>

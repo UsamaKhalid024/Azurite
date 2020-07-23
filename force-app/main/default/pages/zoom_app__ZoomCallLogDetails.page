@@ -1,0 +1,13 @@
+<apex:page standardController="task" extensions="zoom_app.Zoom_Call_Log_Detail" lightningStylesheets="true">
+    <apex:pageMessages />
+    <apex:pageBlock >
+        <apex:pageBlockSection id="CallLogOutputBlock" columns="2" >
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Caller_Phone_Number__c}"/>
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Callee_Phone_Number__c}"/>
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Call_ID__c}"/>
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Calllog_Status__c}"/>
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Call_Duration__c}"/>
+            <apex:outputField value="{!ZoomcallLog.zoom_app__Signal_Status__c}"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:page>

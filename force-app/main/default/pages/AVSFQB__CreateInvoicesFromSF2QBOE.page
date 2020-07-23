@@ -1,0 +1,38 @@
+<apex:page standardController="Opportunity" extensions="AVSFQB.OpportunitiesToDBSyncController" recordSetVar="opportunities"
+           lightningStylesheets="true">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <apex:slds />
+        </head>
+        <body>
+            <div class="slds-scope">
+                <apex:form >
+                    <apex:actionFunction name="sendRequest" action="{!sendOpportunitiesToQBO}" rerender="form"/>
+
+                    <apex:pageBlock title="Send selected opportunities to QBO">
+                        <apex:pageMessages id="msg" rendered="true"/>
+                        <apex:pageBlockTable value="{!selected}" var="opportunity">
+                            <apex:column headerValue="Opportunity Name">
+                                <apex:outputLink value="{!URLFOR($Action.Opportunity.View, opportunity.Id)}">
+                                    {!opportunity.Name}
+                                </apex:outputLink>
+                            </apex:column>
+                            <apex:column value="{!opportunity.Amount}"/>
+                        </apex:pageBlockTable>
+                        <br/>
+                        <div class="slds-align_absolute-center">
+                            <apex:commandButton action="{!back}" value="Back"/>
+                        </div>
+                    </apex:pageBlock>
+                </apex:form>
+            </div>
+        </body>
+        <script>
+            (function() {
+                sendRequest();
+            })()
+        </script>
+    </html>
+</apex:page>

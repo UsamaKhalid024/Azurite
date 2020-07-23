@@ -1,0 +1,24 @@
+<apex:page tabStyle="Opportunity" controller="AVSFQB.ExecuteJobSchedulerController" docType="html-5.0" sidebar="false"
+           showHeader="false" showChat="false" lightningStylesheets="true" action="{!startRequest}">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <style type="text/css">
+                pre {
+                    font-size : 1.7em;
+                }
+            </style>
+            <apex:slds />
+        </head>
+        <body>
+            <div class="slds-scope">
+                <apex:form >
+                    <apex:pageBlock title="Response" id="responseBlock">
+                        <apex:outputText value="{!response}" escape="false" />
+                    </apex:pageBlock>
+                </apex:form>
+            </div>
+        </body>
+    </html>
+</apex:page>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <name>Messaging Team</name>
+    <queueMembers>
+        <users>
+            <user>alessandra@azurite.com.au</user>
+        </users>
+    </queueMembers>
+    <queueRoutingConfig>Messaging_Team</queueRoutingConfig>
+    <queueSobject>
+        <sobjectType>MessagingSession</sobjectType>
+    </queueSobject>
+</Queue>

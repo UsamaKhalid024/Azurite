@@ -1,0 +1,6 @@
+<apex:page showHeader="false" sidebar="false">
+<div style="width:100%; margin:30px auto;min-width:500px;max-width:800px; font-family:'Open Sans',sans-serif;color: #455560;">
+<div style="padding: 20px 30px;"><img src="{!URLFOR($Resource.ffcommon,'images/Formstack_For_Salesforce_256x29.png')}" alt="Formstack for Salesforce" width="40%"/></div>
+<div style="padding: 30px;font-size:22px;">Building a form is never a simple task, especially when it involves managing complex integrations to plug in your Salesforce data. Formstack does away with complexity and allows technical and non-technical users alike to create simple, elegant, and effective forms for your website in a matter of seconds.
+</div>  </div>
+</apex:page>

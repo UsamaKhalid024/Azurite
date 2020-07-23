@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>AVSFQB__Invoices__c.AVSFQB__Invoice_Number__c</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_OPP_OWNER_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVSFQB__Invoices__c.AVSFQB__Total_Invoice_Amount__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVSFQB__Invoices__c.AVSFQB__Payments__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVSFQB__Invoices__c.AVSFQB__Balance__c</field>
+    </columns>
+    <description>Opportunity Owner to AR Report</description>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>AVSFQB__Invoices__c.AVSFQB__Days_Outstanding__c</field>
+        <sortOrder>Desc</sortOrder>
+    </groupingsDown>
+    <name>Opportunity Owner to AR Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$AVSFQB__Invoices__c@AVSFQB__Invoices__c.AVSFQB__Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>AVSFQB__Invoices__c.AVSFQB__Sync_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

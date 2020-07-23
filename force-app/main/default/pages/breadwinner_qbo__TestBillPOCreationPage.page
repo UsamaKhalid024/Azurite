@@ -1,0 +1,285 @@
+<apex:page sidebar="false" standardcontroller="breadwinner_qbo__BW_AP_Bill_PO__c" extensions="breadwinner_qbo.CreateBillPOExtension" title="Testing Bill or Purchase Creation">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+            </head>
+            <script>
+                
+                var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                j$("link.user[href$='elements.css']").each(function(){
+                    j$(this).attr("href", "#");
+                });
+            }
+            function message()
+            {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "Justify-content":"left"} );
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );              
+            }
+            j$(function(){
+                HideStyleSheet();
+                message();
+            });
+            </script>
+            
+            <style>
+                .middleColumn{
+                padding: 0px 50px 0px 50px;
+                }
+                td img[src$="/s.gif"] {
+                display: none;
+                }
+                .msgIcon{
+                display:none;
+                }
+                .noSidebarCell, .sidebarCell .fixed{
+                    padding: 0px !important;
+                }
+                .sfdcBody{
+                    padding: 0px !important;
+                }
+                .message{       
+                    margin-left: 0px !important;        
+                    margin-right: 0px !important;       
+                }
+                
+            </style>
+            <body>
+                <div class="slds-scope slds-p-around_x-small">
+                    <apex:form >
+                        <apex:pagemessage rendered="{!Plan_Code < 80}" summary="Sorry, you must be on a higher subscription to create a Bill / Purchase Order using Custom URL, please contact support from Breadwinner tab." severity="error" strength="3"></apex:pagemessage>
+                        <apex:pagemessages rendered="{!AND(Plan_Code >=80,NOT(previewMode))}"></apex:pagemessages>
+                        <apex:pagemessage rendered="{!AND(Plan_Code >=80,!isPOEnabled,!isBillEnabled)}" summary="You must enable Sync Bills/Purchase Orders to create a Bill/Purchase Order. Please visit the Configuration section of Breadwinner tab." severity="error" strength="3"></apex:pagemessage>
+                        <div style="display:{!IF(AND(Plan_Code >=80,OR(AND(createPO,NOT(isPOEnabled)),AND(NOT(createPO),NOT(isBillEnabled)))),'','none')}" class="errorM3">
+                            You are trying to create a {!BillPOLabel} but you need to enable Breadwinner to create {!BillPOLabel}s for this QuickBooks Online Company.<br/>
+                            Please go to Configuration section under Breadwinner tab, and make sure Sync {!BillPOLabel}s is enabled for this QuickBooks Online Company.
+                        </div>
+                        
+                        <apex:outputPanel title="{!BillPOLabel} parameters Testing page" rendered="{!AND(Plan_Code >=80,previewMode,OR(AND(createPO,isPOEnabled),AND(NOT(createPO),isBillEnabled)))}">
+                            <!----------------------------------------Page Header Start---------------------------------------->
+                            <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <svg aria-hidden="true" class="slds-icon slds-icon-standard-user">
+                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#moneybag')}"></use>
+                                        </svg>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p class="slds-text-heading_label">{!BillPOLabel} parameters Testing page</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <!----------------------------------------Page Header END---------------------------------------->
+                            <apex:outputPanel style="font-size:14px; " rendered="{!OR((areFieldsInvalid&&!NonNumaric),NonNumaric,(isBillPOFromLead),AND(NOT(ISBLANK(testingPageMessage)), LEN(testingPageMessage) >5 ))}">
+                                <apex:pageMessage rendered="{!(areFieldsInvalid&&!NonNumaric)}" summary="Please check the fields you have entered." detail="" severity="error" strength="3" />
+                                <apex:pagemessage rendered="{!NonNumaric}" summary="Please check the Quantity and Unit price values you have entered." detail="Quantity and Unit price values should be numaric" severity="error" strength="3"></apex:pagemessage>
+                                <apex:pageMessage rendered="{!(isBillPOFromLead)}" summary="Sorry, You can not create {!BillPOLabel} from Leads." detail="This is because once the Lead is converted it is no longer accessible through the User Interface." severity="error" strength="3" />
+                                <apex:pageMessage detail="{!testingPageMessage}"  summary="ERROR:" rendered="{!AND(NOT(ISBLANK(testingPageMessage)), LEN(testingPageMessage) >5 )}" strength="3" severity="Error" />
+                            </apex:outputPanel>
+                            <div class="slds-m-top_medium">
+                                <apex:outputPanel style="font-family:Lucida Sans Unicode;font-size:14px;" >
+                                    <table cellspacing="10">
+                                        <tr>
+                                            <th>
+                                                Breadwinner Field
+                                            </th>
+                                            <th class ="middleColumn">
+                                                Salesforce Field Name / API
+                                            </th>
+                                            <th >
+                                                Value
+                                            </th>
+                                        </tr>
+                                        <tr >
+                                            <td><apex:outputLabel >Originating Object  </apex:outputLabel>  </td>
+                                            <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Originating_Object_Name))}">{!Originating_Object_Name}</apex:outputlabel>
+                                                <apex:outputlabel style="color:red;" rendered="{!ISBLANK(Originating_Object_Label)}">Not Specified</apex:outputlabel>
+                                            </td>
+                                            <td><apex:outputlabel rendered="{!NOT(ISBLANK(Orgingating_Record_Name))}">{!Orgingating_Record_Name}</apex:outputlabel></td>
+                                        </tr>
+                                        <apex:outputPanel rendered="{!areOrignatingAndLineParentObjectsDifferent}">
+                                            <tr>
+                                                <td><apex:outputLabel >{!BillPOLabel}  Line Parent Object  </apex:outputLabel>  </td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Parent_Object_Name))}">{!Parent_Object_Name}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:red;" rendered="{!ISBLANK(Parent_Object_Label)}">Not Specified</apex:outputlabel>
+                                                </td>
+                                                <td><apex:outputlabel rendered="{!NOT(ISBLANK(Transaction_Line_Parent_Record_Name))}">{!Transaction_Line_Parent_Record_Name}</apex:outputlabel></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                        <tr>
+                                            <td><apex:outputText value="Child Object Relationship Name" ></apex:outputText></td>
+                                            <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Child_Relationship_Name))}">{!Child_Relationship_Name}</apex:outputlabel>
+                                                <apex:outputlabel rendered="{!ISBLANK(Child_Relationship_Name)}">Not Specified</apex:outputlabel></td>
+                                            <td><apex:outputlabel >{!Child_Object_Plural_Label}</apex:outputlabel></td>
+                                        </tr>
+                                        <tr>
+                                            <td><apex:outputText value="Parent Account" ></apex:outputText></td>
+                                            <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Parent_Account))}">{!Parent_Account}</apex:outputlabel>
+                                                <apex:outputlabel style="color:red;" rendered="{!ISBLANK(Parent_Account)}">Not Specified (Required)</apex:outputlabel></td>
+                                            <td><apex:outputlabel rendered="{!NOT(ISBLANK(Account_Name))}">{!Account_Name}</apex:outputlabel>
+                                                <apex:outputlabel style="color:red;" rendered="{!AND(ISBLANK(Account_Name), NOT(ISBLANK(Parent_Account)))}">(Required Value)</apex:outputlabel></td>
+                                        </tr>
+                                        <tr>
+                                            <td><apex:outputText value="{!BillPOLabel} Date" ></apex:outputText></td>
+                                            <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(BillPO_Date_Field ))}">{!BillPO_Date_Field }</apex:outputlabel>
+                                                <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(BillPO_Date_Field )}">Not Specified (Optional)</apex:outputlabel></td>
+                                            <td><apex:outputText value="{0,date,MM/dd/yyyy}"> <apex:param value="{!BillPO_Date_Value}" /> </apex:outputText></td>
+                                        </tr>
+                                        <tr style="display:{!IF(createPO,'none','')}">
+                                            <td><apex:outputText value="Due Date" ></apex:outputText></td>
+                                            <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Due_Date_Field))}">{!Due_Date_Field}</apex:outputlabel>
+                                                <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Due_Date_Field)}">Not Specified (Optional)</apex:outputlabel></td>
+                                            <td><apex:outputText value="{0,date,MM/dd/yyyy}"> <apex:param value="{!Due_Date_Value}" /> </apex:outputText></td>
+                                        </tr>
+                                        <!-- Custom/additional fields -->
+                                        <apex:outputPanel rendered="{!AND(createPO,additionalFields.field_1_Enabled)}">
+                                            <tr>
+                                                <td>Purchase Order Custom Field #1&nbsp;{!IF(ISBLANK(additionalFields.field_1_label), '', '('&additionalFields.field_1_label&')')}</td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(custom_field_1))}">{!custom_field_1}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(custom_field_1)}">Not Specified (Optional)</apex:outputlabel></td>
+                                                <td><apex:outputText value="{!custom_field_1_value}"></apex:outputText></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!AND(createPO,additionalFields.field_2_Enabled)}">
+                                            <tr>
+                                                <td>Purchase Order Custom Field #2&nbsp;{!IF(ISBLANK(additionalFields.field_2_label), '', '('&additionalFields.field_2_label&')')}</td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(custom_field_2))}">{!custom_field_2}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(custom_field_2)}">Not Specified (Optional)</apex:outputlabel></td>
+                                                <td><apex:outputText value="{!custom_field_2_value}"></apex:outputText></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!AND(createPO,additionalFields.field_3_Enabled)}">
+                                            <tr>
+                                                <td>Purchase Order Custom Field #3&nbsp;{!IF(ISBLANK(additionalFields.field_3_label), '', '('&additionalFields.field_3_label&')')}</td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(custom_field_3))}">{!custom_field_3}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(custom_field_3)}">Not Specified (Optional)</apex:outputlabel></td>
+                                                <td><apex:outputText value="{!custom_field_3_value}"></apex:outputText></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputPanel rendered="{!NOT(ISBLANK(additionalFields.fieldLocationLabel))}">
+                                            <tr>
+                                                <td>{!BillPOLabel} Location Field&nbsp;{!IF(ISBLANK(additionalFields.fieldLocationLabel), '', '('&additionalFields.fieldLocationLabel&')')}</td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(location_field))}">{!location_field}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(location_field)}">Not Specified (Optional)</apex:outputlabel></td>
+                                                <td><apex:outputText value="{!location_field_value}"></apex:outputText></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                        <!-- <tr>
+<td>Line Items Order By (Ascending)</td>
+<td><apex:outputlabel rendered="{!NOT(ISBLANK(Items_Order_By))}">{!Items_Order_By}</apex:outputlabel>
+<apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Items_Order_By)}">Not Specified (Optional)</apex:outputlabel></td>
+</tr> -->
+                                        
+                                        <apex:variable var="i" value="{!0}"/>       
+                                        <apex:repeat value="{!CustomLineItemList}" var="Childsobj">
+                                            <tr style="font-weight: bold;">
+                                                <td style="padding-top: 20px;padding-bottom: 5px;">Line Item #{!i+1}<apex:variable var="i" value="{!i+1}"/></td>
+                                            </tr>
+                                            <tr >
+                                                <!--style="display:{!IF(isItemsType,'','none')}"-->
+                                                <td><apex:outputText value="{!IF(isItemsType,'Line Item Product/Service Name','Line Item Ledger Account Code')}" ></apex:outputText></td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.ItemNameField))}">{!Childsobj.ItemNameField}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:Red;" rendered="{!AND(isItemsType,ISBLANK(Childsobj.ItemNameField))}">Not Specified (Required)</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!AND(!isItemsType,ISBLANK(Childsobj.ItemNameField))}">Not Specified (Optional)</apex:outputlabel>
+                                                </td>
+                                                <td>
+                                                    <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.ItemName))}">{!Childsobj.ItemName}</apex:outputlabel>
+                                                    <apex:outputlabel rendered="{!AND(ISBLANK(Childsobj.ItemName),isItemsType)}" style="Color:red;">(Required Value)</apex:outputlabel>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td><apex:outputText value="Line Item Description" ></apex:outputText></td>
+                                                <td class ="middleColumn"><apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.DescriptionField))}">{!Childsobj.DescriptionField}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Childsobj.DescriptionField)}">Not Specified (Optional)</apex:outputlabel>
+                                                </td>
+                                                <td>
+                                                    <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.Description))}">{!Childsobj.Description}</apex:outputlabel>
+                                                </td>
+                                            </tr>
+                                            <tr style="display:{!IF(isItemsType,'','none')}">
+                                                <td>
+                                                    <apex:outputText value="Line Item Quantity" ></apex:outputText>
+                                                </td>
+                                                <td class ="middleColumn">
+                                                    <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.QuantityField))}">{!Childsobj.QuantityField}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Childsobj.QuantityField)}">Not Specified (Optional)</apex:outputlabel>
+                                                </td>
+                                                <td>
+                                                    <apex:outputlabel >{!Childsobj.Quantity}</apex:outputlabel>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <apex:outputText value="Line Item {!IF(isItemsType,'Unit Price','Amount')}" ></apex:outputText>
+                                                </td>
+                                                <td class ="middleColumn">
+                                                    <apex:outputlabel rendered="{!IF(isItemsType,NOT(ISBLANK(Childsobj.UnitPriceField)),OR(NOT(ISBLANK(Childsobj.UnitPriceField)),NOT(ISBLANK(Childsobj.QuantityField))))}">    {!IF(isItemsType,Childsobj.UnitPriceField,(IF(AND(NOT(ISBLANK(Childsobj.UnitPriceField)),NOT(ISBLANK(Childsobj.QuantityField))),(Childsobj.UnitPriceField+'*'+Childsobj.QuantityField),IF(NOT(ISBLANK(Childsobj.UnitPriceField)),Childsobj.UnitPriceField,Childsobj.QuantityField))))} </apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!IF(isItemsType,ISBLANK(Childsobj.UnitPriceField),AND(ISBLANK(Childsobj.UnitPriceField),ISBLANK(Childsobj.QuantityField)))}">Not Specified (Optional)</apex:outputlabel>
+                                                </td>
+                                                <td>
+                                                    <apex:outputlabel >                                                 {!IF(isItemsType,Childsobj.UnitPrice,(IF(AND(NOT(ISBLANK(Childsobj.UnitPriceField)),NOT(ISBLANK(Childsobj.QuantityField))),ROUND((Childsobj.UnitPrice*Childsobj.Quantity),2),IF(NOT(ISBLANK(Childsobj.UnitPriceField)),Childsobj.UnitPrice,Childsobj.Quantity))))} </apex:outputlabel>
+                                                </td>
+                                            </tr>
+                                            <tr style="display:{!IF(AND(NOT(createPO),isUSTaxModel,BillableExpenseTracking),'','none')}">
+                                                <td>
+                                                    <apex:outputText value="Line Item Taxable" ></apex:outputText>
+                                                </td>
+                                                <td class ="middleColumn">
+                                                    <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.TaxableField))}">{!Childsobj.TaxableField}</apex:outputlabel>
+                                                    <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Childsobj.TaxableField)}">Not Specified (Optional)</apex:outputlabel>
+                                                </td>
+                                                <td>
+                                                    <apex:outputlabel >{!Childsobj.Taxable}</apex:outputlabel>
+                                                </td>
+                                            </tr>
+                                            <apex:outputPanel rendered="{!isClassTrackingPerTxnLineEnabled}">
+                                                <tr>
+                                                    <td>
+                                                        <apex:outputText value="Line Item Class" ></apex:outputText>
+                                                    </td>
+                                                    <td class ="middleColumn">
+                                                        <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.ClassField))}">{!Childsobj.ClassField}</apex:outputlabel>
+                                                        <apex:outputlabel style="color:#cca200;" rendered="{!ISBLANK(Childsobj.ClassField)}">Not Specified (Optional)</apex:outputlabel>
+                                                    </td>
+                                                    <td>
+                                                        <apex:outputlabel rendered="{!NOT(ISBLANK(Childsobj.ClassField))}" >{!Childsobj.ClassValue}</apex:outputlabel>
+                                                    </td>
+                                                </tr>
+                                            </apex:outputPanel>
+                                            <tr>
+                                                <td></td>
+                                            </tr>
+                                            
+                                        </apex:repeat>
+                                        <tr>
+                                            <td ></td>
+                                            <td>
+                                                
+                                                <div draggable="false" style="padding-top: 20px;padding-bottom: 5px;">
+                                                    <apex:commandButton style="margin:5px" value="Next" action="{!redirectToNewBillPOPage}" status="assign-action-status" styleClass="slds-button slds-button_brand" rendered="{!NOT(OR(areFieldsInvalid , NonNumaric, notInitializedWithAccount, isBillPOFromLead)) }"/>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </div>
+                            <apex:outputPanel style="font-size:16px;" rendered="{!isAdministrator}">
+                                <apex:outputLink value="{!URLFOR($Page.breadwinner_qbo__CustomURLGenerator)}?originating_object={!Parent_Object_Name}"> Click here</apex:outputLink>&nbsp;to go to custom {!BillPOLabel} URL generation page.
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                    </apex:form>
+                </div>
+            </body>
+            
+        </html>
+    </apex:page>

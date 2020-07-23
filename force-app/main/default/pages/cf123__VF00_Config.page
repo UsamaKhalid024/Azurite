@@ -1,0 +1,34 @@
+<apex:page controller="cf123.CTRL00_Config" setup="true" id="page">
+
+    <apex:outputpanel id="panel">
+        <apex:form styleclass="theform" id="form">
+            <apex:actionfunction name="auth" action="{!auth}" />
+            <apex:sectionheader title="123ContactForm" subtitle="Configuration" />
+            <apex:pagemessages id="messages" escape="false" />
+            
+            <apex:outputpanel layout="block" styleclass="bDescription">
+                {!$Label.cf123__vf00_initiate_explanation_message}
+            </apex:outputpanel>
+
+
+            <!------------------------------------------------------------------------>
+            <!-----------------------------  Authorize  ------------------------------>
+            <!------------------------------------------------------------------------>
+
+            <apex:outputpanel >
+                <apex:pageblock title="Authorize">
+                    <apex:pageblockbuttons location="top">
+                        <apex:commandbutton action="{!auth}" value="Authorize"
+                                            styleclass="btn btnPrimary" />
+                    </apex:pageblockbuttons>
+                    <apex:pageblocksection >
+                        <apex:pageblocksectionitem >
+                            {!$Label.cf123__vf00_authorizazation_msg}
+                        </apex:pageblocksectionitem>
+                    </apex:pageblocksection>
+                </apex:pageblock>
+            </apex:outputpanel>
+
+        </apex:form>
+    </apex:outputpanel>
+</apex:page>

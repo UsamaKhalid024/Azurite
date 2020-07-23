@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__Only_Initial_Render_Info</fullName>
+    <columns>NAME</columns>
+    <columns>OBJECT_ID</columns>
+    <columns>VisualAntidote__Created_Time__c</columns>
+    <columns>VisualAntidote__Detail__c</columns>
+    <columns>VisualAntidote__Object_Info__c</columns>
+    <columns>VisualAntidote__Process__c</columns>
+    <columns>VisualAntidote__Source__c</columns>
+    <columns>VisualAntidote__Type__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>VisualAntidote__Process__c</field>
+        <operation>equals</operation>
+        <value>InitialRender</value>
+    </filters>
+    <label>Only Initial Render Info</label>
+</ListView>

@@ -1,0 +1,279 @@
+<apex:page title="Formstack Form Migration" controller="VisualAntidote.MigrationController" sidebar="false" standardStylesheets="false">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+
+    <link rel="stylesheet" href="{!URLFOR($Resource.ffcommon,'styles/fscommon.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.Base,'style/base.min.css')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.fs_assets,'pages/formMigration.min.css')}" />
+
+    <script type='text/javascript' src="{!URLFOR($Resource.Base,'base.min.js')}" />
+    <script type='text/javascript' src="{!URLFOR($Resource.fs_assets,'pages/formMigration.min.js')}" />
+
+    <script>
+        var REMOTE_ACTIONS = [];
+        REMOTE_ACTIONS["validateLogin"] = "{!URLENCODE($RemoteAction.MigrationController.validateLogin)}";
+        REMOTE_ACTIONS["migrate"] = "{!URLENCODE($RemoteAction.MigrationController.migrate)}";
+        REMOTE_ACTIONS["getListForms"] = "{!URLENCODE($RemoteAction.MigrationController.getListForms)}";
+        REMOTE_ACTIONS["getListOfOrgsToMigrate"] = "{!URLENCODE($RemoteAction.MigrationController.getListOfOrgsToMigrate)}";
+        REMOTE_ACTIONS["getListOfDestinationForms"] = "{!URLENCODE($RemoteAction.MigrationController.getListOfDestinationForms)}";
+
+        $(document).ready(function () {
+            developmentEnviroment = 'Production';
+            listFormIdsFromURL = '{!parameterFormIdList}';
+            formMenu_URL = '/apex/{!Namespace}FormMenu';
+            manageSandbox_URL = '/apex/{!Namespace}AdminSettingsPanel?DefaultMenu=sandboxManagement';
+            isProductionOrg = {!isProductionOrg};
+            load();
+        });
+    </script>
+
+    <apex:form id="fsform" styleClass="fsform">
+        <div class="FastFormsWrapper">
+            <apex:pageMessages />
+            <!-- TODO: Make this header section a component (JS/Apex) as we use this in different pages -->
+            <div class="mainHeader" style="height: 50px;">
+                <div class="mainHeaderInner">
+                    <div  class="header-link-panel">
+                        <span>
+                            <div class="header-link-help" onclick="var bubbleStyle = $('.bubble-container')[0].style; bubbleStyle.display = bubbleStyle.display == 'none'?'block':'none';"></div>
+                            <div class="bubble-container" style="display: none;font-family: OpenSans,sans-serif; font-size: 75%;">
+                                <p class="bubble-corner"><img src="{! URLFOR($Resource.fs_assets,'images/iconimages/corner.svg')}"></img></p>
+                                <div class="bubble-main">
+                                    <a href="https://sfapphelp.formstack.com" target="_blank">Help</a>
+                                    <a href="https://sfappideas.formstack.com/" target="_blank">Ideas</a>
+                                </div>
+                            </div>
+                        </span>
+                        <span>
+                            <apex:outputLink styleClass="admin-settings-panel vfns-link" value="/apex/AdminSettingsPanel" rendered="{!isAdminSettingsPanelAccessible}">Admin Settings</apex:outputLink>
+                        </span>
+                    </div>
+                        <div style="clear: both;"></div>
+                        
+                        <div class="bread-crumb">
+                            <div class="bread-crumb navbar">
+                                <div class="navbar-inner">
+                                    <div class="navcontainer">
+                                        <ul class="nav-wizard">
+                                            <li>
+                                                <a class="vfns-link" href="/apex/{!NameSpace}FormMenu" id="breadcrumb-dashboard">Dashboard</a>
+                                            </li>
+                                            <li class="li-arrow-seperator"></li>
+                                            <li class="active">
+                                                <span id="breadcrumb-formeditor" style="padding: 0px 0px 0px 20px;">
+                                                    <span>Form Migration</span>
+                                                </span>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),true,false)}">
+                        <div class="fs-style ff-logo-box" style="display:block;">
+                            <div class="fs-ff-logo">
+                                <img alt="Formstack NativeCloud" title="Formstack NativeCloud" src="{!URLFOR($Resource.logos,'native-cloud-fs.png')}" height="51"
+                                />
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+                    <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),false,true)}">
+                        <div class="fs-style ff-logo-box" style="display:block;">
+                            <div class="ff-logo">
+                                <img class="fs-logo-img" src="{!URLFOR($Resource.logos,'color_logo_only_fs.png')}" />
+                            </div>
+                            <div class="ff-logo-title">
+                                <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier=='EnterprisePlus'),true,false)}">Enterprise Plus</apex:outputPanel>
+                                <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier!='EnterprisePlus'),true,false)}">{!packageTier}</apex:outputPanel>
+                                <br />
+                                <span class="ffsub" style="padding-top: 5px;">Edition</span>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+
+
+                </div>
+            </div>
+
+
+        <div class="centralized-container">
+            <div class="fs_pillmessage_cmp"></div>
+            <p class="headertext">
+                Follow the steps below to complete your migration. Make sure migration was successful by checking your forms in the destination
+                org.
+            </p>
+
+            <div class="fs_migrationstep_cmp ">
+                <div class="migrationstep step1">
+                    <div class="migrationstep-header">
+                        <div class="migrationstep-header-leftside">
+                            <div class="migrationstep-title">
+                                <label>Step 1. <b>Validate Destination Org</b></label>
+                                <span class="icon-arrow">&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="migrationstep-header-rightside">
+                            <button type="button" class="btnvalidateorg vabutton3" tabindex="5">
+                                <span class="btn-text">Validate Org</span>
+                            </button>
+                            <div class="validation-successfull badge--sucessfull">
+                                <span class="badge-checkmark">&nbsp;</span>&nbsp;Validation Successful
+                            </div>
+                        </div>
+                    </div>
+                    <div class="migrationstep-body">
+                            <div class="container">
+                                <div class="form-message">
+                                    <div class="bar-alert-message">
+                                        <div class="bar-alert-text-section">
+                                            <span class="icon-attention-triangle--orange">&nbsp;</span>On validating an org, remote site settings for this org will be added.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div> 
+                        <div class="column50">
+                            <div class="container">
+                                <div class="column100">
+                                    <label>
+                                        Choose your destination org
+                                        <span class="required--darkblue">*</span>
+                                    </label>
+                                </div>
+                                <div class="column100">
+                                    <select
+                                        id="ddllistOrgAvailableToMigrate"
+                                        class="dropdownlistorgavailable"
+                                        tabindex="1"
+                                    >
+                                    </select>
+                                </div>
+                                <div class="column100">
+                                    <label class="comment-small">
+                                        Note: if you don't see the org you need in this, make sure it is
+                                        configured as a managed sandbox in your production org.
+                                        <a class="a--blue" href="https://sfapphelp.formstack.com/hc/en-us/articles/360025602871-Form-Migration-Between-Salesforce-Orgs" target="_blank">Learn more</a>
+                                    </label>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="column50">
+                            <div class="container step1-login">
+                                <div class="column100">
+                                    <label>
+                                        Provide the login credentials to your destination org.
+                                    </label>
+                                </div>
+                                <div class="column100">
+                                    <div class="column30">
+                                        <label class="label--input">
+                                            Username
+                                            <span class="required--darkblue">*</span>
+                                        </label>
+                                    </div>
+                                    <div class="column50">
+                                        <input type="text" id="txtUsername" class = "login-input-box" tabindex="2" />
+                                    </div>
+                                </div>
+                                <div class="column100">
+                                    <div class="column30">
+                                        <label class="label--input">
+                                            Password
+                                            <span class="required--darkblue">*</span>
+                                        </label>
+                                    </div>
+                                    <div class="column50">
+                                        <input type="password" id="txtPassword" class = "login-input-box" tabindex="3" />
+                                    </div>
+                                </div>
+                                <div class="column100">
+                                    <div class="column30">
+                                        <label class="label--input">
+                                            Security token
+                                        </label>
+                                        <span class="help-icon blue-tooltip">
+                                            <span class="blue-tooltip-text -mt55 -ml40">Optional - Provide a security authentication token if your org requires it.
+                                                <a href="https://success.salesforce.com/answers?id=90630000000glADAAY" target="_blank" style="color: #ffffff;">Find your token</a>
+                                            </span>
+                                            <span class="draft-text">
+                                                <span class="helpIconCode"></span>
+                                            </span>
+                                        </span>
+                                    </div>
+                                    <div class="column50">
+                                        <input type="password" id="txtSecuritytoken" class = "login-input-box" tabindex="4" />
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="migrationstep step2">
+                    <div class="migrationstep-header">
+                        <div class="migrationstep-header-leftside">
+                            <div class="migrationstep-title">
+                                <label>Step 2. <b>Form Migration</b></label>
+                                <span class="icon-arrow">&nbsp;</span>
+                            </div>
+                        </div>
+                        <div class="migrationstep-header-rightside">
+                            <button type="button" class="btnmigrateform vabutton3" tabindex="6">
+                                <span class="icon-square-arrowup">&nbsp;</span>
+                                Migrate Forms
+                            </button>
+                        </div>
+                    </div>
+                    <div class="migrationstep-body">
+                        <div class="column100">
+                            <div class="container">
+                                <div class="form-information">
+                                    <span class="form-name-label">Specify migration settings for the forms you would like to migrate.</span>
+                                    <input type="hidden" class="form-id" />
+                                </div>
+                                <div class="form-message">
+                                    <div class="bar-alert-message">
+                                        <div class="bar-alert-text-section">
+                                            <span class="icon-attention-triangle--orange">&nbsp;</span>
+                                            Publish this form in your destination org after migration to
+                                            make sure it is live.
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <span class = "silver-line-separator"></span>
+                        <div class="column100">
+                            <div class="container form-setting-wrapper">
+                                <div class = "form-setting-wrapper">
+                                    <div class = "form-information">
+                                        <span class="form-name "></span> 
+                                    </div>
+                                    <div class = "form-destination-options">
+                                        <span class ="form-name-label">In destination org:</span>
+                                        <ul class = "form-option-section vertical-tabs nav">
+                                        </ul>
+                                        <select class = " dropdownListOfFormsAvailable select2-choice visibility-hidden"
+                                        id="listOfFormsAvailableToMigrateInto"
+                                        tabindex="1"
+                                        >
+                                        </select>
+                                        <div >
+                                            <input type="checkbox" id="styles" value="migrateStyles" class="fs-checkbox" checked = "checked"/> <label class="fs-txt-checkbox fs-checkbox-label lb-migrate-style" for="styles">Migrate styles or template used for this form.</label>
+                                        </div>
+                                    </div>
+                                </div>    
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+    </div> <!-- End FastFormsWrapper -->
+
+    </apex:form>
+    <c:DeskChatComponent ></c:DeskChatComponent>
+
+</apex:page>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__Platform_Account__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <label>Platform Account</label>
+    <referenceTo>VisualAntidote__Platform_Account__c</referenceTo>
+    <relationshipLabel>Formstack Documents</relationshipLabel>
+    <relationshipName>Formstack_Documents</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

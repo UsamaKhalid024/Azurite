@@ -1,0 +1,40 @@
+<apex:page standardController="breadwinner_qbo__BW_AP_Payment_Transaction__c"  extensions="breadwinner_qbo.BW_AP_RecordInfoExtension" showHeader="false" applyHtmlTag="false">
+    <apex:slds />
+    <style>
+        .slds-scope img {
+            margin:35px 0px;
+            padding-right: 10px;
+        }
+    </style>
+    <apex:form >
+        <div class="slds-scope" >
+            <div class="slds-box">
+                <table width="100%" border="0" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td style="width:200px">
+                            <apex:image url="{!URLFOR($Resource.breadwinner_qbo__Breadwinner_QBO, 'Breadwinner_QBO/Images/BreadwinnerLogo.png')}" />
+                        </td>
+                        <td>
+                            <apex:outputPanel rendered="{!daysOverdue>0}">
+                                <apex:outputPanel rendered="{!OR(isAdministrator, daysOverdue > 7)}">
+                                    <apex:outputPanel layout="block" style="color:{!If(daysOverdueSeverity=='WARNING','black','white')};border-radius: 4px;justify-content: left;font-weight:400" styleClass="slds-notify slds-notify_alert {!If(daysOverdueSeverity=='WARNING','slds-theme_warning','slds-theme_error')}  slds-text-align_left slds-text-heading_small slds-m-bottom_small">
+                                        <p>{!summaryMessage}</p>
+                                    </apex:outputPanel>                                
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel >
+                                <ul class="slds-list_dotted">
+                                    <li class="slds-text-heading_small">These records sync with QuickBooks Online only when you have a Breadwinner subscription of Business or Enterprise. If you subscribe to Breadwinner at the Basic or Professional level, you will not be able to see these records anymore. This applies to the following objects: Bill Payments, Bill Payment Transactions, and Bill &amp; PO Line Items.
+                                    </li>
+                                    <li class="slds-text-heading_small slds-m-top_small">Do not add custom fields, workflows, processes, triggers, or lookups from or to, to this object, as Breadwinner may need to delete/destroy this and any other Bill Payment record during a regular sync with QuickBooks Online.
+                                    </li>
+                                </ul>
+                            </apex:outputPanel>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </apex:form>
+</apex:page>

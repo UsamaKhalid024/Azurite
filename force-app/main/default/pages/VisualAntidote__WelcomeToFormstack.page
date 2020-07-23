@@ -1,0 +1,174 @@
+<apex:page title="Welcome to Formstack" controller="VisualAntidote.WelcomeToFormstackController" sidebar="false" standardStylesheets="false" action="{!updatePageValues}">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <!-- base.resource includes: JS Files [select2.min.js,jquery-ui.min.js,jquery-migrate.min.js,jquery-ui-timepicker-addon.min.js,bootstrap.min.js,secure-filters.min.js,html-encoder.min.js,common-helper.min.js] CSS files [select2.min.css,select2-custom.min.css,jquery-ui.min.css,jquery-ui-theme-smoothness.min.css,jquery-ui-timepicker-addon.min.css,app_main.min.css] -->
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__Base,'base.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__Base,'style/base.min.css')}" />
+    <!-- base.resource -->
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__fs_assets,'pages/welcomeToFormstack.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__fs_assets, 'pages/welcomeToFormstack.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__ffcommon,'styles/fscommon.min.css')}" />
+    <script type="text/javascript">
+        var REMOTE_ACTIONS = [];
+        setFSNSVariable('SessionKey','{!$Api.Session_ID}');
+        REMOTE_ACTIONS["isUserPrimaryLicenseHolder"] =
+            "{!URLENCODE($RemoteAction.WelcomeToFormstackController.isUserPrimaryLicenseHolder)}";
+        REMOTE_ACTIONS["setWelcomeToFormstackStatus"] =
+            "{!URLENCODE($RemoteAction.WelcomeToFormstackController.setWelcomeToFormstackStatus)}";
+        REMOTE_ACTIONS["assignPermissionSetToUser"] = "{!URLENCODE($RemoteAction.WelcomeToFormstackController.validatePermissions)}";
+        REMOTE_ACTIONS["updateRemoteSitesettingsForCallouts"] = "{!URLENCODE($RemoteAction.WelcomeToFormstackController.updateRemoteSitesettingsForCallouts)}";
+        
+        var SFCurrentUserId = "{!$User.Id}";
+    </script>
+    <div class="welcome-to-formstack-page">
+        <div class="welcome-to-formstack-logo">
+            <div class="ff-logo">
+                <img alt="Formstack Logo" src="{!URLFOR($Resource.logos,'color_logo_only_fs.png')}" width=' 202px;' />
+            </div>
+        </div>
+        <div class="welcome-to-formstack-container">
+            <div class="welcome-to-formstack-box">
+                <div class="welcome-to-formstack-content">
+                    <apex:form id="fsform" styleClass="fsform">
+                        <apex:actionFunction name="rerenderTopPanel" action="{!updatePageValues}" rerender="topPanel" />
+                        <apex:actionFunction action="{!syncPhoneNumber}" name="passToSync" rerender="none">
+                            <apex:param value="" name="phoneNumber_input" />
+                        </apex:actionFunction>
+                    </apex:form>
+                    <apex:outputPanel layout="block" id="topPanel">
+                        <apex:outputPanel layout="block" styleClass="fscontent-table" id="unassignedLicensesPanel"
+                            rendered="{! if((NOT(hasLicense)),true,false)}">
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="welcome-to-fs">
+                                        <img alt="welcome to fs" src="{!URLFOR($Resource.fs_assets,'images/graphics/welcome-to-fs.png')}"
+                                            width=' 202px;' />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="welcome-to-formstack">
+                                        <p>
+                                            Welcome to Formstack!
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="welcome-to-formstack-text">
+                                        <p>
+                                            Thank you for downloading the app. We’re happy to have you aboard!<br /></p>
+                                        <span>
+                                            <p>
+                                                Before you get started, please assign a Primary User. This user
+                                                will be the default record owner for all records created from
+                                                form submissions.
+                                            </p>
+                                        </span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <input class="assign-to-me-and-proceed-button" reRender="" data-authurl="{!linkToAuthorizeApp}"
+                                        onclick="confirmAndAssignPermissionSetToMe(this);" id="assignToMeAndProceedButton"
+                                        type="button" value="Assign to me and proceed" />
+                                    <span>
+                                        <a class="help blue-tooltip" href="#" tabindex="-1">
+                                            <span class="blue-tooltip-text -ml65 -mt85"> Primary User can be changed later. If you don’t want to assign this license to yourself, please direct the appropriate user to open the app instead. </span></a>
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="ellipse-container">
+                                        <span class="ellipse active"></span>
+                                        <span class="ellipse"></span>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleClass="fscontent-table" id="preferredPhoneNumber"
+                            rendered="{! if((hasLicense),true,false)}">
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="phone-img">
+                                        <img alt="phone image" src="{!URLFOR($Resource.fs_assets,'images/graphics/phone-img.png')}" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="welcome-to-formstack">
+                                        <p>
+                                            Preferred Phone Number
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="welcome-to-formstack-text">
+                                        <p>
+                                            To provide you with a great experience, please confirm your preferred phone
+                                            number.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="prefer-phone-number-container">
+                                        <input type="text" placeholder="{!if(PreferPhoneNumber!='',PreferPhoneNumber,'(no default number)')}" id="preferPhoneNumberTextbox"
+                                            value="{!PreferPhoneNumber}" class="prefer-phone-number-label" style="display:none;" disabled="disabled" />
+                                            
+                                        <label id="preferPhoneNumberDisplay" class="{!if(PreferPhoneNumber!='','prefer-phone-number-label','prefer-phone-number-label-empty')}">{!if(PreferPhoneNumber!='',PreferPhoneNumber,'(no default number)')}</label>
+                                       
+
+                                        <a onclick="editPhoneNumber()" class="edit-icon" id="editPhoneNumberButton" title="Edit">
+                                        </a>
+                                        <input class="prefer-phone-number-validation-button" id="preferPhoneNumberValidationButton"
+                                            type="button" style="display:none" onclick="validatePhoneNumber()" value="OK" />
+                                        <div class="gr-content-row">
+                                            <div class="content-td">
+                                                <span class="update-status" id="updateStatusText">
+
+                                                </span>
+                                            </div>
+
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <input class="prefer-phone-number-confirm-button" onClick="syncPhoneNumberJS();"
+                                        id="preferPhoneNumberConfirmButton" type="button" value="Confirm" />
+
+                                </div>
+                            </div>
+                            <div class="gr-content-row">
+                                <div class="content-td">
+                                    <div class="preferred-phone-number ellipse-container">
+                                        <span class="ellipse"></span>
+                                        <span class="ellipse active"></span>
+                                    </div>
+                                </div>
+                            </div>
+                         <input type="hidden" value="{!PreferPhoneNumber}" id="preferPhoneNumberHiddenInput"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+</apex:page>

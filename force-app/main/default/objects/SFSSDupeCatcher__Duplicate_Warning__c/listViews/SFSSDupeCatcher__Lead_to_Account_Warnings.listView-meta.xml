@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Lead_to_Account_Warnings</fullName>
+    <columns>NAME</columns>
+    <columns>SFSSDupeCatcher__Scenario__c</columns>
+    <columns>SFSSDupeCatcher__Scenario_Type__c</columns>
+    <columns>SFSSDupeCatcher__Triggering_Action__c</columns>
+    <columns>CREATEDBY_USER</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>SFSSDupeCatcher__Scenario_Type__c</field>
+        <operation>equals</operation>
+        <value>Lead to Account</value>
+    </filters>
+    <label>Lead to Account Warnings</label>
+</ListView>

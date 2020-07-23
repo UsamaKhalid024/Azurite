@@ -1,0 +1,23 @@
+<apex:page standardController="event" extensions="zoom_app.Zoom_Event_ConfigurationCtrl" lightningStylesheets="true">
+    <apex:pageMessages />
+    <apex:pageBlock >
+        <apex:pageBlockSection id="OutputBlock" columns="2" >
+            <apex:outputField value="{!Zoomevent.zoom_app__Meeting_Topic__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_Creation_Status__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_Id__c}"/> 
+            <apex:outputText label="Join URL"><a href="{!Zoomevent.zoom_app__Start_Url_1__c+Zoomevent.zoom_app__Start_Url_2__c+Zoomevent.zoom_app__Start_Url_3__c}" target="_blank">{!Zoomevent.zoom_app__Join_Url__c}</a></apex:outputText> 
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_Status__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__IsZoomMeeting__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_Start_Time__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_End_Time__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Participant_Count__c}" rendered="false"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Participants__c}" rendered="false"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__UUID__c}" rendered="false"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Host_Id__c}" rendered="false"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__IsExternal__c}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Google_Event_Id__c}" rendered="{!isGoogleEnabled}"/>
+            <apex:outputField value="{!Zoomevent.zoom_app__Zoom_Meeting_Password__c}"></apex:outputField>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+    <apex:include pageName="zoom_app__ZoomRecordingLinks"/>
+</apex:page>

@@ -1,0 +1,266 @@
+<apex:page controller="breadwinner_qbo.InventoryImportPageController" sidebar="false"  tabStyle="Product2" title="Products and Services Import by Breadwinner" action="{!fetchInventoryItems}" standardStylesheets="false" docType="html-5.0">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}" ></script>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video.js')}" type="text/javascript"></script>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video1.jsonp')}" type="text/javascript" ></script>
+            <script type="text/javascript">
+            
+            if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                document.getElementsByTagName("title")[0].innerHTML="Products and Services Import by Breadwinner";
+            }   
+                //var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                $("link.user[href$='elements.css']").each(function(){
+                    $(this).removeAttr("href");
+                });
+            }
+            function message()
+            {
+                $(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"} );
+                $(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"} );
+                $(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"} ) ;
+                $(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                $("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                $("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                $("table.messageTable td").css({"color" : "white"});
+                $("div[class*='warning'] table.messageTable td").css( "color", "black" );
+                
+            }
+            
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            $(function(){
+                addallfuncs();
+                console.log("script loaded");
+                massCheckUncheck('');
+            });
+            function massCheckUncheck(element){
+                
+                if(element.id=='Checkall'){
+                    
+                    var AllCheckboxElements=$("input[type*='checkbox']");
+                    
+                    for(x in AllCheckboxElements ){
+                        if(AllCheckboxElements[x].type=='checkbox'){
+                            AllCheckboxElements[x].checked=element.checked;
+                        }
+                    }  
+                }
+                // following is used to uncheck 
+                var AllCheckboxElementsCopy=$("input[type*='checkbox']");
+                var checkboxtotalcount=AllCheckboxElementsCopy.length;
+                var checkedcount=0;
+                for(xw in AllCheckboxElementsCopy ){
+                    if(AllCheckboxElementsCopy[xw].checked){
+                        checkedcount+=1;}
+                }
+                
+                if(document.getElementById("Checkall").checked){
+                    if(checkedcount<checkboxtotalcount)
+                        document.getElementById("Checkall").checked='';
+                }
+                else {
+                    if(checkedcount==(checkboxtotalcount-1))
+                        document.getElementById("Checkall").checked='checked';
+                    else
+                        document.getElementById("Checkall").checked='';
+                }
+                
+                
+            }
+            </script>
+            <style>
+                body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock {
+                background-color: white;
+                -moz-border-radius: 4px;
+                border: 0px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                }
+                .tableheder{
+                background-color: white !important;
+                font-weight: normal !important;
+                padding: 4px 2px 4px 5px !important;
+                }
+                a[id*="lookup"] {
+                color: black;
+                }              
+                
+                .msgIcon{
+                display:none;
+                }
+                .message{
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+                .slds-scope table {
+                border-collapse: inherit;
+                }
+                .noSidebarCell, .sidebarCell .fixed{
+                    padding: 0px !important;
+                }
+                .sfdcBody{
+                    padding: 0px !important;
+                }                    
+            </style>
+        </head>
+        <body>
+            <apex:form >
+                <div class="slds-scope slds-p-around_x-small">
+                    <apex:actionStatus id="assign-action-status" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <!-------------------------header start ------------------------>
+                    <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                        <div class="slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                              <span class="slds-icon_container slds-icon-standard-opportunity" title="Product">
+                                <svg class="slds-icon slds-page-header__icon" aria-hidden="true">
+                                  <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#product')}"/>
+                                </svg>
+                              </span>
+                            </div>
+                            <div class="slds-media__body">
+                                <p class="slds-page-header__title slds-truncate" title="Breadwinner QuickBooks Online Products and Services Import">Breadwinner QuickBooks Online Products and Services Import<!-- <apex:outputLabel rendered="{!isMultiOrgEnabled}" value="from {!QBOOrgName}"/> --></p>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <apex:pagemessages ></apex:pagemessages>
+                    <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online." severity="WARNING" strength="0" id="oAuthmsg"/>
+                    <!-------------------------header END ------------------------>
+                    <apex:outputPanel layout="block" rendered="{!initialized}" >
+                        <!-- ----------------- LDS Video Section ----------------- -->
+                        <div class="slds-trial-header slds-grid slds-wrap slds-m-bottom_medium slds-m-top_medium" style="align-items:inherit;border-radius: 4px;">
+                            <div class="slds-grid slds-grid_vertical-align-center">
+                                <span class="wistia_embed wistia_async_6w7sjrqlzd popover=true popoverContent=link" style="display:inline;">
+                                    <a href="javascript:void(0);" style="font-size: large;">
+                                        <svg class="slds-icon" aria-hidden="true">
+                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#right')}"/>
+                                        </svg>
+                                        Watch a video walk through, showing how to import products.
+                                    </a>
+                                </span>
+                            </div>
+                        </div>
+                        <!-- ---------------- LDS Video Section End --------------- -->
+                        <div class="warningM3" style="border-radius: 4px">
+                            Due to Salesforce limitations, Breadwinner can only import products if you have less than 1000 QuickBooks Online Products and Services. 
+                        </div>
+                        <div class="slds-m-top_medium slds-m-horizontal_small">
+                            
+                            <div class="slds-text-longform" style="color: #5876a3;">
+                                <ul>
+                                    <li>
+                                        <p>
+                                            Breadwinner can import all of your QuickBooks Online Products and Services as Salesforce Products. You have a chance to edit them below before importing. You can change the price, edit the Product name, and populate the Product Code and Product Family.
+                                        </p>
+                                    </li>
+                                    <li> 
+                                        <p>Breadwinner will create these products and attach them to the standard Salesforce Price Book, with the Price shown below. Salesforce requires all Products to have a price, so if your QuickBooks Online Products and Services do not have a price, Breadwinner import them as 0.00.
+                                        </p>
+                                    </li>
+                                    <li>
+                                        <p>
+                                            Breadwinner is designed so that you only have to import your Products and Services as SF Products once. After this initial import, we recommend you create any new products in Salesforce only. Breadwinner will auto-create these as QuickBooks Online Products if needed, at the time of Invoice creation, prompting you for confirmation.
+                                        </p>
+                                    </li>
+                                    <li> <p>Please change any values you wish to, then click Import. </p> </li>
+                                </ul>
+                                
+                            </div>
+                            
+                            <h3 class="slds-section-title_divider">Products Breadwinner will import</h3>
+                            <apex:pageBlock >
+                                <apex:outputPanel layout="block" style="border-radius: 4px" styleClass="infoM3" rendered="{!NOT(productsFetchedList.size > 0)}">
+                                    {!IF(existingProductList.size > 0, 'All of Products and Services are imported', 'No Products or Services Present in QuickBooks Online')}
+                                </apex:outputPanel>
+                                
+                                <apex:pageBlockTable value="{!productsFetchedList}" var="i" rendered="{!productsFetchedList.size > 0}" styleClass="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+                                    <apex:column headerValue="Import?" html-data-label="Import?" style="text-align:center;" headerClass="tableheder slds-text-title_caps">
+                                        
+                                        <apex:facet name="header">
+                                            <div align="center" style="margin-right: 5px;">
+                                                <span class="slds-checkbox">
+                                                    <input type="checkbox" id="Checkall" onchange="massCheckUncheck(this);" />
+                                                    <label class="slds-checkbox__label" for="Checkall">
+                                                        <span class="slds-checkbox_faux"></span>
+                                                    </label>
+                                                </span>
+                                            </div>
+                                        </apex:facet>
+                                        
+                                        <span class="slds-checkbox">
+                                            <apex:inputcheckbox id="Checkboxid" value="{!i.Checked}" onchange="massCheckUncheck(this);" /> 
+                                            <apex:outputLabel styleclass="slds-checkbox__label" for="Checkboxid">
+                                                <span class="slds-checkbox_faux"></span>
+                                            </apex:outputLabel>
+                                        </span>
+                                        
+                                    </apex:column>
+                                    <apex:column headerValue="SF Product Name" html-data-label="SF Product Name" headerClass="tableheder slds-text-title_caps">
+                                        <abbr class="slds-required" title="required">*</abbr>
+                                        <apex:inputField value="{!i.p.Name}"  styleClass="slds-input" required="false" />
+                                    </apex:column>
+                                    <apex:column headerValue="Product Price" html-data-label="Product Price" headerClass="tableheder slds-text-title_caps">
+                                        <abbr class="slds-required" title="required">*</abbr>
+                                        <apex:inputField value="{!i.pe.UnitPrice}"  styleClass="slds-input" required="false" />
+                                    </apex:column>
+                                    <apex:column headerValue="SF Product Description" html-data-label="SF Product Description" headerClass="tableheder slds-text-title_caps">
+                                        <apex:inputTextarea value="{!i.p.Description}" rows="1"  onfocus="this.rows=3;"  onblur="this.rows=1;" styleClass="slds-input" rendered="{!$ObjectType.Product2.Fields.Description.Updateable}" style="font-size:11px;"/>
+                                    </apex:column>
+                                    <apex:column headerValue="SF Product Code" html-data-label="SF Product Code" headerClass="tableheder slds-text-title_caps">
+                                        <apex:inputField value="{!i.p.ProductCode}"   styleClass="slds-input" />
+                                    </apex:column>
+                                    <apex:column headerValue="SF Product Family" html-data-label="SF Product Family" headerClass="tableheder slds-text-title_caps">
+                                        <div class="slds-select_container">
+                                            <apex:inputField value="{!i.p.Family}"  styleClass="slds-select" />
+                                        </div>
+                                    </apex:column>
+                                    
+                                </apex:pageBlockTable>
+                                
+                            </apex:pageBlock>
+                            <div Class="slds-text-align_right slds-m-top_medium">
+                                <apex:commandButton value="Import QuickBooks Online Products and Services as Salesforce Products" action="{!importInventoryItems}"  status="assign-action-status" styleClass="slds-button slds-button_brand"/>
+                            </div>
+                            <h3 class="slds-section-title_divider slds-m-top_medium">Products which were imported</h3>
+                            <div class="slds-text-body_small slds-m-top_medium slds-m-horizontal_small"> These QuickBooks Online Products and Services have already been matched to Salesforce Opportunity Products as
+                                they share the same Product/Service Name. There is no action needed or possible
+                                here, but Breadwinner list them so you can confirm they have already been imported.
+                            </div>
+                            <apex:pageBlock >
+                                <apex:pageBlockTable value="{!existingProductList}" var="pw" styleClass="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+                                    <apex:column headerValue="SF Product Name"   html-data-label="SF Product Name"  headerClass="tableheder slds-text-title_caps">
+                                        <apex:outputField value="{!pw.pe.Product2Id}" style="color:black"/>                                
+                                    </apex:column>   
+                                    <apex:column headerValue="Product Price"     html-data-label="Product Price" value="{!pw.pe.UnitPrice}" headerClass="tableheder slds-text-title_caps" />
+                                    <apex:column headerValue="SF Product Code"   html-data-label="SF Product Code" value="{!pw.p.ProductCode}" headerClass="tableheder slds-text-title_caps"/>
+                                    <apex:column headerValue="SF Product Family" html-data-label="SF Product Family" value="{!pw.p.Family}" headerClass="tableheder slds-text-title_caps"/>
+                                </apex:pageBlockTable>
+                            </apex:pageBlock>
+                        </div>
+                        
+                    </apex:outputPanel>
+                </div> 
+            </apex:form>
+        </body>
+    </html>
+</apex:page>

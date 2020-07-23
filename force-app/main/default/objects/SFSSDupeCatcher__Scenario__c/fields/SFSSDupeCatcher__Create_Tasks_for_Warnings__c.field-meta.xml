@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Create_Tasks_for_Warnings__c</fullName>
+    <deprecated>false</deprecated>
+    <description>This field can be used to create tasks whenever a potential duplicate is discovered by the &quot;Report Duplicates&quot; action.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Indicates whether a task is to be created and who it will be assigned to.</inlineHelpText>
+    <label>Create Tasks for Alerts</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No</fullName>
+                <default>true</default>
+                <label>No</label>
+            </value>
+            <value>
+                <fullName>Yes - User</fullName>
+                <default>false</default>
+                <label>Yes - User</label>
+            </value>
+            <value>
+                <fullName>Yes - Filter Owner</fullName>
+                <default>false</default>
+                <label>Yes - Filter Owner</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Scenario_Type__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The Filter Type of the parent filter</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Read only field that shows the Filter Type of the parent filter for this rule.</inlineHelpText>
+    <label>Filter Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Lead to Contact</fullName>
+                <default>false</default>
+                <label>Lead to Contact</label>
+            </value>
+            <value>
+                <fullName>Lead to Account</fullName>
+                <default>false</default>
+                <label>Lead to Account</label>
+            </value>
+            <value>
+                <fullName>Lead</fullName>
+                <default>true</default>
+                <label>Lead</label>
+            </value>
+            <value>
+                <fullName>Contact</fullName>
+                <default>false</default>
+                <label>Contact</label>
+            </value>
+            <value>
+                <fullName>Account</fullName>
+                <default>false</default>
+                <label>Account</label>
+            </value>
+            <value>
+                <fullName>Account (Person)</fullName>
+                <default>false</default>
+                <label>Account (Person)</label>
+            </value>
+            <value>
+                <fullName>Lead to Account (Person)</fullName>
+                <default>false</default>
+                <label>Lead to Account (Person)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,395 @@
+<apex:page controller="breadwinner_qbo.InvoiceMappingController" sidebar="false" tabStyle="Breadwinner__tab" standardStylesheets="false" title="Invoices Information">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}" ></script>
+            
+            <script type="text/javascript">
+            if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                document.getElementsByTagName("title")[0].innerHTML="Invoices Information";
+            }    
+                //var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                $("link.user[href$='elements.css']").each(function(){
+                    $(this).attr("href", "#");
+                });
+            }
+            function message()
+            {
+                $(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                $(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                $(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                $(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                $("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                $("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                $("table.messageTable td").css({"color" : "white"});
+                $("div[class*='warning'] table.messageTable td").css( "color", "black" );
+            }
+            
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            $(function(){
+                addallfuncs();
+                console.log("script loaded");
+                massCheckUncheck('');
+            });
+            function massCheckUncheck(element){
+                
+                if(element.id=='Checkall'){
+                    
+                    var AllCheckboxElements=$("input[type*='checkbox']");
+                    
+                    for(x in AllCheckboxElements ){
+                        if(AllCheckboxElements[x].type=='checkbox'){
+                            AllCheckboxElements[x].checked=element.checked;
+                        }
+                    }  
+                }
+                // following is used to uncheck 
+                var AllCheckboxElementsCopy=$("input[type*='checkbox']");
+                var checkboxtotalcount=AllCheckboxElementsCopy.length;
+                var checkedcount=0;
+                for(xw in AllCheckboxElementsCopy ){
+                    if(AllCheckboxElementsCopy[xw].checked){
+                        checkedcount+=1;}
+                }
+                
+                if(document.getElementById("Checkall").checked){
+                    if(checkedcount<checkboxtotalcount)
+                        document.getElementById("Checkall").checked='';
+                }
+                else {
+                    if(checkedcount==(checkboxtotalcount-1))
+                        document.getElementById("Checkall").checked='checked';
+                    else
+                        document.getElementById("Checkall").checked='';
+                }
+                
+                
+            }
+            
+            function showHideSectionConent(sectionId){
+                var sectiondiv=document.getElementById(sectionId);
+                
+                if(j$(sectiondiv).hasClass("slds-is-open")){
+                    j$(sectiondiv).removeClass("slds-is-open");
+                    j$("#DeleteRecDivIdImage").attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}");
+                    j$("#DeleteRecDivIdImage").css({"margin-bottom":"3px", "margin-right":"4px", "width":"14px"});
+                }
+                else{
+                    j$(sectiondiv).addClass("slds-is-open");
+                    j$("#DeleteRecDivIdImage").attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionOpen.png')}");
+                    j$("#DeleteRecDivIdImage").css({"margin-bottom":"0px", "margin-right":"3px", "width":"15px"});
+                }
+            }
+            function showHideSections(elemnt){
+                var j$ = jQuery.noConflict();
+                
+                j$(elemnt).parent("li").siblings(".slds-active").removeClass("slds-active");
+                j$(elemnt).parent("li").addClass("slds-active");
+                
+                // hiding previouly selected tab (slds-show/slds-hide)
+                j$(elemnt).closest(".slds-tabs_default").children("div[role='tabpanel']").removeClass("slds-show");
+                j$(elemnt).closest(".slds-tabs_default").children("div[role='tabpanel']").addClass("slds-hide");
+                
+                // displaying newly selected tab (slds-show/slds-hide)
+                j$(elemnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elemnt.id+"']").removeClass("slds-hide");   
+                j$(elemnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elemnt.id+"']").addClass("slds-show");
+            }
+            </script>
+            <style>
+                body .bPageBlock, body #bodyCell .bResource .secondaryPalette, body .secondaryPalette.bPageBlock, body .individualPalette .secondaryPalette.bPageBlock, body .bodyDiv .genericTable, body .genericPageBlockTable, body .bodyDiv .bSubBlock, body .bComponentBlock .bPageBlock, body .bMyDashboard .bPageBlock, body.rlHoverFrame .bPageBlock, body.subjectSelectionPopup div.choicesBox, body.lookupTab .secondaryPalette.bPageBlock, body.popupTab .secondaryPalette.bPageBlock, body.UserTagStatsPage .secondaryPalette.bPageBlock {
+                background-color: white;
+                -moz-border-radius: 4px;
+                border: 0px;
+                -webkit-border-radius: 4px;
+                border-radius: 4px;
+                }
+                .tableheder{
+                background-color: white !important;
+                font-weight: normal !important;
+                padding: 4px 2px 4px 5px !important;
+                }
+                a[id*="lookup"] {
+                color: black;
+                }              
+                
+                .msgIcon{
+                display:none;
+                }
+                .message {
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+            </style>
+        </head>
+        <body>
+            <apex:form >
+                <div class="slds-scope {!IF(OR($User.UIThemeDisplayed == 'Theme4d',$User.UIThemeDisplayed == 'Theme4t'),'slds-p-around_x-small','')}">
+                    <apex:outputPanel id="Body">
+                        <div class="slds-text-heading_large" align="center">Invoices Information</div><br/>
+                        <h3  style="display: block;">
+                            Breadwinner is syncing {!totalNoOfRecords} records with an Invoice Date in the last 90 days, which averages to &nbsp;<apex:outputText value="{!floor(totalNoOfRecords/3)}"/> per month. This count includes Invoices and Credit Notes, and if you have enabled them, Sales Receipts, Refund Receipts, Bills, and Purchase Orders. However, any records that have the status Deleted or Voided do not count towards this.
+                            <br/><br/>
+                            Other records, like QuickBooks Online Companies, Line Items, Payments, and Payment Transactions do not count towards this.
+                        </h3>
+                        
+                        <div class="slds-tabs_default  slds-m-top_medium" >
+                            <ul class="slds-tabs_default__nav" role="tablist" style="display:{!IF(isBusinessOrHigher,'','none')}" >
+                                <li class="slds-tabs_default__item slds-text-heading_label slds-truncate {!IF(last90DaysInvoices.size>0,'slds-active','')} "  title="Invoices" role="presentation" style="display:{!IF(last90DaysInvoices.size>0,'','none')}" >
+                                    <a class="slds-tabs_default__link slds-truncate" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item" onclick="showHideSections(this);" >
+                                        Invoices
+                                    </a>
+                                </li>
+                                <li class="slds-tabs_default__item slds-text-heading_label slds-truncate {!IF(last90DaysInvoices.size>0,'','slds-active')}"  title="BillsPOs" role="presentation" style="display:{!IF(Last90daysBillsPOs.size>0,'','none')}" >
+                                    <a class="slds-tabs_default__link slds-truncate" href="javascript:void(0);" role="tab" tabindex="1" aria-selected="true" aria-controls="tab-default-2" id="tab-default-2__item" onclick="showHideSections(this);" >
+                                        Bills &amp; POs
+                                    </a>
+                                </li>
+                            </ul>
+                            
+                            <div id= "tab-default-1" aria-labelledby="tab-default-1__item" class="slds-tabs_default__content {!IF(last90DaysInvoices.size>0,'slds-show','slds-hide')} " Role="tabpanel"> 
+                                <apex:outputPanel id="InvoiceSection">
+                                    <apex:outputPanel rendered="{!last90DaysInvoices.size > 0}">
+                                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                            <tr style="display:'';">
+                                                <th style="font-weight: bold;">Invoice</th>
+                                                <th style="font-weight: bold;">Account</th>
+                                                <th style="font-weight: bold;">QBO Customer Name</th>
+                                                <th style="font-weight: bold;">Invoice Date</th>
+                                                <th style="font-weight: bold;">Invoice Type</th>
+                                                
+                                            </tr>
+                                            <apex:repeat value="{!last90DaysInvoices}" var="inv"> 
+                                                <tr>
+                                                    <td style="width:20%"><a href="/{!inv.Id}" target="_blank"> {!inv.name}  </a> </td>
+                                                    <td>
+                                                        <apex:outputLink value="/{!inv.Account__r.id}"  target="_blank">{!inv.Account__r.Name}</apex:outputLink>
+                                                    </td>
+                                                    <td><a href="/{!inv.QBO_Company__r.Id}" target="_blank">{!inv.Customer_Name__c}</a></td>
+                                                    <td>
+                                                        <apex:outputText value="{0,date,MM/dd/yy}">
+                                                            <apex:param value="{!Inv.breadwinner_qbo__Invoice_Date__c}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                    <td>{!inv.Type__c}</td>
+                                                    
+                                                </tr>
+                                            </apex:repeat>
+                                        </table>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!if(noOfRecords<=100, false, true)}">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    Showing &nbsp;<apex:outputText >{!(setCon.pageNumber * size)+1-size}-{!IF((setCon.pageNumber * size)>noOfRecords, noOfRecords,(setCon.pageNumber * size))} of {!noOfRecords}</apex:outputText> records
+                                                </td><td Style="float: right;">
+                                                <div class="slds-grid ">
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus1" reRender="InvoiceSection" value="First" action="{!setCon.first}" disabled="{!!setCon.hasPrevious}" title="First Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus1" reRender="InvoiceSection" value="Previous" action="{!setCon.previous}" disabled="{!!setCon.hasPrevious}" title="Previous Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus1" reRender="InvoiceSection" value="Next" action="{!setCon.next}" disabled="{!!setCon.hasNext}" title="Next Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus1" reRender="InvoiceSection" value="Last" action="{!setCon.last}" disabled="{!!setCon.hasNext}" title="Last Page"/>
+                                                    
+                                                    <apex:outputPanel style="color:#4AA02C;font-weight:bold">
+                                                        <apex:actionStatus id="fetchStatus1" startText="Fetching..." stopText=""/> 
+                                                    </apex:outputPanel>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+                                    
+                                </apex:outputPanel>
+                            </div>
+                            <div id="tab-default-2" aria-labelledby="tab-default-2__item" class=" slds-tabs_default__content {!IF(last90DaysInvoices.size>0,'slds-hide','slds-show')} " Role="tabpanel" >
+                                <apex:outputPanel id="BillPoSection"> 
+                                    <apex:outputPanel rendered="{!Last90daysBillsPOs.size > 0}">
+                                        <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                                            <tr style="display:'';">
+                                                <th style="font-weight: bold;">Bill / PO</th>
+                                                <th style="font-weight: bold;">Account</th>
+                                                <th style="font-weight: bold;">QBO Vendor Name</th>
+                                                <th style="font-weight: bold;">Bill / PO Date</th>
+                                                <th style="font-weight: bold;">Type</th>
+                                                
+                                            </tr>
+                                            <apex:repeat value="{!Last90daysBillsPOs}" var="bp"> 
+                                                <tr>
+                                                    <td style="width:20%"><a href="/{!bp.Id}" target="_blank"> {!bp.name}  </a> </td>
+                                                    <td>
+                                                        <apex:outputLink value="/{!bp.Account__r.id}"  target="_blank">{!bp.Account__r.Name}</apex:outputLink>
+                                                    </td>
+                                                    <td><a href="/{!bp.QBO_Company__r.Id}" target="_blank">{!bp.Vendor_Name__c}</a></td>
+                                                    <td>
+                                                        <apex:outputText value="{0,date,MM/dd/yy}">
+                                                            <apex:param value="{!bp.breadwinner_qbo__BillPO_Date__c}" />
+                                                        </apex:outputText>
+                                                    </td>
+                                                    <td>{!bp.Type__c}</td>
+                                                    
+                                                </tr>
+                                            </apex:repeat>
+                                        </table>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel rendered="{!if(noOfBillPos<=100, false, true)}">
+                                        <table>
+                                            <tr>
+                                                <td>
+                                                    Showing &nbsp;<apex:outputText >{!(setconBillPos.pageNumber * size)+1-size}-{!IF((setconBillPos.pageNumber * size)>noOfBillPos, noOfBillPos,(setconBillPos.pageNumber * size))} of {!noOfBillPos}</apex:outputText> records
+                                                </td><td Style="float: right;">
+                                                <div class="slds-grid ">
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus" reRender="BillPoSection" value="First" action="{!setconBillPos.first}" disabled="{!!setconBillPos.hasPrevious}" title="First Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus" reRender="BillPoSection" value="Previous" action="{!setconBillPos.previous}" disabled="{!!setconBillPos.hasPrevious}" title="Previous Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus" reRender="BillPoSection" value="Next" action="{!setconBillPos.next}" disabled="{!!setconBillPos.hasNext}" title="Next Page"/>
+                                                    <apex:commandButton styleClass="slds-button slds-button_brand" status="fetchStatus" reRender="BillPoSection" value="Last" action="{!setconBillPos.last}" disabled="{!!setconBillPos.hasNext}" title="Last Page"/>
+                                                    
+                                                    <apex:outputPanel style="color:#4AA02C;font-weight:bold">
+                                                        <apex:actionStatus id="fetchStatus" startText="Fetching..." stopText=""/>
+                                                    </apex:outputPanel>
+                                                </div>
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                </div> 
+            </apex:form>
+        </body>
+    </html>
+</apex:page>
+
+<!-------------------------header start ------------------------>
+<!-- <apex:actionStatus id="assign-action-status" layout="block">
+<apex:facet name="start">
+<div class="slds-spinner_container">
+<div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+<div class="slds-spinner__dot-a"></div>
+<div class="slds-spinner__dot-b"></div>
+</div>
+</div>
+</apex:facet>
+</apex:actionStatus>
+<div class="slds-page-header" role="banner">
+<div class="slds-media">
+<div class="slds-media__body">
+<p class="slds-page-header__title slds-truncate" title="Breadwinner QBO Products and Services Import (BETA)">Breadwinner QBO Products and Services Import (BETA)  <apex:outputLabel rendered="{!isMultiOrgEnabled}" value="from {!QBOOrgName}"/> </p>
+<p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+</div>
+</div>
+</div>
+<apex:pagemessages ></apex:pagemessages>  _>
+<!_ <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QBO." severity="WARNING" strength="0" id="oAuthmsg"/> -->
+<!-------------------------header END ------------------------>
+<!-- <apex:outputPanel rendered="{!initialized}" >
+<div class="infoM3" >
+This is a Beta feature and is still being developed. If you chose to use this, please test in a Sandbox or Development org first before importing Products to your main Salesforce environment.
+</div>
+<div class="warningM3">
+Due to Salesforce limitations, Breadwinner can only import products if you have less than 1000 QuickBooks Online Products and Services. 
+</div>
+<div class="slds-m-top_medium slds-m-left_medium">
+
+<div class="slds-text-longform" style="color: #5876a3;">
+<ul>
+<li>
+<p>
+Breadwinner can import all of your QuickBooks Online Products and Services as Salesforce Products. You have a chance to edit them below before importing. You can change the price, edit the Product a name, and populate the Product Code and Product Family.
+</p>
+</li>
+<li> 
+<p>Breadwinner will create these products and attach them to the standard Salesforce Price Book, with the Price shown below. Salesforce requires all Products to have a price, so if your QuickBooks Online Products and Services do not have a price, Breadwinner import it as 0.00.
+</p>
+</li>
+<li>
+<p>
+Breadwinner is designed so that you only have to import your Products and Services as SF Products once. After this initial import, we recommend you create any new products in Salesforce only, not QuickBooks Online. Breadwinner will auto-create these as QBO Products if needed, at the time of Invoice creation, prompting you for confirmation.
+</p>
+</li>
+<li> <p>Please change any values you wish to, then click Import. </p> </li>
+</ul>
+
+</div>
+
+<h3 class="slds-section-title_divider">Products Breadwinner import</h3>
+<apex:pageBlock >
+<apex:outputPanel layout="block" styleClass="infoM3" rendered="{!NOT(productsFetchedList.size > 0)}">
+{!IF(existingProductList.size > 0, 'All of Products and Services are imported', 'No Products or Services Present in QuickBooks Online')}
+</apex:outputPanel>
+
+<apex:pageBlockTable value="{!productsFetchedList}" var="i" rendered="{!productsFetchedList.size > 0}" styleClass="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+<apex:column headerValue="Import?" html-data-label="Import?" style="text-align:center;" headerClass="tableheder slds-text-title_caps">
+
+<apex:facet name="header">
+<div align="center" style="margin-right: 5px;">
+<span class="slds-checkbox">
+<input type="checkbox" id="Checkall" onchange="massCheckUncheck(this);" />
+<label class="slds-checkbox__label" for="Checkall">
+<span class="slds-checkbox_faux"></span>
+</label>
+</span>
+</div>
+</apex:facet>
+
+<span class="slds-checkbox">
+<apex:inputcheckbox id="Checkboxid" value="{!i.Checked}" onchange="massCheckUncheck(this);" /> 
+<apex:outputLabel styleclass="slds-checkbox__label" for="Checkboxid">
+<span class="slds-checkbox_faux"></span>
+</apex:outputLabel>
+</span>
+
+</apex:column>
+<apex:column headerValue="SF Product Name" html-data-label="SF Product Name" headerClass="tableheder slds-text-title_caps">
+<abbr class="slds-required" title="required">*</abbr>
+<apex:inputField value="{!i.p.Name}"  styleClass="slds-input" required="false" />
+</apex:column>
+<apex:column headerValue="Product Price" html-data-label="Product Price" headerClass="tableheder slds-text-title_caps">
+<abbr class="slds-required" title="required">*</abbr>
+<apex:inputField value="{!i.pe.UnitPrice}"  styleClass="slds-input" required="false" />
+</apex:column>
+<apex:column headerValue="SF Product Description" html-data-label="SF Product Description" headerClass="tableheder slds-text-title_caps">
+<apex:inputTextarea value="{!i.p.Description}" rows="1"  onfocus="this.rows=3;"  onblur="this.rows=1;" styleClass="slds-input" rendered="{!$ObjectType.Product2.Fields.Description.Updateable}" style="font-size:11px;"/>
+</apex:column>
+<apex:column headerValue="SF Product Code" html-data-label="SF Product Code" headerClass="tableheder slds-text-title_caps">
+<apex:inputField value="{!i.p.ProductCode}"   styleClass="slds-input" />
+</apex:column>
+<apex:column headerValue="SF Product Family" html-data-label="SF Product Family" headerClass="tableheder slds-text-title_caps">
+<apex:inputField value="{!i.p.Family}"  styleClass="slds-input" />
+</apex:column>
+
+</apex:pageBlockTable>
+
+</apex:pageBlock>
+<div Class="slds-text-align_right slds-m-top_medium">
+<apex:commandButton value="Import QBO Products and Services as Salesforce Products" action="{!importInventoryItems}"  status="assign-action-status" styleClass="slds-button slds-button_brand"/>
+</div>
+<h3 class="slds-section-title_divider slds-m-top_medium">Products which were imported</h3>
+<div class="slds-text-body_small slds-m-top_medium"> These QuickBooks Online Products and Services have already been matched to Salesforce Opportunity Products as
+they share the same Product/Service Name. There is no action needed or possible
+here, but Breadwinner list them so you can confirm they have already been imported.
+</div>
+<apex:pageBlock >
+<apex:pageBlockTable value="{!existingProductList}" var="pw" styleClass="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal">
+<apex:column headerValue="SF Product Name"   html-data-label="SF Product Name"  headerClass="tableheder slds-text-title_caps">
+<apex:outputField value="{!pw.pe.Product2Id}" style="color:black"/>                                
+</apex:column>   
+<apex:column headerValue="Product Price"     html-data-label="Product Price" value="{!pw.pe.UnitPrice}" headerClass="tableheder slds-text-title_caps" />
+<apex:column headerValue="SF Product Code"   html-data-label="SF Product Code" value="{!pw.p.ProductCode}" headerClass="tableheder slds-text-title_caps"/>
+<apex:column headerValue="SF Product Family" html-data-label="SF Product Family" value="{!pw.p.Family}" headerClass="tableheder slds-text-title_caps"/>
+</apex:pageBlockTable>
+</apex:pageBlock>
+</div>
+
+</apex:outputPanel>  -->

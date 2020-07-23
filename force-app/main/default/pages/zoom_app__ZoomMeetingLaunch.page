@@ -1,0 +1,36 @@
+<apex:page StandardController="Event" extensions="zoom_app.ZoomMeetingLaunchCtrl" cache="false" lightningStylesheets="true">
+    <script>
+        $(document).ready(function() {
+            launchMeeting();
+        });
+        function launchMeeting() {
+            var url = encodeURI($('[id$=start_url]').val());
+            
+            if(url != ''){
+                
+              var newWindow = window.open(url, '_self');
+              //myWindow.window.opener.close();
+                //redirectDetailPage();
+            }
+        }
+    </script>
+    <apex:composition template="zoom_app__zoomheader">
+        <apex:define name="body">
+            <apex:form >
+                <apex:actionFunction action="{!redirectDetailPage}"  name="redirectDetailPage" />
+                <apex:outputpanel rendered="{!isError}">
+                    <div class="parentDisable"></div>
+                    <div class="ex" align="center">
+                        <apex:outputpanel styleclass="textMessage">
+                            <apex:outputText value="{!errorMessage}"/>
+                        </apex:outputpanel>
+                        <br />
+                        <apex:commandButton styleClass="myCustomBtn" value="OK" action="{!redirectDetailPageOnError}" />
+                    </div>
+                    <apex:detail subject="{!Event.Id}" relatedlist="false" />
+                </apex:outputpanel>
+                <apex:inputHidden id="start_url" value="{!start_url}" />
+            </apex:form>
+        </apex:define>
+    </apex:composition>
+</apex:page>

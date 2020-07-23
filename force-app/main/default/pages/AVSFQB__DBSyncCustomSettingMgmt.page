@@ -1,0 +1,40 @@
+<apex:page controller="AVSFQB.CustomSettingsController">
+    <apex:form >
+        <apex:pageBlock title="DBSync Custom Settings">
+            <apex:pageBlockSection >
+                <apex:selectList value="{!selectedCS}" size="1" label="Select Setting :">
+                    <apex:selectOptions value="{!settings}"/>
+                    <apex:actionSupport event="onchange" reRender="pageBlock"/>
+                </apex:selectList>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+        <apex:pageBlock mode="edit" id="pageBlock" title="Custom Settings">
+            <apex:pageMessages />
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!edit}" value="Edit" rendered="{!Not(isEdit)}" reRender="pageBlock"/>
+                <apex:commandButton action="{!save}" value="Save" rendered="{!isEdit}" reRender="pageBlock"/>
+                <apex:commandButton action="{!cancel}" value="Cancel" rendered="{!isEdit}" reRender="pageBlock"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockSection rendered="{!Not(isEdit)}" id="pageBlock1">
+                <apex:outputField value="{!custSetting.Name}"/>
+                <apex:outputField value="{!custSetting.AVSFQB__DBSync_Id__c}"/>
+                <apex:outputField value="{!custSetting.AVSFQB__DBSync_Token__c}"/>
+                <apex:outputField value="{!custSetting.AVSFQB__DBSync_Server__c}"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection rendered="{!isEdit}" id="pageBlock2" title="Update Custom Settings : {!custSetting.Name}">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.AVSFQB__DBSync_Settings__c.fields.AVSFQB__DBSync_Id__c.Label}"/>
+                    <apex:inputText value="{!custSetting.AVSFQB__DBSync_Id__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.AVSFQB__DBSync_Settings__c.fields.AVSFQB__DBSync_Token__c.Label}"/>
+                    <apex:inputText value="{!custSetting.AVSFQB__DBSync_Token__c}"/>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.AVSFQB__DBSync_Settings__c.fields.AVSFQB__DBSync_Server__c.Label}"/>
+                    <apex:inputText value="{!custSetting.AVSFQB__DBSync_Server__c}"/>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

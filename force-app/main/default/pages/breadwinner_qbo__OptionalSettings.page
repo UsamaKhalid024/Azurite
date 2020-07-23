@@ -1,0 +1,1459 @@
+<apex:page id="page" controller="breadwinner_qbo.OptionalSettingsController" showheader="false" sidebar="false">
+    
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds ></apex:slds>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video.js')}" type="text/javascript"></script>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video1.jsonp')}" type="text/javascript" ></script>      
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/select2.full.min.js')}" />
+                <link href="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/CSS/select2.min.css')}" rel="stylesheet" type="text/css"/>
+            <script type="text/javascript">
+            
+            var j$ = jQuery.noConflict();
+            var overflowtxt='';
+            function HideStyleSheet(){
+                j$("link.user[href$='elements.css']").each(function(){
+                    j$(this).removeAttr("href");
+                });
+            }
+            j$("body").click(function(event) {
+                if (event.target.id != "dropdown") {
+                    {
+                        if(overflowtxt=='')
+                        {
+                            j$("li.slds-is-open").removeClass("Highlight");
+                        }
+                        j$("li.slds-is-open").removeClass("slds-is-open");
+                    }}});
+            
+            function message()
+            {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );
+                j$("select option:contains('Select Revenue Account')").css( "color", "#aaa" );
+                j$("select option:contains('Revenue Codes')").attr("disabled","disabled").css( {"color":"black","font-weight":"bold" });
+                j$("select option:contains('Liabilities and Expenses')").attr("disabled","disabled").css( {"color":"black","font-weight":"bold" });
+                
+            }
+            
+            function addLinkDynamically(){
+                // adding links by identifying UX change the URLs
+                var windowparentlocation=String(window.parent.location);
+                var getindex=windowparentlocation.search("sfdcIFrameOrigin=");
+                var resultedOpptyFieldsURL='{!$Site.BaseUrl}';
+                var resultedOpptyProdFieldsURL='{!$Site.BaseUrl}';
+                var resultedOrderProdFieldsURL='{!$Site.BaseUrl}';
+                if(parseInt(getindex)>-1){
+                    resultedOpptyFieldsURL+='/lightning/setup/object/Opportunity/FieldsAndRelationships/view';
+                    resultedOpptyProdFieldsURL+='lightning/setup/object/OpportunityLineItem/FieldsAndRelationships/view';
+                    resultedOrderProdFieldsURL+='lightning/setup/object/Order/FieldsAndRelationships/view';
+                }
+                else{
+                    resultedOpptyFieldsURL+='/p/setup/layout/LayoutFieldList?type=Opportunity&setupid=OpportunityFields';
+                    resultedOpptyProdFieldsURL+='/p/setup/layout/LayoutFieldList?type=OpportunityLineItem&setupid=OpportunityLineItemFields';
+                    resultedOrderProdFieldsURL+='/p/setup/layout/LayoutFieldList?type=Order&setupid=OrderFields';
+                }
+                //opptyFieldsLink
+                if(document.getElementById("opptyFieldsLink"))
+                    document.getElementById("opptyFieldsLink").href=resultedOpptyFieldsURL;
+                //opptyProdFieldsLink
+                if(document.getElementById("opptytoProductsOpptyFieldsLink"))
+                    document.getElementById("opptytoProductsOpptyFieldsLink").href=resultedOpptyFieldsURL;
+                
+                if(document.getElementById("opptyProdFieldsLink"))
+                    document.getElementById("opptyProdFieldsLink").href=resultedOpptyProdFieldsURL;
+                //Order fields link
+                if(document.getElementById("OrderFieldsLink"))
+                    document.getElementById("OrderFieldsLink").href=resultedOrderProdFieldsURL;
+                
+            }
+            j$(function(){
+                HideStyleSheet();
+                message();
+                addLinkDynamically();
+                select2Init();
+            });
+            function getSaccountCodeMappingName(){     
+                sendtoController(j$("[id$=accountCodeMapping]").find('option:selected').text());
+            }
+            
+            function identifyfield(elementt,helptext,TopMinusParam,LeftMinusParam){
+                
+                var x = j$(elementt).offset();
+                //alert("Top position: " + x.top + " Left position: " + x.left+" height: "+$(elementt).height());                
+                var ToSetleft=x.left-LeftMinusParam;                
+                j$("#help p").text(helptext);                
+                var ToSetheight=x.top-TopMinusParam;                
+                var heptextdiv=document.getElementById("help");
+                j$(heptextdiv).css({
+                    top: ToSetheight + 'px',
+                    left: ToSetleft + 'px',
+                    display:""
+                })
+                
+            }
+            function mouseoutclose(){
+                var heptextdiv=document.getElementById("help");
+                j$(heptextdiv).css({top:"0px",left:"0px",display:"none"});
+            }
+            function selectTab(elmnt,orgidValue,text) { 
+                
+                // slds-active
+                if(text=='overflow')
+                {
+                    j$(elmnt).parents("div.slds-dropdown").parent("li").siblings(".slds-active").removeClass("slds-active");
+                    j$(elmnt).parents("div.slds-dropdown").find("li").addClass("slds-active");
+                    overflowtxt=text;
+                }
+                else
+                {
+                    j$(elmnt).parent("li").siblings(".slds-active").removeClass("slds-active");
+                    j$(elmnt).parent("li").addClass("slds-active");      
+                    j$("#dropdown").find("li").removeClass("overflowactive");
+                    j$("#dropdown").removeClass("Highlight");
+                    overflowtxt='';
+                }
+                j$(elmnt).parent("li.slds-dropdown__item").siblings("li.overflowactive").removeClass("overflowactive");
+                j$(elmnt).parent("li.slds-dropdown__item").addClass("overflowactive");   
+                // tabindex
+                j$(elmnt).parent("li").siblings().children("a").attr("tabindex", -1);
+                j$(elmnt).attr("tabindex", 0);
+                
+                // aria-selected
+                j$(elmnt).parent("li").siblings().children("a").attr("aria-selected", false);
+                j$(elmnt).attr("aria-selected", true);
+                
+                // hiding previouly selected tab (slds-show/slds-hide)
+                j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").addClass("slds-hide");
+                j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").removeClass("slds-show");
+                // displaying newly selected tab (slds-show/slds-hide)
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").addClass("slds-show");
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").removeClass("slds-hide"); 
+                
+                changeValue(orgidValue);
+            }           
+            
+            
+            function selectTaboverflow(elmnt)
+            {
+                j$(elmnt).addClass("slds-dropdown-trigger slds-is-open Highlight");             
+            }
+            
+            function showHideSectionConent(titledivsectionId, ImageDivId){
+                var sectiondiv=document.getElementById(titledivsectionId);
+                
+                if(j$(sectiondiv).hasClass("slds-is-open")){
+                    j$(sectiondiv).removeClass("slds-is-open");
+                    j$("#"+ImageDivId).attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}");
+                    j$("#"+ImageDivId).css({"margin-bottom":"3px", "margin-right":"4px", "width":"14px"});
+                }
+                else{
+                    j$(sectiondiv).addClass("slds-is-open");
+                    j$("#"+ImageDivId).attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionOpen.png')}");
+                    j$("#"+ImageDivId).css({"margin-bottom":"0px", "margin-right":"3px", "width":"15px"});
+                }
+            }
+            function scrolltoTop()
+            {
+                window.scrollTo(0,0);
+            }
+            function select2Init() {
+                j$(".CustombuttonsSelect").select2({
+                    tags: true,  
+                    maximumSelectionLength: 25,                    
+                });                
+                
+                j$(".CustombuttonsSelect").on('select2:select', function (e) {
+                    var data = e.params.data;
+                    var buttonName = data.id;
+                    updateButtonsConfiguration(buttonName,'adding');
+                });
+                
+                j$(".CustombuttonsSelect").on('select2:unselect', function (e) {
+                    var data = e.params.data;
+                    var buttonName = data.id;
+                    updateButtonsConfiguration(buttonName,'removing');
+                });
+            }
+            </script>
+            <style>
+                .msgIcon{
+                    display:none;
+                }
+                .message{
+                    margin-left: 0px !important;
+                    margin-right: 0px !important;
+                }                
+                .message .messageText h4 {
+                    font-weight: inherit;
+                    display: initial;
+                }                                   
+                .Highlight {
+                    background-color:gainsboro;
+                }
+                .overflowactive {
+                    border-bottom: 2px solid #0070D2;
+                    background-color :gainsboro;
+                } 
+                .slds-scope .slds-tabs_default__link:focus {
+                    border-bottom-width: 0px;
+                    border-color: grey ;
+                    color:#54698d;
+                }
+                .slds-scope .slds-section.slds-is-open .slds-section__content {
+                    padding-top: 0px;
+                }
+                .slds-scope .slds-spinner_container {
+                    position: fixed;
+                    z-index: 9999;
+                }
+                .select2-container--default .select2-selection--multiple {
+                border: solid #d8dde6 1px;
+                padding-bottom: 5px;
+                }
+                .select2-container--default.select2-container--focus .select2-selection--multiple {
+                border: solid #1589ee 1px;
+                box-shadow: 0 0 3px #0070D2;
+                }
+                .select2-dropdown{
+                border: 1px solid #1589ee;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                }
+                .select2-results__option {
+                margin-left:0;
+                line-height:7px !important;
+                font-family: "Salesforce Sans",Arial,sans-serif;
+                font-size: .8125rem;
+                color: #3e3e3c;
+                }
+                .select2-container--default .select2-results__option--highlighted[aria-selected]{
+                background-color: #2692FB;
+                }
+                .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                background-color: #fff;
+                color: #16325c;
+                border: 1px solid #d8dde6;
+                border-radius: 3px;
+                }
+                .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                font-weight: 700;
+                font-size: 17px;
+                }
+                .select2-container .select2-search--inline .select2-search__field {
+                margin-top: 6px;
+                line-height: 24px;
+                }
+                .select2-results__message{
+                color: red;
+                font-weight: bold;
+                }
+                .select2-container--default.select2-container--disabled .select2-selection--multiple {
+                background-color: #e0e5ee;
+                border-color: #a8b7c7;
+                cursor: not-allowed;
+                }
+            </style>
+        </head>
+        
+        <body>
+            <apex:form id="theForm" >
+                <div class="slds-scope">
+                    <apex:actionStatus id="assign-action-status" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <apex:actionStatus id="RevenueAccountCode-action-status" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">                                                   
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert" >
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                                <div class="slds-container_fluid slds-text-heading_medium slds-grid slds-grid_align-center" style="position: absolute; top: 55%;"> 
+                                    <P>
+                                       Refreshing Default QuickBooks Online Accounting code
+                                    </P>
+                                </div>
+                            </div> 
+                        </apex:facet>
+                    </apex:actionStatus>                    
+                    <!-- -----------------------------Configuration Tab header start ---------------------------->
+                    <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                        <div class="slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon slds-icon-standard-opportunity">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#custom')}"></use>
+                                </svg>
+                            </div>
+                            <div class="slds-media__body">
+                                <p class="slds-page-header__title slds-truncate" title="Invoice Configuration">Invoice Configuration</p>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -----------------------------Configuration Tab header END ---------------------------->
+                    
+                    <!-- ----------------------------------- fields level help ---------------------------------- -->
+                    <div id="help"  class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" aria-live="polite" style="display:none;position:absolute;top:0px;left:0px;">
+                        <div class="slds-popover__body slds-text-longform">
+                            <p>Help text will come here dynamically</p>
+                        </div>
+                    </div>
+                    <!-- ----------------------------------- fields level help ---------------------------------- -->
+                    
+                    
+                    <div class="slds-tabs_default slds-m-bottom_small" style="display:{!IF(initialized,'','none')}">
+                        <ul class="slds-tabs_default__nav" style="display:{!IF(isMultiOrg,'','none')}" role="tablist">
+                            <li class="slds-tabs_default__item slds-text-heading_label slds-truncate slds-active" style='' title="Breadwinner-Wide" role="presentation" id="BWSettings">
+                                <a class="slds-tabs_default__link slds-truncate" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item" onclick="selectTab(this,null,null);">
+                                    Breadwinner Wide Settings  
+                                </a>
+                            </li>
+                            <apex:variable value="{!2}" var="i">
+                                <apex:repeat value="{!listAppConfig}" var="a">                           
+                                    <li class="slds-tabs_default__item slds-text-heading_label slds-truncate" title="{!a.Connecting_App_Name__c}" role="presentation" style="display:{!IF(i<=3,'block','none')}" id="ConnectingAppName" >
+                                        <a class="slds-tabs_default__link " href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item"  onclick="selectTab(this,'{!a.QBO_Org_ID__c}',null);">
+                                            {!a.Connecting_App_Name__c} 
+                                        </a>
+                                    </li> 
+                                    <apex:variable value="{!i+1}" var="i"/>
+                                </apex:repeat>
+                            </apex:variable> 
+                            <li class="slds-dropdown-trigger_click slds-tabs_default__item slds-tabs__item_overflow slds-text-title_caps" 
+                                title="Other Orgs" role="presentation"  style="display:{!IF(initialized&&(listAppConfig.size>2),'block','none')}" onclick="selectTaboverflow(this,null,null);"   id="dropdown" >
+                                <a class="slds-tabs_default__link" href="javascript:void(0);" aria-haspopup="true" id="dropdown">
+                                    <span  id='dropdown'>More
+                                        <span class="slds-assistive-text">tabs</span>
+                                    </span>
+                                    <svg id="dropdown" aria-hidden="true" class="slds-button__icon slds-button__icon_x-small">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                    </svg>
+                                </a>
+                                
+                                <div class="slds-dropdown slds-dropdown_right" id="droping">
+                                    
+                                    <ul class="slds-dropdown__list slds-dropdown_length-with-icon-2" role="menu" style="border:red;">                                     
+                                        <apex:variable value="{!2}" var="i">
+                                            <apex:repeat value="{!listAppConfig}" var="a"> 
+                                                <li class="slds-dropdown__item" role="presentation" title="{!a.Connecting_App_Name__c}"  id="dropdownitem">
+                                                    <a class="slds-tabs_default__link " href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item" style="display:{!IF(i>3,'block','none')}"   onclick="selectTab(this,'{!a.QBO_Org_ID__c}','overflow');">
+                                                        <div>{!a.Connecting_App_Name__c} </div>
+                                                    </a>
+                                                </li>
+                                                <apex:variable value="{!i+1}" var="i"/>
+                                                
+                                            </apex:repeat>
+                                        </apex:variable>
+                                        
+                                        
+                                    </ul>                                                                     
+                                </div>
+                            </li>
+                            <apex:actionFunction name="changeValue" action="{!initializeCustomSettings}" reRender="tabsContent" status="assign-action-status" oncomplete="HideStyleSheet(); message();addLinkDynamically();select2Init();">
+                                <apex:param name="orgID" value="" assignTo="{!qboOrgId}"/>
+                            </apex:actionFunction>
+                        </ul>
+                    </div>
+                    
+                    <apex:outputPanel layout="block" styleClass="slds-m-horizontal_small" rendered="{!!initialized}">
+                        <apex:pageMessages ></apex:pageMessages>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="tabsContent" layout="block" styleClass="slds-m-horizontal_small" rendered="{!AND(initialized,isAllowedToChangeOptionalSettings)}">
+                        
+                        <!-- short apex variable to identify whether single or multi org case boolean-->
+                        <apex:variable var="IsSingleOrgBreadwinnerWide" value="{!useQBODefaultOrgId}"/>
+                        <apex:variable var="IsSingleOrgQBOwide" value="{!OR(AND(NOT(isMultiOrg),useQBODefaultOrgId),AND(isMultiOrg,NOT(useQBODefaultOrgId)))}"/>
+                        <apex:variable var="IsOnlyifMultiOrgQBOOrgWide" value="{!AND(isMultiOrg,NOT(useQBODefaultOrgId))}" />
+                        <!-- short apex variable to identify whether single or multi org case boolean-->
+                        
+                        <apex:outputPanel layout="block" id="Oathissuemsg">
+                            <apex:pageMessage rendered="{!isOAuthIssue}" severity="WARNING" strength="2" summary="<b>There was a problem establishing a connection to QuickBooks Online:</b>" escape="false" >
+                                There was a problem establishing a connection with QuickBooks Online Company "{!appC.Connecting_App_Name__c}". If you are a QuickBooks Online Admin please reconnect to QuickBooks Online now, or ask someone who is a Salesforce Admin and QuickBooks Online Admin to click&nbsp; 
+                                <apex:outputLink style="color: black" value="{!bwSetting.breadwinner_qbo__Endpoint_URL_Override__c}/api/qbo/pre_auth/{!$Organization.Id}?app_type={!IF(CONTAINS(appC.breadwinner_qbo__Connecting_App_Name__c, 'Sandbox Company'), 'sandbox', 'production')}&callbackurl={!URLENCODE(URLFOR($Page.breadwinner_qbo__CompleteAuth))}" target="_blank" rendered="{!NOT(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'))}" >Reconnect with QuickBooks Online</apex:outputLink>
+                                <apex:outputLink style="color: black" value="{!bwSetting.breadwinner_qbo__Endpoint_URL_Override__c}/api/qbo/pre_auth/{!$Organization.Id}?app_type={!IF(CONTAINS(appC.breadwinner_qbo__Connecting_App_Name__c, 'Sandbox Company'), 'sandbox', 'production')}&callbackurl={!URLENCODE(URLFOR($Page.breadwinner_qbo__CompleteAuth))}" rendered="{!(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'))}">Reconnect with QuickBooks Online</apex:outputLink>
+                            </apex:pageMessage>
+                        </apex:outputPanel>
+                        
+                        <apex:pageMessages id="Pgmsg"></apex:pageMessages>
+                        
+                        <apex:outputPanel layout="block" rendered="{!IsOnlyifMultiOrgQBOOrgWide}">                                                          
+                            <h3 class="slds-section-title_divider">Display Common Name instead of Legal Name (Optional)</h3>          
+                            <div class="slds-m-horizontal_small">
+                                <div class="slds-text-body_small slds-m-top_small">
+                                    <p>You might have used your company&#39;s legal name in QuickBooks Online, but want it displayed to your staff as a different name.</p>
+                                    <p>Perhaps as the Trading Name, or perhaps without Ltd, or Pty, etc.</p>
+                                </div>                
+                                
+                                <div class="slds-form-element slds-m-top_small">              
+                                    <label class="slds-form-element__label" >Display Name for QuickBooks Online Company </label>              
+                                    <div class="slds-form-element__control ">                                                      
+                                        <apex:inputField value="{!appC.breadwinner_qbo__Display_Name__c}" id="QuickBooksOnlineOrgDisplayName" styleClass="slds-input slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12"/>         
+                                    </div>                
+                                </div>   
+                            </div>       
+                            
+                            <!---Logo URL-->
+                            <h3 class="slds-section-title_divider slds-m-top_medium">Logo or Image associated with QuickBooks Online Company  (Optional)</h3>          
+                            <div class="slds-m-horizontal_small">
+                                <div class="slds-text-body_small slds-m-top_small">
+                                    <p>To minimize staff confusion, you can show an image or logo next to the QuickBooks Online Org Name. You must host this image yourself (perhaps on your website), and it will be resized to 40 pixels high (for the sharpest image and fastest load times, resize it yourself to 40 px high). You can use jpg, png or gif files.</p>
+                                    <p>Please use the format https://mywebsite.com/myimage.jpg or similar. Breadwinner recommends https, though http works fine.</p>
+                                </div>                
+                                
+                                <div class="slds-form-element slds-m-top_small">              
+                                    <label class="slds-form-element__label" >URL of Image</label>              
+                                    <div class="slds-form-element__control ">                                                      
+                                        <apex:inputField value="{!appC.breadwinner_qbo__Logo_URL__c}" id="urlofImage" styleClass="slds-input slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12"/>         
+                                    </div>                
+                                </div>   
+                            </div>  
+                            <!--Display Name and Logo URL End-->
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" styleclass="slds-m-top_small" rendered="{!IsSingleOrgQBOwide}">
+                            
+                            <div class="slds-section-title_divider slds-m-top_medium">Invoice buttons visibility</div>
+                            <div class="slds-m-left_small">
+                                <div class="slds-text-body_small slds-m-top_x-small">
+                                    <p>At least one or more of the two checkboxes must be checked.</p>
+                                </div>
+                                <div class="slds-form-element__control slds-m-top_x-small">
+                                    <span class="slds-checkbox">
+                                        <label class="slds-checkbox__label" >
+                                            <apex:inputCheckbox value="{!appC.breadwinner_qbo__Show_Create_Invoice_Button__c}" id="createInvoice"/>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label slds-m-left_small">Show "Create Invoice in QuickBooks Online" Button</span>
+                                        </label>
+                                    </span>
+                                    <span class="slds-checkbox">
+                                        <label class="slds-checkbox__label" >
+                                            <apex:inputCheckbox value="{!appC.breadwinner_qbo__Show_Create_and_Send_Invoice_Button__c}" id="createandSendInvoice"/>
+                                            <span class="slds-checkbox_faux"></span>
+                                            <span class="slds-form-element__label slds-m-left_small">Show "Create and Send Email Invoice via QuickBooks Online" Button</span>
+                                        </label>
+                                    </span>
+                                </div>
+                            </div>
+                            <h3 class="slds-section-title_divider slds-m-top_medium">Default Settings</h3>
+                            
+                            <div class="slds-m-horizontal_small slds-grid slds-wrap">
+                                <div class="slds-m-top_small slds-size_1-of-1 slds-medium-size_6-of-6 slds-large-size_12-of-12">
+                                    <div class="slds-form-element ">
+                                        <label class="slds-form-element__label" >Invoice Due Date</label>
+                                        <div class="slds-form-element__control slds-grid slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12">
+                                            <apex:inputField value="{!appC.breadwinner_qbo__Default_Due_Date_Days_Number__c}" id="invoiceDueDaysNumber" styleClass="slds-input slds-size_1-of-5" style="padding-left:0.3rem;padding-right:0.3rem;"  html-autofocus="true"/>
+                                            <div class="slds-select_container slds-m-left_small slds-size_4-of-5">
+                                                <apex:selectList size="1" id="defaultDueDaysOptions" value="{!appC.breadwinner_qbo__Default_Due_Date_Days_Option__c}" styleClass="slds-select ">
+                                                    <apex:selectOptions value="{!defaultDueDaysOptions}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <apex:outputPanel layout="block" styleclass="slds-form-element slds-m-top_medium slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!AND(isBasicOrHigher, isNonUSTax)}">
+                                        <label class="slds-form-element__label" >Default Tax Rate Selection</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_8-of-16">
+                                                <apex:selectList size="1" value="{!appC.breadwinner_qbo__Default_QBO_Tax_Type__c}" styleClass="slds-select">
+                                                    <apex:selectOption itemValue="TaxExcluded" itemLabel="Exclusive of Tax" />
+                                                    <apex:selectOption itemValue="TaxInclusive" itemLabel="Inclusive of Tax" />
+                                                    <apex:selectOption itemValue="NotApplicable" itemLabel="No VAT/Tax" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                            </div>
+                            <div class="slds-m-horizontal_small slds-grid slds-wrap" style="display:{!IF(areRecordTypesEnabled,'','none')}">
+                                <div class="slds-m-top_small slds-size_1-of-1 slds-medium-size_6-of-6 slds-large-size_12-of-12">
+                                    <div class="slds-form-element ">
+                                        <label class="slds-form-element__label" style="margin-right:2px;">Breadwinner should create SF Accounts as Record Type</label>
+                                        <a href="javascript:void(0);" onmouseover="identifyfield(this,'If Breadwinner discovers a new QuickBooks Online Company and thus creates a new Salesforce Account based on this QuickBooks Online Company, Breadwinner can create that new SF Account as any one of your record types. Select a record type here, otherwise Breadwinner will use the Primary Record Type when creating a new SF Account.','154','16')" onmouseout="mouseoutclose();">
+                                            <img style="margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                        <div class="slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12">
+                                            <div class="slds-select_container">
+                                                <apex:selectList size="1" id="accountRecordTypes" value="{!appC.breadwinner_qbo__Default_Account_RecordType__c}" styleClass="slds-select">
+                                                    <apex:selectOptions value="{!accountRecordTypes}"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div> 
+                            <div class="slds-section-title_divider slds-m-top_medium">QuickBooks Online Product/Service Settings</div> 
+                            <div class="slds-m-top_small slds-m-left_small">
+                                <b><span class="wistia_embed wistia_async_6w7sjrqlzd popover=true popoverContent=link" style="display:inline"><a href="#" style="font-size: 20px;">Learn more about how Breadwinner syncs Products and Services</a></span></b>
+                            </div>
+                            <div class="slds-form-element slds-m-left_small slds-m-top_small">
+                                <span class="slds-checkbox">
+                                    <label class="slds-checkbox__label" >
+                                        <apex:inputCheckbox value="{!appC.breadwinner_qbo__Display_Expenses_and_Liabilities__c}"   id="fetchLiabilitiesandExpenses" onchange="refreshRevenueAccounts();" />
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label slds-m-right_small">Display Liabilities and Expenses when Creating Products as Revenue Accounts</span>
+                                    </label>
+                                </span>
+                            </div>
+                            <div class="slds-m-horizontal_small slds-grid slds-wrap">
+                                <div class="slds-m-top_small slds-size_1-of-1 slds-medium-size_6-of-6 slds-large-size_12-of-12">
+                                    <div class="slds-form-element ">
+                                        <label class="slds-form-element__label" style="margin-right:2px;">Default QuickBooks Online Accounting code (Revenue Code)</label>
+                                        <a href="javascript:void(0);" onmouseover="identifyfield(this,'Default Revenue Accounting Code will be set while Creating new Product from new Invoice Page.','65','16')" onmouseout="mouseoutclose();">
+                                            <img style="margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                        <div class="slds-select_container slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12">
+                                            <apex:selectList size="1" value="{!appC.breadwinner_qbo__Default_QBO_Revenue_Accounting_Value__c}" styleClass="slds-select" id="accountCodeMapping" onchange="getSaccountCodeMappingName();">
+                                                <apex:selectOptions value="{!QBOAccountList}"/>
+                                            </apex:selectList>
+                                            <apex:actionFunction name="sendtoController" reRender="">
+                                                <apex:param name="name" value="" assignTo="{!appC.Default_QBO_Revenue_Accounting_Name__c}" />
+                                            </apex:actionFunction>
+                                        </div>
+                                    </div>  
+                                </div>
+                                <apex:outputPanel layout="block" styleclass="slds-form-element slds-m-top_medium slds-size_1-of-1 slds-medium-size_6-of-6 slds-large-size_12-of-12" rendered="{!AND(isBasicOrHigher, isNonUSTax)}">
+                                    <label class="slds-form-element__label" >Default Tax Code</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12">
+                                            <apex:selectList size="1" value="{!appC.breadwinner_qbo__Default_Product_Tax_Code__c}" styleClass="slds-select" id="defaultProductTaxCode">
+                                                <apex:selectOptions value="{!QBOTaxCodeList}"/>
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" styleclass="slds-form-element slds-m-top_medium  slds-size_1-of-1 slds-medium-size_6-of-6 slds-large-size_12-of-12" rendered="{!AND(isBasicOrHigher, isNonUSTax)}">
+                                    <label class="slds-form-element__label" >Default Tax Inclusive / Exclusive</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container slds-size_1-of-1 slds-medium-size_2-of-6 slds-large-size_3-of-12">
+                                            <apex:selectList size="1" value="{!appC.breadwinner_qbo__Default_Product_Tax_Type__c}" styleClass="slds-select" id="defaultProductTaxSelection">                                                
+                                                <apex:selectOption itemValue="True" itemLabel="Inclusive of Tax" />
+                                                <apex:selectOption itemValue="False" itemLabel="Exclusive of Tax" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(IsAllowedToMapInvoiceFields,planCode>=35)}">
+                            <apex:outputPanel layout="block">
+                                <h3 class="slds-section-title_divider slds-m-top_medium">Invoice fields from Opportunity
+                                    <apex:outputPanel styleClass="slds-m-left_small slds-form-element__icon" rendered="{!trialOrg}">
+                                        <a href="javascript:void(0);" onmouseover="identifyfield(this,'These features are only accessible at Breadwinner Professional and up, and are also shown during your free trial. If you subscribe at the Basic level, this section will no longer be accessible.','100','12')" onmouseout="mouseoutclose();">
+                                            <img style="margin-left: 5px;margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                    </apex:outputPanel>
+                                </h3>
+                                
+                                <div class="slds-m-horizontal_small">
+                                    <div class="slds-text-body_small slds-m-top_small">
+                                        Note: All mapped fields must be on the <a id="opptyFieldsLink" href="javascript:void(0);" target="_blank" style="color: #16325c;text-decoration: underline;">Opportunity</a>. If you wish to map data on an object other than the Opportunity, please create a formula field on the Opportunity to pull in the data.
+                                    </div>
+                                    <div class="slds-text-body_small slds-m-top_small"> 
+                                        Is the field you are looking for missing? It might be a Lookup field. Breadwinner cannot easily access lookup fields, however, you can create a simple cross-object formula field on Opportunity and use that field for mapping, the formula for that field can be "Custom_Lookup__r.Name" (or StandardLookup.Name)
+                                    </div>
+                                    <div class="slds-section__title slds-m-top_medium">Invoice Default Fields</div>
+                                    <apex:outputPanel layout="block" styleclass="slds-grid slds-wrap slds-m-horizontal_small" rendered="{!IsSingleOrgBreadwinnerWide}">
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceDate}" id="invoiceDate" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--Current Date--"/>
+                                                                <apex:selectOptions value="{!invoiceDateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Due Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceDueDate}" id="invoiceDueDate" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!dateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Message Displayed on Invoice</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceMessageDisplayed}" id="invoiceMessage" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Statement Memo</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceStatementMemo}" id="invoiceStatementMemo" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" styleclass="slds-grid slds-wrap slds-m-horizontal_small" rendered="{!IsSingleOrgQBOwide}">
+                                        <apex:outputPanel layout="block" styleclass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                            <div class="slds-form-element slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <label class="slds-form-element__label" >Invoice Terms</label>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!selectedFieldForInvoiceTerms}" id="invoiceTerms" styleClass="slds-select" size="1">
+                                                            <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                            <apex:selectOptions value="{!textFields}"/>    
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleclass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" rendered="{!areInvoiceCustomTxnNumbersEnabled}">
+                                            <div class="slds-form-element slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <label class="slds-form-element__label" >Invoice Custom Transaction Number</label>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!InvoiceCustomTranscationNumber}" id="invoiceNumber" styleClass="slds-select" size="1">
+                                                            <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                            <apex:selectOptions value="{!TextAndNumberFields}"/>    
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" rendered="{!AND(OR(isInvoiceCustomField1Enabled, isInvoiceCustomField2Enabled, isInvoiceCustomField3Enabled),IsSingleOrgQBOwide)}">
+                                        <div class="slds-section__title slds-m-top_medium">Custom Fields</div>
+                                        <div class="slds-text-title slds-m-top_small slds-m-horizontal_small">The following Invoice custom fields are enabled in QuickBooks Online, at Company Settings > Sales > Sales Form Content.</div>
+                                        <div class="slds-grid slds-wrap slds-m-horizontal_small">
+                                            <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!OR(isInvoiceCustomField1Enabled,isInvoiceCustomField2Enabled)}">
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField1Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField1_Label}&nbsp;(Custom Field 1)</label>
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedFieldForInvoiceCustomField1}" id="invoiceCustomField1" styleClass="slds-select" size="1">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!fieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField2Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField2_Label}&nbsp;(Custom Field 2)</label>
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedFieldForInvoiceCustomField2}" id="invoiceCustomField2" styleClass="slds-select" size="1">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!fieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >                                    
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField3Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField3_Label}&nbsp;(Custom Field 3)</label>                                                                    
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedFieldForInvoiceCustomField3}" size="1" id="invoiceCustomField3" styleClass="slds-select">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!fieldsForInvoiceCustomFields}"/>  
+                                                                </apex:selectList>  
+                                                            </div>
+                                                        </div>                                                                  
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceLocationFieldEnabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceLocationField_Label}&nbsp;(QuickBooks Online Location Tracking)</label>                                                                    
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedFieldForInvoiceLocationField}" size="1" id="location" styleClass="slds-select">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!fieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>                                                                  
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    
+                                    
+                                </div>
+                            </apex:outputPanel>
+                            
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" rendered="{!AND(isShippingAddressEnabled,IsSingleOrgQBOwide,IsAllowedToMapInvoiceFields,planCode>=35)}">
+                            <div class="slds-section" id="shippingsectiondivId">
+                                <h3 class="slds-section-title_divider slds-m-top_medium" style="padding: 0.19rem;">
+                                    <button class="slds-button slds-section__title-action"  type="button" onclick="showHideSectionConent('shippingsectiondivId','shippingsectiondivIdImage');" style="letter-spacing: .0625rem;text-transform: uppercase;">
+                                        <img id="shippingsectiondivIdImage" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}" style="margin-bottom: 3px;margin-right: 4px;" />
+                                        <span style="color: #54698d;">Shipping Fields</span></button>
+                                </h3>
+                                <div class="slds-section__content slds-m-horizontal_small">
+                                    
+                                    <div class="slds-text-title  slds-m-top_small">The following Invoice shipping fields are enabled in QuickBooks Online, at Company Settings > Sales > Sales Form Content.</div>
+                                    <div class="slds-grid slds-wrap">
+                                        <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingDate}" id="invoiceShippingDate" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!dateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Tracking Number</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceTrackingNum}" id="invoiceTrackingNumber" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Ship via</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFIeldForInvoiceShippingVia}" id="invoiceShipVia" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </div>
+                                    <hr style="margin: 0.9rem 0;"/>
+                                    <div class="slds-grid slds-wrap">
+                                        <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                            <apex:outputPanel layout="block" styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping Address</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingAddress}" id="invoicesShippingAddress" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>   
+                                                                
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping City</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingCity}" id="invoiceShippingCity" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                                
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping State</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingState}" id="invoiceShippingState" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            
+                                        </apex:outputPanel>
+                                        <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                            <apex:outputPanel layout="block" styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping Country</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingCountry}" id="invoiceShippingCountry" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Shipping Postal Code</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForInvoiceShippingPostalCode}" id="invoiceShippingPostalcode" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </div>  
+                                </div>
+                                
+                            </div>
+                        </apex:outputPanel> 
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(canMapLineItems,IsSingleOrgBreadwinnerWide)}">
+                            <h3 class="slds-section-title_divider slds-m-top_medium  " style="text-transform: uppercase;">
+                                Invoice Line Item Fields from Opportunity Product                                    
+                            </h3>
+                            <div class="slds-text-body_small slds-m-top_small slds-m-horizontal_small">
+                                Invoice Line Item Fields are populated from the Opportunity line item object. Please select a field or a formula field below. This only affects invoices created from Opportunities.
+                            </div>
+                            <div class="slds-text-body_small slds-m-top_small slds-m-horizontal_small" style="font-style: italic;">
+                                Note: All mapped fields must be on the <a id="opptyProdFieldsLink" href="javascript:void(0);" target="_blank" style="color: #16325c;text-decoration: underline;">Opportunity Product</a>. If you wish to map data on an object other than the Opportunity Product, please create a formula field on the Opportunity Product to pull in the data.
+                            </div>
+                            <div class="slds-grid slds-wrap slds-m-horizontal_small">
+                                <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Product/Service</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemProduct}" id="productName" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--Use Default Product Name Field--"/>
+                                                        <apex:selectOptions value="{!fieldsForLineItemProduct}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Description</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemDescription}" id="description" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--Use Default Product Description Field--"/>
+                                                        <apex:selectOptions value="{!textFieldsForLineItems}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Quantity</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemQuantity}" id="quantity" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--Use Default Quantity Field--"/>
+                                                        <apex:selectOptions value="{!NumberFieldsForLineItems}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Rate</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemRate}" id="rate" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--Use Default Price Field--"/>
+                                                        <apex:selectOptions value="{!currencyFieldsForLineItems}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isServiceDateEnabled ,'','none')}">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Service Date</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemServiceDate}" id="serviceDate" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--Use Default Date Field--"/>
+                                                        <apex:selectOptions value="{!dateFieldsForLineItems}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isNonUSTaxModel,'','none')}">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Tax Code</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemTaxCode}" id="taxCode" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                        <apex:selectOptions value="{!fieldsForLineItemClassAndTax}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                                <div style="font-size:11px ;color:grey;" class="slds-text-title slds-m-top_x-small">This is only available in Non-US QuickBooks Online Orgs </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isClassTrackingPerTxnLineEnabled,'','none')}">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label" >Class</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!selectedFieldForLineItemClass}" id="class" styleClass="slds-select" size="1">
+                                                        <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                        <apex:selectOptions value="{!fieldsForLineItemClassAndTax}"/>    
+                                                    </apex:selectList>
+                                                </div>
+                                                <div style="font-size:11px ;color:grey;" class="slds-text-title slds-m-top_x-small"> Class must be first enabled in QuickBooks Online for Line Items </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-text-body_small slds-m-top_small"> 
+                                    Is the field you are looking for missing? It might be a Lookup field. Breadwinner cannot easily access lookup fields, however, you can create a simple cross-object formula field on Opportunity product and use that field for mapping, the formula for that field can be "Custom_Lookup__r.Name" (or StandardLookup.Name)
+                                </div> 
+                                
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(planCode>=35,IsSingleOrgBreadwinnerWide)}" >
+                            <div class="slds-section" id="optytoLineSection" >
+                                <h3 class="slds-section-title_divider slds-m-top_medium" style="padding: 0.19rem;">
+                                    <button class="slds-button slds-section__title-action"  type="button" onclick="showHideSectionConent('optytoLineSection','optytoLineSectionImage');" style="letter-spacing: .0625rem;text-transform: uppercase;">
+                                        <img id="optytoLineSectionImage" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}" style="margin-bottom: 3px;margin-right: 4px;" />
+                                        <span style="color: #54698d;">Invoice Line Item from Opportunity fields</span></button>
+                                </h3>
+                                <div class="slds-section__content slds-m-top_small slds-m-horizontal_small">
+                                    
+                                    <div class="slds-text-body_small slds-m-top_small">
+                                        Invoice Line Item from Opportunity fields are populated from the Opportunity. Please select a field or a formula field below. This only affects invoices created from Opportunities.
+                                    </div>
+                                    <div class="slds-text-body_small slds-m-top_small" style="font-style: italic;">
+                                        Note: All mapped fields must be on the <a id="opptytoProductsOpptyFieldsLink" href="javascript:void(0);" target="_blank" style="color: #16325c;text-decoration: underline;">Opportunity</a>. If you wish to map data on an object other than the Opportunity, please create a formula field on the Opportunity to pull in the data.
+                                    </div>
+                                    <div class="slds-text-body_small slds-m-top_small" >
+                                        If you use this feature, only the Product/Service field is required, but Breadwinner strongly recommends you also specify the Quantity and Amount fields.
+                                    </div>
+                                    <div class="slds-grid slds-wrap">
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Product/Service</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Product}" id="invoiceLIname" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Description</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Description}" id="invoiceLIdescription" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Quantity</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Quantity}" id="invoiceLIquantity" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOption itemvalue="DefaultTo1" itemLabel="--Default to 1--"/>
+                                                                <apex:selectOptions value="{!numberFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Rate</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Rate}" id="invoiceLIrate" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!currencyRateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Do you want this line to be the First or Last line on the Invoice?</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Location}" id="invoiceLIlocation" styleClass="slds-select" size="1">
+                                                                <apex:selectOptions value="{!OpptyLineItem_LocationValues}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel layout="block"  styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!planCode>=60}" >
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isServiceDateEnabled,'','none')}">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Service Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1ServiceDate}" id="invoiceLIservicedate" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!dateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isNonUSTaxModel,'','none')}">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Tax Code</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1TaxCode}" id="invoiceLItaxcode" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                        <div style="font-size:11px ;color:grey;" class="slds-text-title slds-m-top_x-small">This is only available in Non-US QuickBooks Online Orgs </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small" style="display:{!IF(isClassTrackingPerTxnLineEnabled,'','none')}">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Class</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedFieldForOpptyLineItem1Class}" id="invoiceLIclass" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!textFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                        <div style="font-size:11px ;color:grey;" class="slds-text-title slds-m-top_x-small"> Class must be first enabled in QuickBooks Online for Line Items </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <div class="slds-text-body_small slds-m-top_small"> 
+                                            Is the field you are looking for missing? It might be a Lookup field. Breadwinner cannot easily access lookup fields, however, you can create a simple cross-object formula field on Opportunity and use that field for mapping, the formula for that field can be "Custom_Lookup__r.Name" (or StandardLookup.Name)
+                                        </div> 
+                                        
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block"  rendered="{!AND(isallowedtoMapOdertoInvoice)}">
+                            <apex:outputPanel layout="block" styleClass="slds-m-top_medium" >
+                                <h3 class="slds-section-title_divider">Invoice fields from Order
+                                    <apex:outputPanel styleClass="slds-m-left_small slds-form-element__icon" rendered="{!trialOrg}">
+                                        <a href="javascript:void(0);" onmouseover="identifyfield(this,'These features are only accessible at Breadwinner Professional and up, and are also shown during your free trial. If you subscribe at the Basic level, this section will no longer be accessible.','100','12')" onmouseout="mouseoutclose();">
+                                            <img style="margin-left: 5px;margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                    </apex:outputPanel>
+                                </h3>
+                                
+                                <div class="slds-m-horizontal_small">
+                                    <div class="slds-text-body_small slds-m-top_small">
+                                        Invoice Fields are populated from the Order object. Please select a field or a formula field below. This only affects invoices created from Orders.
+                                    </div>
+                                    <div class="slds-text-body_small slds-m-top_small" style="font-style: italic;">
+                                        Note: All mapped fields must be on the <a id="OrderFieldsLink" href="javascript:void(0);" target="_blank" style="color: #16325c;text-decoration: underline;">Order</a>. If you wish to map data on an object other than the Order, please create a formula field on the Order to pull in the data.
+                                    </div>
+                                    <div class="slds-text-body_small slds-m-top_small"> 
+                                        Is the field you are looking for missing? It might be a Lookup field. Breadwinner cannot easily access lookup fields, however, you can create a simple cross-object formula field on Opportunity and use that field for mapping, the formula for that field can be "Custom_Lookup__r.Name" (or StandardLookup.Name)
+                                    </div>
+                                    <div class="slds-section__title slds-m-top_medium">Invoice Default Fields</div>                                    
+                                    <apex:outputPanel layout="block" styleclass="slds-grid slds-wrap slds-m-horizontal_small" rendered="{!IsSingleOrgBreadwinnerWide}">
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedOrderFieldForInvoiceDate}" id="invoicedatefromOrder" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--Current Date--"/>
+                                                                <apex:selectOptions value="{!orderDateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Due Date</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedOrderFieldForInvoiceDueDate}" id="invoiceDuedatefromOrder" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!orderDateFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Message Displayed on Invoice</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedOrderFieldForInvoiceMessageDisplayed}" id="invoiceMessagefromOrder" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!orderTextFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Statement Memo</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedOrderFieldForInvoiceStatementMemo}" id="invoiceStatementMemofromOrder" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!orderTextFields}"/>    
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" styleclass="slds-grid slds-wrap slds-m-horizontal_small" rendered="{!IsSingleOrgQBOwide}">
+                                        <div class="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-form-element slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <label class="slds-form-element__label" >Invoice Terms</label>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!selectedOrderFieldForInvoiceTerms}" id="invoiceTermsfromOrder" styleClass="slds-select" size="1">
+                                                            <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                            <apex:selectOptions value="{!orderTextFields}"/>    
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel layout="block" styleclass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!areInvoiceCustomTxnNumbersEnabled}">
+                                            <div class="slds-form-element slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <label class="slds-form-element__label" >Invoice Custom Transaction Number</label>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!selectedOrderFieldForInvoiceCustomTxnNumber}" id="invoiceNumberfromOrder" styleClass="slds-select" size="1">
+                                                            <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                            <apex:selectOptions value="{!orderTextAndNumberFields}"/>    
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" rendered="{!AND(OR(isInvoiceCustomField1Enabled, isInvoiceCustomField2Enabled, isInvoiceCustomField3Enabled),IsSingleOrgQBOwide)}">
+                                        <div class="slds-section__title slds-m-top_medium">Custom Fields</div>
+                                        
+                                        <div class="slds-text-title slds-m-top_small slds-m-horizontal_small">The following Invoice custom fields are enabled in QuickBooks Online, at Company Settings > Sales > Sales Form Content.</div>
+                                        <div class="slds-grid slds-wrap slds-m-horizontal_small">
+                                            <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!OR(isInvoiceCustomField1Enabled,isInvoiceCustomField2Enabled)}">
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField1Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField1_Label}&nbsp;(Custom Field 1)</label>
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedOrderFieldForInvoiceCustomField1}" id="invoiceCustomfield1fromOrder" styleClass="slds-select" size="1">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!orderfieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField2Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField2_Label}&nbsp;(Custom Field 2)</label>
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedOrderFieldForInvoiceCustomField2}" id="invoiceCustomfield2fromOrder" styleClass="slds-select" size="1">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!orderfieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >                                    
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceCustomField3Enabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceCustomField3_Label}&nbsp;(Custom Field 3)</label>                                                                    
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedOrderFieldForInvoiceCustomField3}" size="1" id="invoiceCustomfield3fromOrder" styleClass="slds-select">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!orderfieldsForInvoiceCustomFields}"/>  
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>                                                                  
+                                                    </div>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!isInvoiceLocationFieldEnabled}">
+                                                    <div class="slds-form-element">
+                                                        <label class="slds-form-element__label" >{!invoiceLocationField_Label}&nbsp;(QuickBooks Online Location Tracking)</label>                                                                    
+                                                        <div class="slds-form-element__control">
+                                                            <div class="slds-select_container">
+                                                                <apex:selectList value="{!selectedOrderFieldForInvoiceLocationField}" size="1" id="invoiceLocationfromOrder" styleClass="slds-select">
+                                                                    <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                    <apex:selectOptions value="{!orderfieldsForInvoiceCustomFields}"/>    
+                                                                </apex:selectList>
+                                                            </div>
+                                                        </div>                                                                  
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" rendered="{!AND(OR(isInvoiceCustomField1Enabled, isInvoiceCustomField2Enabled, isInvoiceCustomField3Enabled), canBindOpportunity,IsSingleOrgQBOwide)}" >  
+                            <div class="slds-section" id="divsection" >
+                                <h3 class="slds-section-title_divider slds-m-top_medium slds-m-bottom_small" style="padding: 0.19rem;">
+                                    <button class="slds-button slds-section__title-action"  type="button" onclick="showHideSectionConent('divsection','divsectionImage');" style="letter-spacing: .0625rem;text-transform: uppercase;">
+                                        <img id="divsectionImage" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}" style="margin-bottom: 3px;margin-right: 4px;" />
+                                        <span style="color: #54698d;">Invoice Mapping to Opportunity</span></button>
+                                </h3>
+                                <div class="slds-section__content slds-m-horizontal_small">
+                                    
+                                    <div class="slds-text-title slds-m-top_x-small">Invoice Mapping is only used if your Invoices are created directly in QuickBooks Online, but not via Breadwinner, and you want those invoices matched back to a specific Opportunity. This is a common situation if your Finance Team creates the Invoices directly in QuickBooks Online, or an API / Third Party Integration, or a repeating Invoice needs subsequent Invoices matched to an Opportunity.
+                                        <br/><br/>  At the time Breadwinner first discover the Invoice (but not upon later edits) Breadwinner will try to match a QuickBooks Online Custom Field with an Opportunity Custom Field, as specified below.
+                                    </div>
+                                    <div class="slds-grid slds-wrap">
+                                        <apex:outputPanel styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Invoice Custom Field</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedCustomFieldForInvoiceMappingOpportunity}" id="invoiceCustomFieldmapping" styleClass="slds-select" size="1">
+                                                                <apex:selectOptions value="{!invoiceCustomFieldsOppMapping}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <apex:outputPanel layout="block" styleClass="slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                                <div class="slds-form-element">
+                                                    <label class="slds-form-element__label" >Opportunity Field</label>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!selectedOppFieldForInvoiceMappingOpportunity}" id="optyfieldmapping" styleClass="slds-select" size="1">
+                                                                <apex:selectOption itemvalue="" itemLabel="--None--"/>
+                                                                <apex:selectOptions value="{!oppFieldsInvoiceOppMapping}"/>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        <div class="slds-section" id="AdvsectiondivId" >
+                            <h3 class="slds-section-title_divider slds-m-top_medium" style="padding: 0.19rem;">
+                                <button class="slds-button slds-section__title-action"  type="button" onclick="showHideSectionConent('AdvsectiondivId','AdvsectiondivIdImage');" style="text-transform: uppercase;letter-spacing: .0625rem;">
+                                    <img id="AdvsectiondivIdImage" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}" style="margin-bottom: 3px;margin-right: 4px;" />
+                                    <span style="color: #54698d;">Advanced Settings</span></button>
+                            </h3>
+                            <div class="slds-section__content slds-m-horizontal_small">
+                                <apex:outputPanel layout="block" rendered="{!IsSingleOrgQBOwide}">
+                                    <div class="slds-section__title slds-m-top_medium">Import Inactive QuickBooks Online Companies and their related Transactions</div>
+                                    <div class="slds-form-element slds-m-left_small slds-m-top_small">
+                                        <span class="slds-checkbox">
+                                            <label class="slds-checkbox__label" >
+                                                <apex:inputCheckbox value="{!appC.breadwinner_qbo__Import_Deleted_Customers__c}" id="importinactiveCompanies" />
+                                                <span class="slds-checkbox_faux"></span>
+                                                <span class="slds-form-element__label slds-m-right_small">By default, Breadwinner does not import Deleted (Inactive) Customers {!IF(isBillorPOEnabled,'nor Vendors','')}, and their Invoices{!IF(isBillorPOEnabled,IF(AND(appC.Sync_Bills__c,appC.Sync_POs__c),', Bills and Purchase Orders',IF(appC.Sync_Bills__c,' and Bills',' and Purchase Orders')),'')}. You can allow importing them by checking this checkbox. Make sure that you "Restart Background QuickBooks Online Customer{!IF(isBillorPOEnabled,' and Vendor Sync','')}" after changing this.</span>
+                                            </label>
+                                        </span>
+                                    </div>
+                                    <!-- <div>
+<label class="slds-checkbox slds-m-top_medium">
+<span class="slds-form-element__label">
+Sync Sales Receipts with QuickBooks Online
+</span>
+<apex:inputCheckbox value="{!appC.Sync_Sales_Receipts__c}"  /> 
+<span class="slds-checkbox_faux"></span>
+</label>
+</div> -->
+                                </apex:outputPanel>
+                                <apex:outputPanel layout="block" rendered="{!IsSingleOrgBreadwinnerWide}">
+                                    <apex:outputPanel layout="block" rendered="{!planCode>=35}">
+                                        <div class="slds-section__title slds-m-top_medium">Import Sub-Companies under their Parent Company</div>
+                                        <div class="slds-form-element slds-m-left_small slds-m-top_small">
+                                            <span class="slds-checkbox">
+                                                <label class="slds-checkbox__label" >
+                                                    <apex:inputCheckbox value="{!bwSetting.breadwinner_qbo__Import_Sub_Company_under_their_Parent__c}" id="importsubCompaniesundertheirParentCompany" />
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label slds-m-right_small">When Breadwinner discovers a new QuickBooks Online Sub-Company or Project, auto-associate it with the parent QuickBooks Online Company. If unchecked, Breadwinner will instead first check for an identically spelled Salesforce Account, and if none are found it will create a new Salesforce Account and associate the Sub-Company / Project with that newly created Salesforce Account.</span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" rendered="{!useAccountownerasInvoiceOwner}">
+                                        <div class="slds-section__title slds-m-top_medium">Sharing Settings</div>
+                                        <div class="slds-form-element slds-m-left_small slds-m-top_small">
+                                            <span class="slds-checkbox">
+                                                <label class="slds-checkbox__label" >
+                                                    <apex:inputCheckbox value="{!useAccountOwnerforOpportunityOwner }" id="accountOwnerasInvoiceOwner"/>
+                                                    <span class="slds-checkbox_faux"></span>
+                                                    <span class="slds-form-element__label slds-m-right_small">Use Account Owner as Invoice Owner</span>
+                                                </label>
+                                            </span>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <div class="slds-section__title slds-m-top_medium">Opportunity Rollups</div>
+                                    <div class="slds-m-horizontal_small slds-m-top_small">
+                                        <div class="slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                            <div class="slds-form-element slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                                <label class="slds-form-element__label" > Opportunity Rollups to be either Gross or Net</label>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!opportunityRollupType }" styleClass="slds-select" id="optyRollups" size="1">
+                                                            <apex:selectOption itemLabel="Net (Sub-Total)" itemValue="Net">  </apex:selectOption> 
+                                                            <apex:selectOption itemLabel="Gross (Invoice-Total)" itemValue="Gross">  </apex:selectOption>
+                                                            <apex:selectOption itemLabel="Do Not Calculate Rollups" itemValue="DoNotCalculateRollups">  </apex:selectOption>
+                                                            <apex:actionSupport event="onchange" reRender="noteOptyRollupsMulti" status="status"/>
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <apex:outputPanel id="noteOptyRollupsMulti"  ><div style="display:{!IF(opportunityRollupType='DoNotCalculateRollups','','none')}" class="slds-m-left_medium slds-m-top_xx-small slds-text-body_small">When Opportunity Rollup type is selected as <q>Do Not Calculate Rollups</q>, Breadwinner doesn't try to update your opportunities, which might already have values in them, so you can remove them from Opportunity page layouts as they are no longer accurate.</div> </apex:outputPanel>
+                                    <apex:outputPanel id="CustomButtonsSectionTop">
+
+                                    <apex:outputPanel rendered="{!If(listofCustomButtons.size > 0, true, false)}"> 
+                                    <div class="slds-section__title slds-m-top_medium">Choose Custom buttons to show on New Invoice layout</div>
+                                    <div class="slds-form-element">
+                                        <apex:outputPanel id="CustomButtonsSection">
+                                            <apex:outputPanel >
+                                                <label class="slds-form-element__label slds-m-horizontal_small slds-m-top_small" style="vertical-align: top;">Custom buttons list on Invoice object</label>
+                                                <div class="slds-form-element__control slds-m-horizontal_small">
+                                                    <apex:outputPanel >
+                                                        <select class="form-control slds-select slds-input CustombuttonsSelect" multiple="multiple" style="width: 39%;" id="buttonsList">
+                                                            <optgroup label="Buttons">
+                                                              <apex:repeat value="{!custombuttonsList}" var="c">
+                                                                  <apex:outputPanel rendered="{!if(c.isSelected,true,false)}">
+                                                                      <option value="{!c.name}" selected="selected">{!c.Name}</option>
+                                                                  </apex:outputPanel>
+                                                                  <apex:outputPanel rendered="{!!if(c.isSelected,true,false)}">
+                                                                  <option value="{!c.name}">{!c.MasterLabel} ({!c.Name})</option>
+                                                                  </apex:outputPanel>
+                                                                </apex:repeat>
+                                                            </optgroup>
+                                                        </select>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                        <apex:actionFunction name="updateButtonsConfiguration" action="{!addButtons}" reRender="newcc">
+                                            <apex:param name="buttonname" assignTo="{!buttonname}" value=""/>
+                                            <apex:param name="type" assignTo="{!type}" value=""/>
+                                        </apex:actionFunction>
+                                    </div>
+                                </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </div>
+                        </div> 
+                        
+                        <div class="slds-m-top_large slds-m-bottom_large" style="text-align:center;" >
+                            <apex:commandButton value="Save" id="save" action="{!SaveChanges}" status="assign-action-status" styleClass="slds-button slds-button_brand" reRender="tabsContent,CustomButtonsSection" oncomplete="HideStyleSheet(); message();scrolltoTop();addLinkDynamically();select2Init();"/>
+                        </div>
+                        <apex:actionFunction name="refreshRevenueAccounts" action="{!getAccountsFromQBO}"  reRender="accountCodeMapping" status="RevenueAccountCode-action-status" oncomplete="message();"/>
+                        
+                    </apex:outputPanel>
+                </div>                
+                
+            </apex:form>
+        </body>
+        
+    </html>
+</apex:page>

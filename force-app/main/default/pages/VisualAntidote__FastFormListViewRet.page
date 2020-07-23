@@ -1,0 +1,11 @@
+<apex:page >
+ <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__ffcommon,'scripts/jquery.min.js')}" /> 
+  <script>
+  var listViewId= "";
+        listViewId= '{!JSENCODE($CurrentPage.parameters.itemid)}';
+        console.log(' log id '+listViewId);
+        
+       window.opener.CallBackFromFilterPage(''+listViewId );
+        window.close();
+  </script>
+</apex:page>

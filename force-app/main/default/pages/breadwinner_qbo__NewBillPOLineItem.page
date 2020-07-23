@@ -1,0 +1,15 @@
+<apex:page standardController="breadwinner_qbo__BW_AP_Line_Item__c" sidebar="false">
+    <apex:slds />
+    <div class="slds-scope">
+        <div class="slds-notify slds-notify_alert slds-theme_error slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small" role="alert" style="border-radius: 4px;color:white;font-weight:500;line-height:1.4;word-spacing:1px;border-radius:4px;justify-content:left">
+            <div>
+                <div>
+                    This action is not possible with Breadwinner.
+                </div>
+                <div>
+                    You can create/edit Bill/PO to create/edit Bill/PO Line Items in QuickBooks Online, and they will get synced to Salesforce within 15 minutes.
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:page>

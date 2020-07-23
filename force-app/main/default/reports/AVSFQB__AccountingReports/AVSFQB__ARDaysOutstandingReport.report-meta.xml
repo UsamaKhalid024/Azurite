@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <colorRanges>
+        <aggregate>Sum</aggregate>
+        <columnName>AVSFQB__Invoices__c.AVSFQB__Days_Outstanding__c</columnName>
+        <highBreakpoint>60.0</highBreakpoint>
+        <highColor>#C25454</highColor>
+        <lowBreakpoint>30.0</lowBreakpoint>
+        <lowColor>#FFFFFF</lowColor>
+        <midColor>#C2C254</midColor>
+    </colorRanges>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AVSFQB__Invoices__c.AVSFQB__Days_Outstanding__c</field>
+    </columns>
+    <description>AR Days Outstanding Report</description>
+    <filter>
+        <criteriaItems>
+            <column>AVSFQB__Invoices__c.AVSFQB__Days_Outstanding__c</column>
+            <columnToColumn>false</columnToColumn>
+            <isUnlocked>false</isUnlocked>
+            <operator>greaterThan</operator>
+            <value>0</value>
+        </criteriaItems>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>AVSFQB__Invoices__c.AVSFQB__Sync_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>AR Days Outstanding Report</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$AVSFQB__Invoices__c@AVSFQB__Invoices__c.AVSFQB__Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <showGrandTotal>true</showGrandTotal>
+    <showSubTotals>true</showSubTotals>
+    <timeFrameFilter>
+        <dateColumn>AVSFQB__Invoices__c.AVSFQB__Sync_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

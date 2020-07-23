@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__Internal_Alerts</fullName>
+    <columns>NAME</columns>
+    <columns>VisualAntidote__Alert_Type__c</columns>
+    <columns>VisualAntidote__Name__c</columns>
+    <columns>VisualAntidote__Form__c</columns>
+    <columns>VisualAntidote__Status__c</columns>
+    <columns>VisualAntidote__From__c</columns>
+    <columns>VisualAntidote__Subject__c</columns>
+    <columns>VisualAntidote__To__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>VisualAntidote__Category__c</field>
+        <operation>equals</operation>
+        <value>Internal</value>
+    </filters>
+    <label>Internal Alerts</label>
+</ListView>

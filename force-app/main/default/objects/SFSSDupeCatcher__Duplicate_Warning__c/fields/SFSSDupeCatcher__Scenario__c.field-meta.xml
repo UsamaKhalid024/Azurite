@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Scenario__c</fullName>
+    <deprecated>false</deprecated>
+    <description>This field links the duplicate alert to its parent Filter.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The Filter that is associated with this alert record.</inlineHelpText>
+    <label>Filter</label>
+    <referenceTo>SFSSDupeCatcher__Scenario__c</referenceTo>
+    <relationshipLabel>DupeCatcher Duplicate Alerts</relationshipLabel>
+    <relationshipName>Duplicate_Warnings</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Empty_Sessions</fullName>
+    <columns>NAME</columns>
+    <columns>Booking__c</columns>
+    <columns>Num_Itineraries__c</columns>
+    <columns>Start_Date__c</columns>
+    <columns>End_Date__c</columns>
+    <columns>CREATED_DATE</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Start_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <filters>
+        <field>End_Date__c</field>
+        <operation>equals</operation>
+    </filters>
+    <label>Empty Sessions</label>
+</ListView>

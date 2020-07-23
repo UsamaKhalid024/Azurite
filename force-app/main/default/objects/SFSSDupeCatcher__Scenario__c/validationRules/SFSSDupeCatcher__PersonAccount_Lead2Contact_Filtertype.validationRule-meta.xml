@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__PersonAccount_Lead2Contact_Filtertype</fullName>
+    <active>true</active>
+    <errorConditionFormula>IF(SFSSDupeCatcher__Person_Account_Filter__c, IF(ISPICKVAL(SFSSDupeCatcher__Scenario_Type__c, &quot;Lead to Contact&quot;), true, false), false)</errorConditionFormula>
+    <errorMessage>&#39;Lead to Contact&#39; is not a valid Filter Type when the Person Account checkbox is checked.</errorMessage>
+</ValidationRule>

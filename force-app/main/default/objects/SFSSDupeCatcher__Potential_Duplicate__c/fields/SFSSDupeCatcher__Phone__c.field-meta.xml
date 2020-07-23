@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Phone__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The phone number of the duplicate lead/contact/account.</description>
+    <externalId>false</externalId>
+    <formula>CASE( SFSSDupeCatcher__Object_Type__c, &#39;Account&#39;, SFSSDupeCatcher__Account__r.Phone, &#39;Contact&#39;, SFSSDupeCatcher__Contact__r.Phone, &#39;Lead&#39;, SFSSDupeCatcher__Lead__r.Phone, &#39;&#39; )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>The phone number of the duplicate lead/contact/account.</inlineHelpText>
+    <label>Phone</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

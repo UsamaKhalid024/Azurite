@@ -1,0 +1,1821 @@
+<!--
+  @Page Name          : ZoomVoiceDial.page
+  @Description        : 
+  @Author             : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Group              : 
+  @Last Modified By   : ChangeMeIn@UserSettingsUnder.SFDoc
+  @Last Modified On   : 2019/6/13 上午8:50:27
+  @Modification Log   : 
+  ==============================================================================
+  Ver         Date                     Author      		      Modification
+  ==============================================================================
+  1.0    2019/6/11 下午3:45:49   ChangeMeIn@UserSettingsUnder.SFDoc     Initial Version
+-->
+<apex:page sidebar="false" showHeader="false" controller="zoom_app.ZoomVoiceDialController" extensions="zoom_app.ZoomVoiceLoginController,zoom_app.ZoomVoiceCallLogController">
+	<apex:stylesheet value="{! $Resource.zoomcomponentscss }" />
+	<apex:stylesheet value="{!URLFOR($Resource.zoom_app__zoomcss, 'css/zoom-icon.css')}" />
+	<apex:includeScript value="{! $Resource.Vuejs }" />
+	<apex:includeScript value="{! $Resource.zoomcomponentsjs }" />
+	<apex:includeScript value="{! $Resource.ZoomDialCommon}" />
+	<apex:outputpanel rendered="{!!CONTAINS($CurrentPage.URL, 'lightning.force.com')}">
+		<script src="/support/api/43.0/interaction.js" type="text/javascript" />
+	</apex:outputpanel>
+	<apex:outputpanel rendered="{!CONTAINS($CurrentPage.URL, 'lightning.force.com')}">
+		<script src="/support/api/43.0/lightning/opencti_min.js" type="text/javascript" />
+	</apex:outputpanel>
+	
+	<script src="https://unpkg.com/libphonenumber-js/bundle/libphonenumber-max.js" type="text/javascript"></script>
+
+	
+	<style>
+		.dial-number {
+			padding-top: 8px;
+			font-size: 20px;
+			font-weight: bold;
+		}
+	</style>
+
+	<html xmlns:v-bind="http://vue.org" xmlns:v-on="http://vue.org">
+	<style type="text/css">
+		.main-panel {
+			width: 198px;
+			height: 497px;
+			border-radius: 5px;
+			background-color: #ffffff;
+			border: solid 1px #e4e4ed;
+			position: relative;
+		}
+
+		.logo-banner {
+			bottom: 20px;
+			left: 10%;
+			width:90%;
+			position: absolute;
+		}
+
+
+		.zoom {
+			width: 60px;
+			height: 14px;
+			object-fit: contain;
+		}
+
+		.cloud-phone {
+			height: 19px;
+			font-family: OpenSans;
+			font-size: 16px;
+			font-weight: normal;
+			font-style: normal;
+			font-stretch: normal;
+			line-height: normal;
+			letter-spacing: normal;
+			text-align: left;
+			position: absolute;
+			top:-3px;
+			right:10%;
+			color: #8A8A9E;
+			-webkit-transform: scale(0.8);
+		}
+
+		.logo-banner input {
+			width: 55px;
+			height: 20px;
+			font-family: OpenSans;
+			font-weight: normal;
+			font-style: normal;
+			font-stretch: normal;
+			line-height: normal;
+			letter-spacing: normal;
+			display: inline-block;
+			cursor: pointer;
+			color: #2073D9;
+			margin-left: -5px;
+			padding-top: 64px;
+			position: relative;
+			border: none;
+			background: none;
+		}
+
+		.toggle {
+			margin: 0 auto;
+			background-color: #ededf4;
+			border: solid 1px #e4e4ed;
+			border-radius: 15px;
+			color: #8a8a9e;
+			width: 122px;
+			position: relative;
+			overflow: hidden;
+			cursor: pointer;
+		}
+
+		.toggle .item {
+			border-radius: 15px;
+			display: inline-block;
+			padding: 5px 0;
+			text-align: center;
+			font-weight: bold;
+			width: 50%;
+		}
+
+		.toggle .item.cursor {
+			position: absolute;
+			top: 0px;
+			left: 0px;
+			margin-left: 72px;
+			transition: margin-left 0.4s ease 0s;
+			background: #ffffff;
+			color: #2073d9;
+			width: 50px;
+		}
+
+		.toggle .item.cursor.selected {
+			margin-left: 0px;
+		}
+
+		.number-button {
+			width: 48px;
+			height: 48px;
+			border-radius: 31.1111px;
+			background-color: #F2F2F7;
+			display: inline-block;
+			text-align: center;
+			margin: 0px 4px;
+			cursor: pointer;
+			overflow: auto;
+		}
+
+		.number-button:hover {
+			filter: invert(0.1);
+			-webkit-filter: invert(0.1);
+		}
+
+
+		.numberPanel {
+			margin: auto;
+		}
+
+		.numberPanel .row {
+			margin: 10px 2px;
+			display: flex;
+			justify-content: space-between;
+		}
+
+		.numberPanel .row:before, .numberPanel .row:after {
+			content: '';
+			display: block;
+		}
+
+		/** Dial Number CSS Input Start **/
+
+		.numberInputPanel {
+			width: 160px;
+			margin: 10px 18px;
+			margin-top: 40px;
+			padding-bottom: 5px;
+		}
+
+		.numberInput {
+			padding-bottom: 8px;
+		}
+
+		.numberInput .zm-input__inner {
+			border: none !important;
+			text-align: center;
+			font-size: 15px;
+			font-weight: bold;
+		}
+
+		.numberInput .zm-input__inner::-webkit-input-placeholder {
+			text-align: center !important;
+			font-weight: normal !important;
+			font-size: 14px !important;
+		}
+
+		.numberInput .zm-input__inner:-ms-input-placeholder {
+			text-align: center !important;
+			font-weight: normal !important;
+			font-size: 14px !important;
+		}
+
+		.numberInput .zm-input__inner::-moz-placeholder {
+			text-align: center !important;
+			font-weight: normal !important;
+			font-size: 14px !important;
+		}
+
+		/** Dial Number CSS Input End **/
+
+		.call-button-panel {
+			padding-top: 8px;
+		}
+
+		.call-button {
+			width: 100%;
+			height: 36px;
+			border-radius: 8px;
+			background-color: #0E71EB;
+			background-image: none;
+			border-color: #66b1ff;
+			color: #ffffff;
+			cursor: pointer;
+			font-size: 13px;
+		}
+
+		.call-button-disabled {
+			width: 100%;
+			height: 36px;
+			border-radius: 8px;
+			background-color: #b5b5b5;
+			background-image: none;
+			border-color: #66b1ff;
+			color: #ffffff;
+			pointer-events: none;
+			font-size: 13px;
+		}
+
+
+
+		.zm-message {
+			min-width: 120px;
+			max-width: 160px;
+		}
+
+		.zm-select{
+			width: inherit;
+		}
+
+		.zm-input__inner {
+			font-size: 12px;
+		}
+
+		.zm-select-dropdown__item {
+			padding: 0px;
+			margin-left: 5px;
+			font-size: 12px;
+		}
+
+		.zm-popper {
+			max-width: 180px;
+		}
+
+		.zm-icon-outline-error::before {
+			content: "\E936";
+		}
+
+		#call-log {
+			margin-top: 10px;
+
+		}
+
+		.panel-heading {
+			padding: 10px;
+			border-bottom: 1px solid;
+			border-color: #ddd;
+			border-top-left-radius: 3px;
+			border-top-right-radius: 3px;
+		}
+
+		.row {
+			clear: both;
+		}
+
+		.panel-body {
+			padding: 12px;
+		}
+
+		.call-log-left-col {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			padding: 3px 0px;
+			width: 35%;
+		}
+
+		.call-log-right-col {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			padding: 3px 0px;
+			width: 65%;
+		}
+
+		.call-log-right-col-apex {
+			float: left;
+			position: relative;
+			min-height: 1px;
+			width: 100%;
+			margin: 3px 0px;
+		}
+
+		.call-log-right-col-apex input {
+			padding: 3px;
+			border-radius: .25rem;
+			border: 1px solid #c0c4cc;
+		}
+
+		.call-log-right-col-apex select {
+			float: left;
+			width: 80px;
+			padding: 3px;
+			margin: 3px 0px;
+			border-radius: .25rem;
+			border: 1px solid #c0c4cc;
+		}
+
+		.call-log-right-col-apex a {
+			float: left;
+			margin-top: 6px;
+			margin-right: -15px;
+		}
+
+		.call-log-label {
+			padding-top: 3px;
+			color: #747487;
+			font-size: 11px;
+		}
+
+		.input-div .call-log-left-col {
+			margin: 3px 0px;
+		}
+
+		.disabled-div .call-log-left-col {
+			color: #b3b3b3;
+		}
+
+		.input-group {
+			margin: 5px 0px;
+		}
+
+		.input-div textarea {
+			height: 80px;
+			border-radius: .25rem;
+			border: 1px solid #c0c4cc;
+		}
+
+		.panel-default {
+			border-style: hidden;
+			box-shadow: 0 1px 1px rgba(255, 255, 255, 0.1);
+		}
+
+		.message {
+			margin: 0px;
+			margin-right: 15px;
+		}
+
+		.custom-message {
+			width: 300px;
+			background-color: white;
+			border: 1px solid rgba(35, 35, 51, 0.08);
+			box-shadow: 0px 4px 12px rgba(35, 35, 51, 0.08);
+			border-radius: 10px;
+		}
+
+		.softphone-message {
+			position: absolute;
+			z-index: 999;
+			opacity: 0;
+		}
+
+
+		.phone-status.ringing {
+			color: green;
+		}
+
+		.phone-status.answered {
+			color: blue;
+		}
+
+		.phone-status.missed {
+			color: red;
+		}
+
+		.phone-status.end {
+			color: orange;
+		}
+
+		#calllogspanel {
+			overflow: auto;
+			max-height: 460px;
+			width: 100%;
+			position: absolute;
+		}
+
+		[v-cloak] {
+			display: none;
+		}
+
+		.dial-number {
+			padding-top: 8px;
+			font-size: 20px;
+			font-weight: bold;
+		}
+
+		.dial-alphabet {
+			/*height: 7px;*/
+			font-size: 7px;
+			font-weight: bold;
+		}
+
+		.dial-button {
+			width: 48px;
+			height: 48px;
+			border-radius: 31.1111px;
+			background-color: #0E71EB;
+			border-color: #0E71EB;
+			color: #ffffff;
+			cursor: pointer;
+			background-image: url({!URLFOR($Resource.zoomPhone)
+		}
+
+		);
+		background-repeat: no-repeat;
+		background-position: center;
+		}
+
+		.dial-button-disabled {
+			width: 48px;
+			height: 48px;
+			border-radius: 31.1111px;
+			background-color: #9FC6F7;
+			border-color: #9FC6F7;
+			color: #ffffff;
+			pointer-events: none;
+			background-image: url({!URLFOR($Resource.zoomPhone)
+		}
+
+		);
+		background-repeat: no-repeat;
+		background-position: center;
+		}
+
+		.dial-button:hover {
+			background-color: #2681F2;
+			background-image: url({!URLFOR($Resource.zoomPhone)
+		}
+
+		);
+		background-repeat: no-repeat;
+		background-position: center;
+		}
+
+		.dial-button-section {
+			height: 50px;
+			position: relative;
+		}
+
+
+		.del-dial-button {
+			margin: auto;
+			position: absolute;
+			top: 0;
+			left: 100px;
+			bottom: 0;
+			right: 0;
+		}
+
+		.del-dial-button:hover {
+			filter: invert(0.1);
+			-webkit-filter: invert(0.1);
+		}
+
+		.zm-autocomplete-suggestion li {
+			padding: 0 7px;
+			margin: 0;
+			line-height: 22px;
+			cursor: pointer;
+			color: #606266;
+			font-size: 14px;
+			list-style: none;
+		}
+
+		.numberInput-dropdownList {
+			display: none;
+		}
+
+		.numberInput-dropdownList-show {
+			display: block;
+		}
+	</style>
+
+
+	<div id="softphone">
+		<div class="main-panel">
+			<div id="viewpanel">
+				<div id="dialpanel" v-show="!callLogList.length">
+					<div class="numberInputPanel">
+						<zm-autocomplete class="numberInput" v-model="phoneNumber" v-bind:popper-class="hasDropDownList" value-key="phone" v-bind:fetch-suggestions="querySearchAsync"
+						 placeholder="Search By Name" clearable="true" trigger-on-focus="false" v-on:select="handleSelect">
+							<template slot-scope="{ item }">
+								<div class="name">{{ item.name }}</div>
+								<span v-if="item.name!='No matched result'" style="font-size:11px;color: #b4b4b4;">{{ item.phone }}</span>
+							</template>
+						</zm-autocomplete>
+						<!-- <zm-input class="numberInput" clearable="true" placeholder="Enter a number..." v-model="phoneNumber" /> -->
+					</div>
+					<!-- Number Panel  -->
+					<div class="numberPanel">
+						<div class="row">
+							<div class="number-button" v-on:click="numberClick(1)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialOne.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(2)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialTwo.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(3)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialThree.svg')}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="number-button" v-on:click="numberClick(4)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialFour.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(5)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialFive.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(6)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialSix.svg')}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="number-button" v-on:click="numberClick(7)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialSeven.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(8)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialEight.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick(9)">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialNine.svg')}" />
+							</div>
+						</div>
+						<div class="row">
+							<div class="number-button" v-on:click="numberClick('*')">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialStar.svg')}" />
+							</div>
+							<div class="number-button" v-on='{ mousedown:onDown,mouseup:onUp}'>
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialZero.svg')}" />
+							</div>
+							<div class="number-button" v-on:click="numberClick('#')">
+								<img src="{!URLFOR($Resource.ZoomDialNumber, 'DialNumbersSVG/DialStar2.svg')}" />
+							</div>
+						</div>
+						<div class="row dial-button-section">
+							<button v-on:click="makeCall" type="button" v-bind:class="makeCallBindClass">
+							</button>
+							<input class="del-dial-button" type="image" src="{! $Resource.crossTag}" v-on:click="delPhoneNumber" v-show="phoneNumber.length"
+							/>
+						</div>
+					</div>
+				</div>
+
+				<div id="calllogspanel">
+					<call-log v-for="log in callLogList" v-bind:call-log-length="callLogList.length" v-bind:call-log="log" v-bind:key="log.call_id">
+					</call-log>
+				</div>
+
+
+				<!--Logo Banner Start ...-->
+				<div class="logo-banner">
+
+					<zm-row>
+						<zm-col v-bind:span="10">
+							<img src="{! $Resource.zoomLogo }" class="zoom" />
+						</zm-col>
+						<zm-col v-bind:span="14">
+							<div class="cloud-phone">
+								<a href="javascript:void(0)" v-on:click="signOut" style="color:#0E71EB;text-decoration:none;">Sign Out</a>
+							</div>
+						</zm-col>
+					</zm-row>
+				</div>
+				<!-- Logo Banner End-->
+
+			</div>
+		</div>
+		<iframe src="" style="display: none" id="callClientFrame">
+
+		</iframe>
+
+
+	</div>
+
+	<script type="text/template" id="call-log-template">
+			<!-- <span v-if="ifShowIncoming">
+				{{this.contactName}}
+				{{callLog.caller_phone_number}}
+				Incoming call, answer on Zoom
+			</span> -->
+			
+			<div class="panel panel-default">
+				<!-- <div v-if="showIncoming">
+					{{this.contactName}}
+					{{callLog.caller_phone_number}}
+					Incoming call, answer on Zoom	
+				</div> -->
+				<div>
+				<div class="panel-heading" v-on:click="toggleCallLogDetail">
+					<span v-if="callLog.call_type == 1">Inbound Call:</span>
+					<span v-else>Outbound Call:</span>
+					<div style="float:right ; display:inline-block;">
+						<span class="phone-status" v-bind:class="classObject"  >{{callLog.signal_status_display}}</span>
+						<span v-bind:class="showDetailsClass"  style="font-size:14px;margin-left: 5px;"></span>
+					</div>
+				</div>
+				<div class="panel-body" v-show="callLog.showDetails">
+					<div class="softphone-message"> 
+					</div>
+					<div class="disabled-div">
+						<div class="row" style="text-align: center;">
+							<span style= "font-size: 14px; text-align: center; font-weight: bold;">{{this.contactName}}</span>
+						</div>
+						
+						<div class="row" style="text-align: center; padding-top: 6px;" v-if = "callLog.call_type == 1">
+							
+							<div>
+								<span style= "font-size: 12px; color: #232333;">{{callLog.caller_phone_number}}</span>
+							</div>
+						</div>
+						<div class="row" style="text-align: center; padding-top: 6px;" v-else>
+							
+							<div>
+								<span style= "font-size: 12px; color: #232333;">{{callLog.callee_phone_number}}</span>
+							</div>
+						</div>
+						
+						<div class="row" style="text-align: center; padding-top: 4px;">
+							<span style= "font-size: 11px; color: #747487;">{{ task.Call_Duration }}</span>
+						</div>
+					</div>
+					<div class="input-div">
+						<div class="row">
+							<div class="call-log-label">Subject</div>
+							<div class="call-log-right-col-apex"> 
+								<zm-input v-model="task.subject" placeholder="Subject">
+
+								</zm-input>
+							</div>
+						</div>
+						<div class="row">
+							<div class="call-log-label">Contact/Lead</div>
+							<div class="call-log-right-col-apex">
+								<zm-select clearable = "true" :disabled="isNameSelectDisabled" 
+									v-model="task.whoid"
+									placeholder="Name: None" 
+									id="name-select"  @change = "nameOptionChange">
+									<zm-option
+										v-for="item in nameOptions"
+										:option-id="item.id"
+										:key="item.Id"
+										:label="item.Name"
+										:value="item.Id">
+									</zm-option>
+								</zm-select>	
+							</div>
+							
+						</div>
+						<div class="row">
+							<div class="call-log-label">Relate To</div>
+							<zm-row class = "call-log-right-col-apex">
+									<zm-col v-bind:span="20">
+										<zm-select clearable = "true" v-model="relatedToType" placeholder="Please Select" @change = "relatedToTypeChange"
+											id="sobjectType-select"  :disabled="isSobjectSelectDisabled">
+												<zm-option
+													v-for="item in relatedToTypeOptions"
+													:option-id="item.value"
+													:key="item.value"
+													:label="item.name"
+													:value="item.value">
+												</zm-option>
+										</zm-select>
+									</zm-col>
+							</zm-row>
+							<zm-row class = "call-log-right-col-apex">
+
+										<zm-select v-model="task.whatid" ref= "relatedToSelect" filterable="true" remote= "true" v-bind:remote-method="searchSobjectWithKey" 
+											placeholder="Search" clearable="true"  id="related-to-select" :loading="loading" :disabled="isSobjectSelectDisabled">
+											<zm-option
+												v-for="item in relatedToOptions"
+												:key="item.Id"
+												:option-id="item.Id"
+												:label="item.Name"
+												:value="item.Id">
+										  	</zm-option>
+										</zm-select>
+
+							</zm-row>
+						</div>
+						<div class="row">
+							<div class="call-log-label">Comments</div>
+							<div class="call-log-right-col-apex zm-row" > 
+								<zm-input type="textarea" :rows="2" placeholder="Add Comment..." v-model="task.description">
+								</zm-input>
+							</div>
+						</div>
+						<div class="row">
+							<div class="call-button-panel">	
+								<button v-bind:class="{ 'call-button-disabled' : isSaveButtonDisabled ,'call-button': !isSaveButtonDisabled }" v-on:click="closeCallLog" type="button">
+									<span>Done</span>
+								</button>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+			</div>
+		</script>
+
+	<script type="text/javascript">
+		// signal status mapper
+		var SIGNAL_STATUS_MAPPER = {
+			'1': 'Ringing',
+			'2': 'Answered',
+			'3': 'Missed',
+			'4': 'Answered by Other Device',
+			'5': 'Rejected',
+			'9': 'End'
+		}
+		var CALL_TYPE_MAPPER = {
+			'1': 'Inbound',
+			'2': 'Outbound'
+		}
+		var lockReconnect = false;
+
+		// Define a new component called call-log
+		Vue.component('call-log', {
+			props: [
+				'callLog',
+				'callLogLength'
+			]
+			,
+			data: function () {
+				return {
+					contactName: '',
+					isSaveButtonDisabled: true,
+					nameOptions: [],
+					relatedToOptions: [],
+					relatedToTypeOptions: [],
+					relatedToType:'',
+					loading:false,
+					task: {
+						subject: '',
+						whoid: '',
+						whatid: '',
+						description: '',
+						Call_ID: '',
+						Call_Duration: '',
+						CallDurationInSeconds: 0,
+						TaskSubtype: 'Call'
+					},
+					showDetails: true,
+					timer: null,
+					signal_status: null,
+					autoSaveTimer: null,
+					signalStatusSaveTimer : null,
+					isNameSelectDisabled: true,
+					isSobjectSelectDisabled:true
+				}
+
+			},
+			methods: {
+				startClock: function () {
+					clearInterval(this.timer);
+					this.timer = setInterval(this.calculateDuration, 1000);
+				},
+				stopClock: function () {
+					clearInterval(this.timer);
+				},
+				resetAutoSaveTimer: function(){
+					clearTimeout(this.autoSaveTimer);
+					this.autoSaveTimer = setTimeout(this.saveCallLog, 5000);
+					// clear saveTimerOnMessage, when first loading to calllog panel, will trigger save 2 times because signal_status/subject assigned a default value
+					clearTimeout(this.signalStatusSaveTimer);
+				},
+				calculateDuration: function () {
+					if(this.timer){
+						this.task.CallDurationInSeconds++;
+					}
+					var h = parseInt(this.task.CallDurationInSeconds / 3600);
+					var m = parseInt(this.task.CallDurationInSeconds % 3600 / 60);
+					var s = parseInt(this.task.CallDurationInSeconds % 60);
+					if (h > 0) {
+						this.task.Call_Duration = this.toDub(h) + ":" + this.toDub(m) + ":" + this.toDub(s);
+					} else {
+						this.task.Call_Duration = this.toDub(m) + ":" + this.toDub(s);
+					}
+				},
+				toDub: function (n) {
+					return n < 10 ? "0" + n : "" + n;
+				},
+				buildTaskObject: function() {
+					// build task for post reques
+					this.task.Call_ID = this.callLog.call_id;
+					this.task.calltype = CALL_TYPE_MAPPER[this.callLog.call_type];
+					//this.isSaveButtonDisabled = true;
+					this.task.Callee_Phone_Number = this.callLog.callee_phone_number;
+					this.task.Caller_Phone_Number = this.callLog.caller_phone_number;
+					this.task.signal_status = this.signal_status;
+				},
+				saveCallLog: function () {
+					this.buildTaskObject();
+					saveCallLogWithRemoteAction(this.task, false,this.handleSaveTaskCallBack);
+					clearTimeout(this.autoSaveTimer);
+					this.autoSaveTimer = null;
+				},
+				saveCallLogOnMessage : function(){
+					this.buildTaskObject();
+					clearTimeout(this.signalStatusSaveTimer);
+					if(!this.autoSaveTimer){
+						this.signalStatusSaveTimer = setTimeout(() => {
+							saveCallLogWithRemoteAction(this.task, true,this.handleSaveTaskCallBack);
+							clearTimeout(this.signalStatusSaveTimer);
+							this.signalStatusSaveTimer = null;
+						}, 2000);
+					}
+				},
+				closeCallLog:function(){
+					this.task.calllog_status = 'Done';
+					this.isSaveButtonDisabled = true;
+					clearTimeout(this.autoSaveTimer);
+					clearTimeout(this.signalStatusSaveTimer);
+					this.saveCallLog();
+				},
+				handleSaveTaskCallBack: function (result, event) {
+					//this.isSaveButtonDisabled = false;
+					if (event.type == 'exception') {
+						//console.log(event.message);
+						refreshToLogin(event,false);
+						var message = 'Call Log Saved Failed';
+						if(event.message.indexOf('FIELD_INTEGRITY_EXCEPTION')!=-1){
+							message = "You can't relate a lead to an account or other object";
+						}
+						this.$message({
+							message: message,
+							type: 'warning'
+						});
+						if(this.task.calllog_status == 'Done'){
+							this.isSaveButtonDisabled = false; // save failed enable button
+						}
+					} else {
+						if (result != null) {
+							this.task.id = result.Id;
+							this.$message({
+								message: 'Call Log Saved',
+								type: 'success',
+								customClass: 'custom-message'
+							});
+							if(this.task.calllog_status == 'Done'){
+								removeCallLogFromPanel(this.callLog.call_id);
+							}
+						}
+					}
+				},
+				toggleCallLogDetail: function () {
+					if (this.callLog.showDetails) {
+						this.callLog.showDetails = false;
+					} else {
+						this.callLog.showDetails = true;
+					}
+				},
+
+				handleNameOptions(result, event) {
+					if (event.type == 'exception') {
+						refreshToLogin(event,true);
+					} else {
+						console.log("Find Contact in Salesforce: " + result);
+
+						if (result != null) {
+							var tempNameList = [];
+							var tempLeads=[];
+							// leads
+							if (result[0] && result[0].length > 0) {							
+								for(var i=0;i<result[0].length;i++){
+									result[0][i].Type='Lead';
+									tempLeads = tempLeads.concat(result[0][i]);
+								}
+								tempNameList = tempNameList.concat(tempLeads);
+							}
+							// contacts
+							if (result[1] && result[1].length > 0) {
+								tempNameList = tempNameList.concat(result[1]);
+								// assign contact to this.contact
+								this.contactName = result[1][0].Name;
+							}else if(result[0] && result[0].length > 0){
+								//assign lead to this.contact
+								this.contactName = result[0][0].Name;
+							}
+
+							if (result[0].length == 0 && result[1].length == 0) {
+								this.contactName = "New Contact";
+							}
+							this.nameOptions = tempNameList;
+							
+							// if only one record returned , set it as whoid
+							if(tempNameList &&tempNameList.length == 1){
+								var clickToDialObject = localStorage.getItem('clickToDialObject')!=null ? JSON.parse(localStorage.getItem('clickToDialObject')):null;
+								if(this.callLog.event_name && this.callLog.call_type == 2 && clickToDialObject!=null 
+								&& clickToDialObject.type != tempNameList[0].Type && tempNameList[0].Type == 'Lead'){
+									// localstorage not lead,but only one lead match the phoneNumber
+								}else{
+									this.task.whoid = tempNameList[0].Id;
+								}
+							}
+						}
+					}
+					//solve nameoption id can't convert to name
+					this.isNameSelectDisabled=false;
+				},
+				checkAndPopWindows(defaultFieldPhone,nationalNumber){
+					// got Contact and popup screen for event from zpns only
+					//if(tempNameList != null && tempNameList.length >0){
+					// fix getworking callLog，inbound and outbound call number don't have ‘+’
+							
+					if (!this.callLog.id) {
+								var callType = 'Inbound';
+								if(this.callLog.caller_phone_number!='' && this.callLog.caller_phone_number.length>7&&this.callLog.caller_phone_number.indexOf('+')==-1){
+									this.callLog.caller_phone_number = '+' + this.callLog.caller_phone_number;
+								}
+								if (this.callLog.call_type == 2) {
+									callType = 'Outbound'
+									if(this.callLog.callee_phone_number.length>7&&this.callLog.callee_phone_number.indexOf('+')==-1){
+										this.callLog.callee_phone_number = '+' + this.callLog.callee_phone_number;
+									}
+								}
+								if (this.callLog.event_name && this.callLog.signal_status == 1) { // call event from zpns and ringing
+									var loginSourceId = zoomSoftphone.loginSourceId;
+									var localStorageLoginId = localStorage.getItem('latestLoginSourceId');
+									console.log('loginId:'+loginSourceId+',localStorage loginId:'+localStorageLoginId);
+									var isLightning = window.location.href.indexOf('lightning') >= 0;
+									if (isLightning) {
+										var lightningCallType = '';
+										if (callType == 'Outbound') {
+											lightningCallType = sforce.opencti.CALL_TYPE.OUTBOUND;
+										}
+										if (callType == 'Inbound') {
+											lightningCallType = sforce.opencti.CALL_TYPE.INBOUND;
+										}
+										if(loginSourceId && localStorageLoginId!=null && loginSourceId == localStorageLoginId){
+												sforce.opencti.searchAndScreenPop({
+												searchParams: nationalNumber, //Optional
+												queryParams: '', //Optional
+												defaultFieldValues : {Phone:defaultFieldPhone},
+												callType: lightningCallType, //Required. See arguments for more information.
+												callback: screenPopCallback //Optional
+											});	
+										}
+									} else {
+										if(loginSourceId && localStorageLoginId!=null && loginSourceId == localStorageLoginId){
+										sforce.interaction.searchAndScreenPop(nationalNumber, '', callType, screenPopCallback); //sforce.interaction.searchAndScreenPop(nationalNumber, '', callType, screenPopCallback);
+										}
+									}
+								}
+							}
+				},
+				nameOptionChange(){
+					if(this.task.whoid!=null && this.nameOptions && this.nameOptions.length>0){
+					  var selectLead = 0; 
+					  for(var i=0; i<this.nameOptions.length; i++){
+						  if(this.task.whoid==this.nameOptions[i].Id && this.nameOptions[i].Type && this.nameOptions[i].Type=='Lead'){
+							selectLead = selectLead + 1;
+							break;
+						  }
+					  }
+					  if(selectLead > 0){
+						//when you select lead,the relate to is unavailable.
+						this.isSobjectSelectDisabled=true;
+						this.relatedToType = null; 
+						this.relatedToTypeChange();
+					  }else{
+						// if you don't select lead, the relate to is available
+						this.isSobjectSelectDisabled=false;
+					  }
+					}else{
+						this.isSobjectSelectDisabled=false;
+					}
+				},
+				handleRelatedToTypeOptions(result, event) {
+					if (event.type == 'exception') {
+						//alert(event.message);
+						refreshToLogin(event,true);
+					} else {
+						this.relatedToTypeOptions = result;
+						this.handleClickToDialOptions();
+					}
+					this.nameOptionChange();
+				},
+				//add this funcion by demi.hu@zoom.us 2019/09/18, relate to ZBO-3696
+				handleClickToDialOptions(){
+					var clickToDialObject = localStorage.getItem('clickToDialObject')!=null ? JSON.parse(localStorage.getItem('clickToDialObject')):null;
+					if (this.callLog.event_name && this.callLog.call_type == 2 && clickToDialObject!=null) {
+						//outbound call,from zpns,isn't working callLog
+						var tmpPhoneNumber = this.callLog.callee_phone_number;
+						if(clickToDialObject.phoneNumber!='' && tmpPhoneNumber!='' && tmpPhoneNumber!=null
+							&& tmpPhoneNumber.indexOf(clickToDialObject.phoneNumber)>=0){
+							var selectRecordType = clickToDialObject.Type;
+							if(selectRecordType == 'Lead' || selectRecordType == 'Contact'){
+								//lead or contact,handle lead/contact selectbox
+								//overWrite  handleNameOptions function
+								//in classic,clickToDial return the 15 bit Id,but SQQL return 18 bit Id,solve match problem
+								if(this.nameOptions!=null && this.nameOptions.length>0){
+									for(var i =0;i<this.nameOptions.length;i++){
+										if(this.nameOptions[i].Id.indexOf(clickToDialObject.recordId)>=0){
+											// 18bit id contains 15 bit id
+											this.task.whoid = this.nameOptions[i].Id;
+											this.contactName = this.nameOptions[i].Name;
+											break;
+										}
+									}
+								}
+							} else {
+								if(this.relatedToTypeOptions!=null && this.relatedToTypeOptions.length>0){
+									// not Lead or Contact,	relateTo type has result, handle clicktoDial relate to field
+									var canTrackHistory = false;
+									for(var i=0;i<this.relatedToTypeOptions.length;i++){
+										if(this.relatedToTypeOptions[i].name == selectRecordType){
+											canTrackHistory = true;
+											break;
+										}
+									}
+									if(canTrackHistory){
+										//classic 15 bit id,can also save successfully
+										//handle relate to type and relate to value
+										this.relatedToType = selectRecordType;
+										//instead of  this.searchSobjectWithKey(clickToDialObject.Name); reduce interaction with backend
+										this.handleRelatedToOptions([{'Id':clickToDialObject.recordId,'Name':clickToDialObject.Name}],{type:'success'});
+										this.task.whatid = clickToDialObject.recordId;
+									}
+								}
+							}
+						}
+					}
+				},
+				relatedToTypeChange(){
+					this.task.whatid = null;
+					this.relatedToOptions = {};
+					if(this.relatedToType == null || this.relatedToType == ''){
+						document.getElementById('related-to-select').placeholder = 'Search ';
+					}else{
+						for(var i=0; i<this.relatedToTypeOptions.length; i++){
+							var option = this.relatedToTypeOptions[i];
+							if(option.value == this.relatedToType){
+								document.getElementById('related-to-select').placeholder = 'Search ' + option.name;
+								break;
+							}
+						}
+					}
+					
+				},
+				searchSobjectWithKey: function (queryString) {
+					console.log('Query String: ' + queryString);
+					var pattern = new RegExp("[~!/@#$%^&*()\\-_=+\\|\\[{}\\];:\'\",<.>/?]");
+					if(!queryString||queryString.trim() == ""||queryString.length<2|| pattern.test(queryString) ||this.relatedToType == null || this.relatedToType == ''){
+					   if(this.relatedToType==null || this.relatedToType ==''){
+							this.$message({
+								message: 'Please select the relate to type first!',
+								type: 'warning'
+							});
+					   }
+						return;
+					}
+					this.loading = true;
+					Visualforce.remoting.Manager
+						.invokeAction('{!$RemoteAction.ZoomVoiceDialController.searchWithSobjectType}',
+							this.relatedToType,
+							queryString,
+							this.handleRelatedToOptions
+						);
+				},
+				handleRelatedToOptions(result, event) {
+					//this.$refs.relatedToSelect.loading = false;
+					this.loading = false;
+					if (event.type == 'exception') {
+						//alert(event.message);
+						refreshToLogin(event,true);
+					} else {
+						//this.relatedToOptions = result;
+						var tempOptions = result;
+						for (var i in tempOptions) {
+							var row = tempOptions[i];
+							if (!row.Name) {
+								if (row.Subject) {
+									row.Name = row.Subject;
+								}
+							}
+						}
+						this.relatedToOptions = tempOptions;
+					}
+				}
+			},
+			mounted() {
+				this.signal_status = this.callLog.signal_status;
+				var phoneNumber = '';
+				var tempSubject = '';
+				var tmpPhoneNumber = '';
+				if (this.callLog.call_type == 1) {
+					tmpPhoneNumber = this.callLog.caller_phone_number;
+					if (this.callLog.task_subject != null) {
+						tempSubject = this.callLog.task_subject;
+					} else {
+						if(tmpPhoneNumber.length>7){
+							if(this.callLog.caller_phone_number.indexOf('+')==-1){
+									this.callLog.caller_phone_number = '+' + this.callLog.caller_phone_number;
+								}
+							tempSubject = 'Inbound from ' + this.callLog.caller_phone_number;
+						}else{
+							//extension number don't need to addd "+" sign
+							tempSubject = 'Inbound from ' + this.callLog.caller_phone_number;
+						}
+					}
+				} else {
+					tmpPhoneNumber = this.callLog.callee_phone_number;
+					if (this.callLog.task_subject != null) {
+						tempSubject = this.callLog.task_subject;
+					} else {
+						tempSubject = 'Outbound to ' +
+							this.callLog.callee_phone_number;
+					}
+				}
+				this.task.subject = tempSubject;
+				this.task.id = this.callLog.task_id;
+				this.task.whoid = this.callLog.task_whoid;
+				this.task.whatid = this.callLog.task_whatid;
+				if (this.callLog.task_Description != null) {
+					this.task.description = this.callLog.task_Description;
+				}
+				this.relatedToType = this.callLog.relatedToType;
+				if(this.callLog.relatedToOptions){
+					this.handleRelatedToOptions(this.callLog.relatedToOptions,{type:'success'});
+				}
+
+				if (this.callLog.signal_status >= 2 && this.callLog.answer_start_time != null && this.callLog.answer_start_time != '') {
+					this.task.CallDurationInSeconds = getCallDurationInSeconds(this.callLog.answer_start_time, this.callLog.call_end_time, 
+					this.callLog.server_now, this.callLog.signal_status,this.callLog.seconds);
+					this.calculateDuration();
+				}
+				//Remove National Code
+				var nationalNumber = '';
+				var pattern = new RegExp("[0-9]{1,7}");
+				if(tmpPhoneNumber.trim() == "" || (pattern.test(tmpPhoneNumber) && tmpPhoneNumber.length<=7)){
+					nationalNumber = tmpPhoneNumber;
+				}else{
+					if (tmpPhoneNumber.indexOf('+') >= 0) {
+						var nationalPhoneObj = new libphonenumber.parsePhoneNumberFromString(tmpPhoneNumber);
+						nationalNumber = nationalPhoneObj.nationalNumber;
+					} else {
+						tmpPhoneNumber = "+" + tmpPhoneNumber;
+						var nationalPhoneObj = new libphonenumber.parsePhoneNumberFromString(tmpPhoneNumber);
+						nationalNumber = nationalPhoneObj.nationalNumber;
+					}
+				}
+				this.checkAndPopWindows(tmpPhoneNumber,nationalNumber);
+				getNameOptions(nationalNumber, this.handleNameOptions);
+				getSobjectTypeList(this.handleRelatedToTypeOptions);
+				setTimeout(() => {
+					//getRelatedToOptions(nationalNumber, this.handleRelatedToOptions);
+					if(!this.callLog.event_name && this.callLog.task_id != null){
+						clearTimeout(this.autoSaveTimer);
+					}
+				}, 200);
+
+			},
+			beforeUpdate() {
+				// get the minimum status among each chanels
+				var tempStatus = 9;
+				var multiLoginSignalMap = this.callLog.multipleLoginSignalMap;
+				for(var chanel_name in multiLoginSignalMap){
+					if(multiLoginSignalMap[chanel_name] < tempStatus){
+						tempStatus = multiLoginSignalMap[chanel_name];
+					}
+				}
+				this.signal_status = tempStatus;
+			},
+			watch: {
+				signal_status: function (val) {
+					if (val == '1' && this.callLog.call_type == 1) {
+						console.log('This call log incoming:');
+						this.showIncoming = true;
+					} else {
+						console.log('This call is answered');
+						this.showIncoming = false;
+					}
+					if (val == '2') {
+						this.startClock();
+					}
+					if (val !='1' && val !='2') {
+						this.isSaveButtonDisabled = false;
+						this.stopClock();
+					}
+					this.saveCallLogOnMessage();
+				},
+				watchKeyOnTask:function(val){
+					this.resetAutoSaveTimer();
+				}
+			},
+			computed: {
+				classObject: function () {
+					return this.callLog.signal_status_display.toLowerCase();
+				},
+				showDetailsClass: function () {
+
+				
+					if (this.callLog.showDetails) {
+						return 'zm-icon-up';
+					} else {
+						return 'zm-icon-down';
+					}
+				},
+				ifShowIncoming: function () {
+
+				},
+				watchKeyOnTask: function(){
+					return this.task.subject + this.task.whatid + this.task.whoid + this.task.description;
+				}
+
+			},
+			template: '#call-log-template'
+		});
+
+
+
+
+		var zoomSoftphone = new Vue({
+			el: '#softphone',
+			data: {
+				phoneNumber: '',
+				numberClickMakePhoneCallButtonEnabled: false,
+				makeCallClickMakePhoneCallButtonDisabled: false,
+				callLogList: [
+				],
+				contactsAndLeads: [],
+				clickTimer: null,
+				pressTime: null,
+				loginSourceId:null
+			},
+			computed: {
+				makeCallBindClass: function () {
+					if (this.makeCallClickMakePhoneCallButtonDisabled) {
+						return 'dial-button-disabled';
+					} else {
+						if (this.numberClickMakePhoneCallButtonEnabled || this.phoneNumber.length > 0) {
+							return 'dial-button';
+						}
+						return 'dial-button-disabled';
+					}
+				},
+				hasDropDownList: function () {
+					var p = /[0-9]/;
+					if (p.test(this.phoneNumber) || this.phoneNumber == '') {
+						return 'numberInput-dropdownList';
+					} else {
+						return 'numberInput-dropdownList-show';
+					}
+				}
+			},
+			methods: {
+				querySearchAsync: function (queryString, cb) {
+					console.log('Query String: ' + queryString);
+					var pattern = new RegExp("[~!/@#$%^&*()\\-_=+\\|\\[{}\\];:\'\",<.>/?]");
+					if(queryString.trim() == "" || pattern.test(queryString)){
+						cb([]);
+						return;
+					}
+
+					Visualforce.remoting.Manager
+						.invokeAction('{!$RemoteAction.ZoomVoiceDialController.getContactsAndLeads}',
+							queryString,
+							function (result, event) {
+								if (event.type == 'exception') {
+								 refreshToLogin(event,true);
+								} else {
+									console.log(result);
+
+									zoomSoftphone.contactsAndLeads = result;
+									// var results = queryString ? contactsAndLeads.filter(this.createPhoneFilter(queryString)) : contactsAndLeads;
+									if (result != null && result.length > 0) {
+										cb(result);
+									} else {
+										result = [{ name: 'No matched result', phone: queryString }];
+										cb(result);
+									}
+								}
+							}
+						);
+				},
+				handleSelect: function (item) {
+					if (item.phone && item.phone != null) {
+						if (item.name != "No matched result") {
+							this.phoneNumber = item.phone;
+							this.makeCall();
+							console.log(item); 
+						}
+					}
+				},
+				onDown: function () {
+					this.clickTimer = null;
+					this.pressTime = (new Date()).getTime();
+					var that = this;
+					this.clickTimer = setTimeout(function(){
+						that.numberClick('+');
+					},500);
+				},
+				onUp: function () {
+					var timeDiffer = (new Date()).getTime() - this.pressTime;
+					console.log('timeDiffer:'+timeDiffer);
+					if(timeDiffer < 500){
+						clearTimeout(this.clickTimer);
+						this.numberClick('0');
+					}
+				},
+				numberClick: function (number) {
+					console.log('Number : ' + number);
+					// var number = event.currentTarget.firstElementChild.innerText;
+					this.phoneNumber = this.phoneNumber + number;
+					this.numberClickMakePhoneEnable = true;
+					this.numberClickMakePhoneCallButtonEnabled = true;
+				},
+				longPressNumber: function (e) {
+					this.phoneNumber = this.phoneNumber + '+';
+					this.numberClickMakePhoneEnable = true;
+					this.numberClickMakePhoneCallButtonEnabled = true;
+				},
+				delPhoneNumber: function (e) {
+					e.preventDefault();
+					this.phoneNumber = this.phoneNumber.substring(0, this.phoneNumber.length - 1);
+					if (this.phoneNumber.length == 0) {
+						this.numberClickMakePhoneCallButtonEnabled = false;
+					}
+				},
+
+				makeCall: function () {
+					//this.makeCallClickMakePhoneCallButtonDisabled = true;
+
+					makeCallWithClient(this.phoneNumber.replace(/\s*/g, ""));
+					//Format phone number: 
+					// this.phoneNumber = new libphonenumber.AsYouType('US').input(this.phoneNumber);
+				},
+				signOut: function () {
+
+					var sfdcEmail = '{!$User.Email}';
+					console.log('SFDC Email: ' + sfdcEmail);
+					var userEmail = localStorage.getItem(sfdcEmail);
+					if (userEmail == null) {
+						//Already removed
+						window.location.href = '/apex/{!ns}ZoomVoiceLogin';
+					} else {
+						localStorage.removeItem(sfdcEmail);
+						Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceLoginController.signOut}',
+							userEmail,
+							function (result, event) {
+								if (event.status) {
+									if (result) {
+										var params = parseUrlQueryString(location.search);
+										var isLightning = window.location.href.indexOf('lightning') >= 0;
+										console.log('Sign Out Lightning: ' + isLightning);
+										if (isLightning) {
+											sforce.opencti.disableClickToDial({
+												callback: null
+											})
+
+										} else {
+											sforce.interaction.cti.disableClickToDial();
+										}
+
+										redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceLogin', params);
+
+									}
+								} else if (event.type === 'exception') {
+									refreshToLogin(event,true);
+								} else {
+
+								}
+							},
+							{ escape: true }
+						);
+					}
+				},
+				clickToDialCallback: function (response) {
+					//store the latest clickToDial object
+					var isLightning = window.location.href.indexOf('lightning') >= 0;
+					console.log('On Click Dial Response: ' + response);
+					if (isLightning) {
+						this.phoneNumber = response.number;
+						//remove ( ) - blank 
+						var formatPhoneNumber = response.number.replace('(','').replace(')','').replace('-','').replace(' ','');
+						var numberInfo = {'phoneNumber':formatPhoneNumber,'recordId':response.recordId,'Type':response.objectType,'Name':response.recordName};
+						localStorage.removeItem('clickToDialObject');
+						localStorage.setItem('clickToDialObject', JSON.stringify(numberInfo));
+					} else {
+					 //{"number":"718","objectId":"0035A00003WoRpn","objectName":"test","object":"Contact","displayName":"Contact"}
+						var result = JSON.parse(response.result);
+						this.phoneNumber = result.number;
+						var formatPhoneNumber = result.number.replace('(','').replace(')','').replace('-','').replace(' ','');
+						var numberInfo = {'phoneNumber':formatPhoneNumber,'recordId':result.objectId,'Type':result.object,'Name':result.objectName};
+						localStorage.removeItem('clickToDialObject');
+						localStorage.setItem('clickToDialObject',JSON.stringify(numberInfo));
+					}		
+					this.makeCall();
+				},
+
+			},
+			mounted() {
+
+				// setTimeout(function () {
+
+					// connect to ZPNS to receive event message of phone call.
+					connectZPNS();
+					//get working calllog from Salesforce
+					getWorkingCallLogWithRemoteAction();
+				// }, 500);
+				console.log(this.contactsAndLeads);
+				// enable SF CTI
+				var isLightning = window.location.href.indexOf('lightning') >= 0;
+				if (isLightning) {
+					sforce.opencti.enableClickToDial({
+						callback: null
+					});
+					sforce.opencti.onClickToDial({
+						listener: this.clickToDialCallback
+					})
+				} else {
+					sforce.interaction.cti.enableClickToDial();
+					sforce.interaction.cti.onClickToDial(this.clickToDialCallback);
+				}
+
+
+			}
+		});
+
+		function connectZPNS() {
+			var mySocket = new WebSocket('{!zpnsWebSocketURL}');  // 'wss://gozpnspbx.zoom.us/ws'
+			window.ws = mySocket;
+			mySocket.onmessage = handleEventContent;
+			mySocket.onclose = mySocket.onerror = function (event) {
+				console.log(event);
+				if (window.ping) {
+					clearInterval(window.ping);
+					console.log('ping is off');
+					window.ping = null;
+				}
+				if(lockReconnect){
+					return ;
+				}else{ //reconnect to server
+					lockReconnect = true;
+					//toggleping();
+					setTimeout(() => {
+						connectZPNS();
+						lockReconnect = false;
+					}, 2000);
+				}
+			}
+			//toggleping();
+
+			mySocket.onopen = function () {
+				console.log('onopen');
+				loginZPNS();
+			};
+		}
+
+		function loginZPNS() {
+			var mySocket = window.ws;
+			var sfdcEmail = '{!$User.Email}';
+
+			var userEmail = localStorage.getItem(sfdcEmail);
+
+
+			//Connect to ZPNS.
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceDialController.getZPNSLoginInformation}',
+				userEmail,
+				function (result, event) {
+					if (event.status) {
+						var zpnsLoginInfo = result;
+						if (zpnsLoginInfo == null) {
+							window.location.href = "/apex/{!ns}ZoomVoiceLogin";
+						} else {
+							var subsArray = new Array();
+							subsArray[0] = zpnsLoginInfo.zoomVoiceUserId;
+							//subsArray[0] = 'hEiplLYTTi-JSNWvK5tcDw';
+							mySocket.send(JSON.stringify(
+								{
+									'resource': get_url_param('res'),
+									//'user' : 'Cleub9-HR6a7zJOgsn4jug', //web user id, all need use lower case
+									// 'subs' : ['Gy9ECZYFRvaIKOL5TPfGoQ'], //pbx user id
+									'user': zpnsLoginInfo.zoomWebUserId, // 'hEiplLYTTi-JSNWvK5tcDw',//
+									'subs': subsArray,
+									'type': 'login',
+									'appType': 3,
+									'id': 5,
+									'option': 0,
+									'token': zpnsLoginInfo.token
+									//'token': 'u7vJZy5AZRYXD8Sy-q7mBjAzEfFYQLsoth4QeKF4gts.DAQAAAFqjEUzlwACowAAABZoRWlwbExZVFRpLUpTTld2SzV0Y0R3AQAAAAAAAAAAAAAAAAA'
+								}
+							))
+						}
+
+					} else if (event.type === 'exception') {
+						// document.getElementById("responseErrors").innerHTML = 
+						// 	event.message + "<br/>\n<pre>" + event.where + "</pre>";
+					} else {
+						// document.getElementById("responseErrors").innerHTML = event.message;
+					}
+				},
+				{ escape: true }
+			);
+
+
+		}
+
+		function toggleping() {
+			if (window.ping) {
+				clearInterval(window.ping);
+				console.log('ping is off');
+				window.ping = null
+			} else {
+				console.log('ping is on');
+				window.ping = setInterval(function () { window.ws.send('ping ' + Date.now()); console.log('send ping ' + Date.now()) }, 60000)
+			}
+		}
+		function handleEventContent(event) {
+			console.log('Get ZPNS Event Data: ' + event.data);
+			// interact with salesforce
+			var jsonData = null;
+			try {
+				var eventData = event.data;
+				if (eventData.indexOf('ping ') >= 0) {
+					console.log("ping response from zpns sever: " + eventData);
+					return;
+				}
+				jsonData = JSON.parse(eventData);
+				if(jsonData.type && jsonData.type=='login-ack'){
+					console.log('zpns login successfully,get working call log');
+					//cache current user resource,open new tab,update sourceId 
+					zoomSoftphone.$set(zoomSoftphone, 'loginSourceId', jsonData.resource);
+					if(document.visibilityState!='hidden'){
+						// isn't right hand button to open link in tab 
+						localStorage.removeItem('latestLoginSourceId');
+						localStorage.setItem('latestLoginSourceId',jsonData.resource);		
+					}
+					getWorkingCallLogWithRemoteAction();
+					toggleping();
+				}else{
+				console.log("Json Data Event： " + jsonData.event);
+				var callLogEvent = jsonData.event;
+				if (callLogEvent) {
+					console.log("line 1320: ");
+					var tempCallLog = callLogEvent//JSON.parse(callLogEvent);	// string in go environment
+
+					// event_type : 1,from sip server; 2, from salesforce server, to remove after save call log;
+					if (tempCallLog.event_type == '2') {
+						// remove from callLog panel
+						removeCallLogFromPanel(tempCallLog.call_id);
+					} else if (tempCallLog.signal_status == '4') {
+						// event of answered by other device, do nothing 
+					} else if (tempCallLog.signal_status == '2' && (tempCallLog.answer_start_time == null || tempCallLog.answer_start_time == '')) {
+						// call to mobile, wrong status 
+					} else if (tempCallLog.call_id != null) {
+						// save signal event to salesforce
+						//saveWorkingCallLogWithRemoteAction(tempCallLog);
+						tempCallLog.showDetails = true;
+						// add /update to model
+						handleCallLog(tempCallLog);
+						// hide search drop-down box
+						zoomSoftphone.$set(zoomSoftphone, 'phoneNumber', '');
+					}
+				}
+			}
+			} catch (err) {
+				// parse error;
+				console.log("err: " + err);
+				console.log("can't parse as json, event.data: " + event.data);
+			}
+		}
+		// add new object to model list or update one
+		function handleCallLog(tempCallLog) {
+			// if signal is 3 (missed) or 9 (end), enable make call button
+			if (tempCallLog.signal_status == '3' || tempCallLog.signal_status == '9') {
+				zoomSoftphone.makeCallClickMakePhoneCallButtonDisabled = false;
+			} else {
+				// disable make call button
+				zoomSoftphone.makeCallClickMakePhoneCallButtonDisabled = true;
+			}
+			var newCall = true;
+			if(tempCallLog.channel_name == null || tempCallLog.channel_name == ''){
+				tempCallLog.channel_name = 'salesforceDb'; // callLog from salesforce Database;
+			}
+			for (var i = 0; i < zoomSoftphone.callLogList.length; i++) {
+				var oneCallLog = zoomSoftphone.callLogList[i];
+				if (oneCallLog.call_id == tempCallLog.call_id) {
+					//zpns first message ,outbound call has no caller_phone_number
+					if(oneCallLog.caller_phone_number==null || oneCallLog.caller_phone_number==''){
+						if(tempCallLog.caller_phone_number!=null && tempCallLog.caller_phone_number!=''){
+							oneCallLog.caller_phone_number = tempCallLog.caller_phone_number;
+						}
+					}
+					newCall = false;
+					// update signal_status of callLog 
+					var multiLoginSignalMap = oneCallLog.multipleLoginSignalMap;
+					if(multiLoginSignalMap && multiLoginSignalMap[tempCallLog.channel_name]){
+						var channel_status_old = multiLoginSignalMap[tempCallLog.channel_name];
+						if(channel_status_old < tempCallLog.signal_status){
+							multiLoginSignalMap[tempCallLog.channel_name] = tempCallLog.signal_status; // update corresponding channel status
+						}
+					}else{
+							if(multiLoginSignalMap['salesforceDb']){
+								delete multiLoginSignalMap.salesforceDb ;
+							}
+							multiLoginSignalMap[tempCallLog.channel_name] = tempCallLog.signal_status;
+					}
+					buildCallLog(oneCallLog);
+					break;
+				}
+			}
+			if (newCall) {
+				// close other calllog panel
+				if (tempCallLog.showDetails) {
+					for (var i = 0; i < zoomSoftphone.callLogList.length; i++) {
+						zoomSoftphone.callLogList[i].showDetails = false;
+						// hide contact/lead and related to drop-down box
+						var selectContents = document.getElementsByClassName('zm-select-dropdown zm-popper');
+						for (let i = 0; i < selectContents.length; i++) {
+							selectContents[i].style.display = 'none';
+						}  
+					}
+				}
+				// add new call log panel
+				// when having a new call,show the dial page in lightning,update it by demi
+				var isLightning = window.location.href.indexOf('lightning') >= 0;
+				if (isLightning) {
+					sforce.opencti.isSoftphonePanelVisible({callback: function(response){
+							if (response.success) {
+								console.log('API method call executed successfully! returnValue:', response.returnValue);
+								if(response.returnValue && !response.returnValue.visible){
+									console.log('use setSoftphonePanelVisibility visible=true;');
+									//softphonePanel not visible,set visible=true
+									sforce.opencti.setSoftphonePanelVisibility(
+										{visible:true,callback:null} 
+										);
+								}
+							} else { 
+								console.error('getSoftphonePanelVisible went wrong! Errors:', response.errors);
+							}
+						}
+				 	}
+				 );
+				}
+				var multiLoginSignalMap = {};
+				multiLoginSignalMap[tempCallLog.channel_name] = tempCallLog.signal_status;
+				tempCallLog.multipleLoginSignalMap = multiLoginSignalMap;
+				buildCallLog(tempCallLog);
+				zoomSoftphone.callLogList.push(tempCallLog);
+			}
+		}
+		// removeCallLogFromPanel by call_id
+		function removeCallLogFromPanel(call_id) {
+			setTimeout(() => {
+				var index = -1;
+				for (var i = 0; i < zoomSoftphone.callLogList.length; i++) {
+					var tempEntity = zoomSoftphone.callLogList[i];
+					if (tempEntity.call_id == call_id) {
+						index = i;
+						break;
+					}
+				}
+				if (index > -1) {
+					var removedOne = zoomSoftphone.callLogList.splice(index, 1);
+					console.log('callLog removed:' + removedOne);
+				} else {
+					console.log('no callLog found to remove.');
+				}
+			}, 500);
+		}
+
+		function buildCallLog(callLog) {
+			// process signal status
+			var tempStatus = 9;
+			var multiLoginSignalMap = callLog.multipleLoginSignalMap;
+			for(var chanel_name in multiLoginSignalMap){
+				if(multiLoginSignalMap[chanel_name] < tempStatus){
+					tempStatus = multiLoginSignalMap[chanel_name];
+				}
+			}
+			callLog.signal_status_display = SIGNAL_STATUS_MAPPER[tempStatus];
+			
+		}
+		function get_url_param(name, def) {
+			return guid() + decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search) || [null, ''])[1].replace(/\+/g, '%20')) || def;
+		}
+		function S4() {
+			return (((1 + Math.random()) * 0x10000) | 0).toString(16).substring(1);
+		}
+		function guid() {
+			return (S4() + S4() + "-" + S4() + "-" + S4() + "-" + S4() + "-" + S4() + S4() + S4());
+		}
+		function getNameOptions(phoneNumber, callback) {
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceDialController.getNameOptionsByPhoneNumber}',
+				phoneNumber,
+				callback);
+		}
+		function getSobjectTypeList(callback){
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceDialController.getAllSobjectType4RelatedToV2}',
+			callback);
+		}
+		function saveCallLogWithRemoteAction(task, isTriggeredByMessage, callback) {
+			var sfdcEmail = '{!$User.Email}';
+			var encyptedZoomUserEmail = localStorage.getItem(sfdcEmail);
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceCallLogController.saveCallLog}',
+				task,encyptedZoomUserEmail,isTriggeredByMessage,
+				callback);
+		}
+		function getWorkingCallLogWithRemoteAction() {
+			var sfdcEmail = '{!$User.Email}';
+			var encyptedZoomUserEmail = localStorage.getItem(sfdcEmail);
+			Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceCallLogController.getWorkingCallLog}',
+				encyptedZoomUserEmail,
+				handleWorkingCallLog);
+		}
+
+		function handleWorkingCallLog(result, event) {
+			if (event.type == 'exception') {
+				refreshToLogin(event,true);
+			} else {
+				//convert into callLog and add/update to model
+				var workingCallLogList = result;
+				for (var i = 0; i < workingCallLogList.length; i++) {
+					var tempWorkingCallLog = workingCallLogList[i];
+					if (tempWorkingCallLog.signal_status != 1 && tempWorkingCallLog.signal_status != 2) {
+						tempWorkingCallLog.showDetails = false;
+					} else {
+						tempWorkingCallLog.showDetails = true;
+					}
+
+					handleCallLog(tempWorkingCallLog);
+				}
+			}
+		}
+
+		function makeCallWithClient(phoneNumber) {
+			window.frames['callClientFrame'].src = 'zoomphonecall://' + phoneNumber;
+		}
+		var screenPopCallback = function (response) {
+			if (response.result || response.success) {
+				console.log('Screen pop was successfully.');
+				console.log('Screen pop response.returnValue:' + response.returnValue +",response.result:"+response.result);
+			}
+			else {
+				console.log('Screen pop failed.' + response);
+			}
+		};
+
+		function getCallDurationInSeconds(answer_start_time, call_end_time, server_now, signal_status,seconds) {
+			console.log('Answer Start Time: ' + answer_start_time);
+			console.log('Call End Time: ' + call_end_time);
+
+			var s = answer_start_time;
+			var date = new Date(s * 1000);
+			console.log('date:' + date);
+			var date2 = new Date();
+			var callDurationInSeconds = 0;
+			if (signal_status == 2) {
+				date2 = new Date(server_now * 1000);
+				// var callDurationInSeconds = (date2.getTime()+ date2.getTimezoneOffset()* 60 * 1000 - date.getTime())/1000;
+				 callDurationInSeconds = (date2.getTime() - date.getTime()) / 1000;
+			} else if (signal_status == 9) {
+				if(seconds && seconds>0){
+					callDurationInSeconds = seconds;
+				}else{
+					var s2 = call_end_time;
+					if(s2 && s2 != ''){
+						date2 = new Date(s2 * 1000);
+						callDurationInSeconds = (date2.getTime() - date.getTime()) / 1000;
+					}
+				}
+			}
+
+			return Math.round(callDurationInSeconds);
+		}
+
+		function refreshToLogin(event,isAlertMessage){
+			if (event.code == 'parse' && event.message.indexOf('Logged') != -1) {// session expired
+				window.parent.location.href="{!baseUrl}";
+			}else{
+				if(isAlertMessage){
+					alert(event.message);
+				}
+			}
+		}
+
+		//tab change event
+		document.addEventListener('visibilitychange',function(){ 
+			console.log('browser tab change');
+			if(document.visibilityState=='hidden') { 
+			}else{
+				// tab active
+				if(zoomSoftphone && zoomSoftphone.loginSourceId){
+					localStorage.removeItem('latestLoginSourceId');
+					console.log('update latestLoginSourceId:'+zoomSoftphone.loginSourceId);
+					localStorage.setItem('latestLoginSourceId',zoomSoftphone.loginSourceId);
+				}
+			}
+		});
+	</script>
+
+	</html>
+</apex:page>

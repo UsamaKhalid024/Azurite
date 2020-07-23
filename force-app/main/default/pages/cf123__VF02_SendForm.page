@@ -1,0 +1,33 @@
+<apex:page controller="cf123.CTRL02_SendForm" tabstyle="cf123__Form__c">
+    <apex:includescript value="{!$Resource.cf123__JQuery}" />
+    <script type="text/javascript">
+        var selectForm = function(elem, id){
+            $('.form-cb').prop('checked',false);
+            elem.prop('checked',true);
+            $('[id$="selected-id"]').val(id);
+        }
+
+        $(document).ready(function(){
+            if({!NOT(ISNULL((sendLogId)))}){
+                sent();
+            }
+        });
+    </script>
+    <apex:form id="form-id">
+        <apex:actionfunction name="sent" action="{!sent}" />
+        <apex:inputhidden id="selected-id" value="{!selectedFormId}" />
+        <apex:pageblock title="Form Selection" rendered="{!step==1}">
+            <apex:pagemessages id="messages" />
+            <apex:pageblockbuttons >
+                <apex:commandbutton value="Next" rerender="form-id" action="{!next}" />
+            </apex:pageblockbuttons>
+            <apex:pageblocktable value="{!forms}" var="form" rendered="{!forms.size > 0}">
+                <apex:column headervalue="Select"><apex:inputcheckbox styleclass="form-cb" onchange="selectForm($(this), '{!JSENCODE(form.id)}')" /></apex:column>
+                <apex:column value="{!form.name}" />
+            </apex:pageblocktable>
+            <apex:outputpanel rendered="{!forms.size == 0}">
+                <p>There isn't any form for this object</p>
+            </apex:outputpanel>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

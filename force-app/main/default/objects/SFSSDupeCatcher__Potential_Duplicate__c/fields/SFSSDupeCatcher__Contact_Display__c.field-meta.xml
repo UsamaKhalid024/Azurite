@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Contact_Display__c</fullName>
+    <deprecated>false</deprecated>
+    <description>A link to the Contact record associated with this potential duplicate record.</description>
+    <externalId>false</externalId>
+    <formula>HYPERLINK( &#39;/&#39; &amp; SFSSDupeCatcher__Contact__c, SFSSDupeCatcher__Contact__r.FirstName &amp; IF(SFSSDupeCatcher__Contact__r.FirstName &lt;&gt; &#39;&#39;, &#39; &#39;, &#39;&#39; ) &amp; SFSSDupeCatcher__Contact__r.LastName, &#39;_self&#39;) &amp; IF( AND( SFSSDupeCatcher__Contact__r.AccountId &lt;&gt; &#39;&#39;, NOT( ISNULL( SFSSDupeCatcher__Contact__r.AccountId ) ) ), &#39; at &#39; &amp; HYPERLINK( &#39;/&#39; &amp; SFSSDupeCatcher__Contact__r.AccountId, SFSSDupeCatcher__Contact__r.Account.Name, &#39;_self&#39; ), &#39;&#39; )</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>A link to the Contact record associated with this potential duplicate record.</inlineHelpText>
+    <label>Contact Record</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

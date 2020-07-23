@@ -1,0 +1,28 @@
+<apex:page standardcontroller="Opportunity" extensions="AVSFQB.DBSyncController" showHeader="false" showChat="false">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <apex:slds />
+    </head>
+    <body>
+    <div class="slds-scope">
+        <apex:form id="form" style="align:center;text-align:center;">
+            <apex:actionFunction action="{!sendRequest}" name="sendRequest" rerender="form">
+                <apex:param name="pdl" value="processdefinition_QBSF_InvoiceToInvoice.xml" />
+                <apex:param name="successMsg" value="Request to update the Invoice has been submitted to QBOE" />
+                <apex:param name="errorMsg" value="There was an error in processing request" />
+            </apex:actionFunction>
+            <div class="slds-box slds-theme--default">
+                <apex:pageMessages id="msg" rendered="true"/>
+            </div>
+        </apex:form>
+    </div>
+    </body>
+    <script>
+        (function() {
+            sendRequest();
+        })()
+    </script>
+    </html>
+</apex:page>

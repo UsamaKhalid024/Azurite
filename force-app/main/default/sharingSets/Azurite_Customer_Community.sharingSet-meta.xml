@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <accessMappings>
+        <accessLevel>Read</accessLevel>
+        <object>Booking__c</object>
+        <objectField>Contact__c</objectField>
+        <userField>Contact</userField>
+    </accessMappings>
+    <accessMappings>
+        <accessLevel>Read</accessLevel>
+        <object>breadwinner_qbo__Breadwinner_Account_Connection__c</object>
+        <objectField>breadwinner_qbo__Salesforce_Account__c</objectField>
+        <userField>Contact.Account</userField>
+    </accessMappings>
+    <accessMappings>
+        <accessLevel>Read</accessLevel>
+        <object>breadwinner_qbo__Invoice__c</object>
+        <objectField>breadwinner_qbo__Account__c</objectField>
+        <userField>Contact.Account</userField>
+    </accessMappings>
+    <name>Azurite Customer Community</name>
+    <profiles>Azurite Customer Community User</profiles>
+</SharingSet>

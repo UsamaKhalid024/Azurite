@@ -1,0 +1,355 @@
+<apex:page controller="zoom_app.ZoomDetailCtrl" cache="false" lightningStylesheets="true" docType="html-5.0" >
+    
+    <script>
+
+        $(document).ready(function(){
+            initWebinarSettingsStatus();
+        });
+
+
+        function initWebinarSettingsStatus() {
+            var disableEmail = '{!zoomObj.zoom_app__Disable_Invitation_Email__c}';
+            if(disableEmail =='true'){
+                var ele = $('#userSettings').find("tr:last-child")[0]; 
+                if(ele){
+                    ele.style.display='none'; 
+                }
+            }else{
+               // solve style problem :user settings Unaligned
+                var ele =$('#userSettingDisplay').find("tr:last-child")[0];
+                if(ele &&ele.cells && ele.cells[2]){
+                    ele.cells[2].remove();
+                }
+            }
+
+            // init user Password settings display or not
+            var enablePasswordSettings = '{!zoomObj.zoom_app__Enable_Password__c}';
+            if(enablePasswordSettings == 'false'){
+                $('#showUserPasswordSettings').hide();
+                $('#showEditUserPasswordSettings').hide();  
+            }
+
+            //edit page init input password textarea display
+            var meetingPasswordType = '{!loginUser.zoom_app__Meeting_Password_Type__c}';
+             hidePassword(meetingPasswordType);
+        }
+
+
+        //disable org email settings.display user email settings or not
+        function hideUserEmailSettings(isChecked){  
+            var ele = $('#userSettings').find("tr:last-child")[0]; 
+            if(ele){  
+                if(isChecked){ 
+                    ele.style.display='none';
+                }else{
+                    ele.style.display='';
+                }
+          }   
+        }
+        
+        //if you disable or enable 'enable password' in zoom config,show or hide user password settings dynamic
+        function hideUserPasswordSettings(isChecked){
+            if(isChecked) {
+                $('#showEditUserPasswordSettings').show();
+            } else {
+                $('#showEditUserPasswordSettings').hide();
+            }
+        }
+
+        //edit page:hide password textarea dynamic
+        function hidePassword(value){
+            console.log('select value change:'+value);
+           // if(window.inputPasswordId){
+            var inputPassword = $('#showEditUserPasswordSettings').find('tr:last-child td.dataCol.last:eq(1) input');
+            var labelPassword = $('#showEditUserPasswordSettings').find('tr:last-child th.labelCol.vfLabelColTextWrap.last:eq(1) label');
+            if(value==2){
+                if(inputPassword&& inputPassword[0]){
+                inputPassword[0].style.display='';
+              }
+              if(labelPassword && labelPassword [0]){
+                  labelPassword[0].style.display='';
+              }
+            }else{
+                if(inputPassword&& inputPassword[0]){
+                inputPassword[0].style.display='none';
+                }
+                if(labelPassword && labelPassword [0]){
+                  labelPassword[0].style.display='none';
+              }
+            }       
+        }
+
+    </script>
+    <apex:outputPanel id="sldsPannel" >
+        <style>
+      .detailList label{  width: 50% !important;}
+
+      .pbSubsection .detailList label {
+          width: 53% !important;
+      }
+
+    .pbSubheader {
+    background-color: #A2E7FD !important;
+    
+    }
+    .apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader {
+    border-top: 0;
+    color: #000000 !important;font-weight: normal !important;
+}
+
+        body .helpButton, body .helpButtonOn, .slds-vf-scope .helpButton, .slds-vf-scope .helpButtonOn {
+            justify-content: flex-start;            
+        }
+
+        #showEditUserPasswordSettings .dataCol.first:first-of-type,
+        #showUserPasswordSettings .dataCol.first:first-of-type {
+            padding-left: 60px;
+        }
+
+        #showEditUserPasswordSettings th label,
+        #showUserPasswordSettings th label {
+            width: 100% !important;
+        }
+
+        #showEditUserPasswordSettings td
+        #showEditUserPasswordSettings th,
+        #showUserPasswordSettings td,
+        #showUserPasswordSettings th {
+            white-space: nowrap;
+        }
+
+        .password-inputbox {
+            min-width: auto !important;
+        }
+
+        .radioClass{
+            margin-left: 30px;
+        }
+    </style>
+    </apex:outputPanel>
+    
+    <div class = "slds-scope">
+        <apex:composition template="zoom_app__zoomheader">
+            <apex:define name="body">
+                 <apex:form id="mainForm">
+                    <div style="text-align: right;">
+                        <apex:image url="{!URLFOR(HTMLENCODE($Resource.zoom_app__zoom), 'images/zoom.jpg')}" />
+                    </div>
+                    <apex:pageMessages />
+                    <apex:pageBlock title="Configuration Panel"  rendered="{!showList}">
+                        <apex:pageBlockSection title="Zoom Settings"  collapsible="false" rendered="{!$ObjectType.zoom_app__Zoom__c.createable}">
+                            <apex:outputField value="{!zoomObj.zoom_app__Zoom_API_Key__c}" rendered="{!$ObjectType.zoom_app__Zoom__c.fields.zoom_app__Zoom_API_Key__c.accessible}"/>
+                            <br />
+                            <apex:outputField value="{!zoomObj.zoom_app__Zoom_API_Secret__c}" rendered="{!$ObjectType.zoom_app__Zoom__c.fields.zoom_app__Zoom_API_Secret__c.accessible}"/>
+                            <br />
+                            <apex:outputField value="{!zoomCustomSetting.zoom_app__Mail_Default_From_Address__c}" />
+                            <br />
+                            <apex:outputField value="{!zoomObj.zoom_app__Populate_Details_into_Event_Description__c}" />
+                            <br />
+                            <apex:outputField value="{!zoomObj.zoom_app__Disable_Invitation_Email__c}" />
+                            <br />
+                            <apex:outputField value="{!zoomObj.zoom_app__Enable_Password__c}" />
+                            <br />
+                        </apex:pageBlockSection>
+                        <span id="userSettingDisplay">
+                        <apex:pageBlockSection title="User Settings" collapsible="false">
+
+                            <apex:outputField value="{!loginUser.zoom_app__isPMI_Enabled__c}" rendered="{!$ObjectType.User.fields.zoom_app__isPMI_Enabled__c.accessible}" />
+                            <br />
+                            <apex:outputField value="{!loginUser.zoom_app__Send_Email_to_Attendee__c}" rendered="{!$ObjectType.User.fields.zoom_app__Send_Email_to_Attendee__c.accessible}"/>
+                            <br />
+                            <apex:outputField value="{!loginUser.zoom_app__Send_ICS_in_Invitation_Email__c}" />
+                            <br />
+                            <apex:outputField value="{!loginUser.zoom_app__Disable_Invitation_Email__c}" rendered="{! !zoomObj.Disable_Invitation_Email__c}"></apex:outputField>
+                        </apex:pageBlockSection>
+                       </span>
+                        <span id="showUserPasswordSettings">
+                            <apex:pageBlockSection title="User Password Settings" collapsible="false" rendered="{!zoomObj.zoom_app__Enable_Password__c}">
+                                <apex:outputText label="PMI Meeting Password (on zoom.us)" value="{!PMIPassword}"></apex:outputText>
+                                <br/>
+                                <apex:selectRadio layout="pageDirection" styleClass="radioClass" disabled="true"  value="{!loginUser.zoom_app__Meeting_Password_Type__c}">
+                                <apex:selectOption itemLabel="use PMI password for all non-PMI meetings" itemValue="1"></apex:selectOption>
+                                <apex:selectOption itemLabel="set a password for all non-PMI meetings" itemValue="2"></apex:selectOption>
+                                <apex:selectOption itemLabel="generate a random password for each non-PMI meeting" itemValue="3"></apex:selectOption>
+                                </apex:selectRadio>
+                                <apex:outputField label="Your Password" value="{!loginUser.zoom_app__Zoom_Meeting_Password__c}" rendered="{!IF(loginUser.zoom_app__Meeting_Password_Type__c==2,true,false)}"/>
+                            </apex:pageBlockSection>
+                        </span>
+                        <apex:pageBlockSection title="User Webhook Bot Notification Settings" collapsible="false" rendered="false">
+                            <apex:outputField value="{!loginUser.zoom_app__Webhook_URL__c}" rendered="{!$ObjectType.User.fields.zoom_app__Webhook_URL__c.accessible}" />
+                            <br />
+                            <apex:outputField value="{!loginUser.zoom_app__Secret_Token__c}" rendered="{!$ObjectType.User.fields.zoom_app__Secret_Token__c.accessible}"/>
+                            <br />
+                        </apex:pageBlockSection>
+                        <apex:pageBlockSection title="User Google Calendar API Settings" collapsible="false" >
+                            <apex:pageblockSectionItem > Active                                 
+                                <apex:outputField value="{! evt.IsReminderSet}" />
+                            </apex:pageblockSectionItem>
+                            <br />
+                            <apex:pageblockSectionItem > API Key 
+                                
+                                <apex:outputText value="{!ApiKey}"  />
+                            </apex:pageblockSectionItem>
+                            <br />
+                            <apex:pageblockSectionItem > Client Id 
+                                
+                                <apex:outputText value="{!clientId}"  />
+                            </apex:pageblockSectionItem>
+                            <br />
+                            <apex:pageblockSectionItem > Client Secret 
+                                
+                                <apex:outputText value="{!clientSecret}"  />
+                            </apex:pageblockSectionItem>
+                            <br />
+                        </apex:pageBlockSection>
+
+                        <apex:pageBlockSection title="Create Events for Non Salesforce Zoom Meetings for matching Contacts / Leads" collapsible="false" rendered="{!$ObjectType.zoom_app__Zoom__c.createable}">
+                            <apex:pageBlockSectionItem >Active  
+                                
+                               <!-- <apex:inputCheckbox value="{!ZoomExternalBatch}" disabled="false"></apex:inputCheckbox> -->
+                               
+                                <apex:outputField value="{! evt.IsPrivate}" />
+                            </apex:pageBlockSectionItem>
+                            <br/>
+                        </apex:pageBlockSection>
+                        <div style="text-align: center; margin-bottom: 10px;">
+                            <apex:commandButton styleClass="myCustomBtn" value="Edit" action="{!editRecord}" reRender="mainForm" onComplete="initWebinarSettingsStatus();" />
+                        </div>
+                    </apex:pageBlock>
+                    <div class = "slds-scope">
+                        <apex:pageBlock title="Configuration Panel" rendered="{!showEdit}" >
+                            <apex:pageBlockSection title="Zoom Settings" collapsible="false" rendered="{!$ObjectType.zoom_app__Zoom__c.createable}">
+                                <apex:pageblockSectionItem > Zoom API Key  
+                                    
+                                    <apex:inputField value="{!zoomObj.zoom_app__Zoom_API_Key__c}" style="width:70%;" />
+                                </apex:pageblockSectionItem>
+                                <br/>
+                                <apex:pageblockSectionItem > Zoom API Secret 
+                                    <apex:inputField value="{!zoomObj.zoom_app__Zoom_API_Secret__c}"  style="width:70%;"/>
+                                </apex:pageblockSectionItem>
+                                <br/>
+                               
+                                <apex:pageblockSectionItem >Mail Default From Address
+                                     <!-- <apex:inputField value="{!zoomCustomSetting.zoom_app__Mail_Default_From_Address__c}" style="width:70%;" /> -->
+                                     <apex:selectList value="{!zoomCustomSetting.zoom_app__Mail_Default_From_Address__c}" size="1" multiselect="false" styleClass="myCustomSelect">
+                                        <apex:selectOptions value="{!owdMails}"/>
+                                    </apex:selectList>
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem >Populate Details into Event Description
+                                    <apex:inputField value="{!zoomObj.zoom_app__Populate_Details_into_Event_Description__c}"  />
+                                </apex:pageblockSectionItem>
+                                <br/>
+                                <apex:pageblockSectionItem labelStyleClass="invitationEmail" >Disable Invitation Email
+                                    <apex:inputCheckbox id="disable_invitation_email" value="{!zoomObj.zoom_app__Disable_Invitation_Email__c}" onclick="javascript:hideUserEmailSettings(this.checked);">
+                                    </apex:inputCheckbox>
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem >Enable Password For Non-PMI Meeting
+                                    <apex:inputCheckbox id="enable_meeting_password" value="{!zoomObj.zoom_app__Enable_Password__c}" onclick="javascript:hideUserPasswordSettings(this.checked);">
+                                    </apex:inputCheckbox>
+                                </apex:pageblockSectionItem>
+                                    <br />
+                            </apex:pageBlockSection>
+                            <span id="userSettings">
+                            <apex:pageBlockSection title="User Settings" collapsible="false" >
+
+                                <apex:pageblockSectionItem > PMI Enabled For Scheduled Meeting
+                                    <apex:inputField value="{!loginUser.zoom_app__isPMI_Enabled__c}"  />
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem > Send Email to Attendees at Launch 
+                                    <apex:inputField value="{!loginUser.zoom_app__Send_Email_to_Attendee__c}" />
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem >Send ICS in Invitation Email
+                                    <apex:inputField value="{!loginUser.zoom_app__Send_ICS_in_Invitation_Email__c}" />
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem >Disable Invitation Email
+                                    <apex:inputField id="user_disable_invitation_email" value="{!loginUser.zoom_app__Disable_Invitation_Email__c}">
+                                    </apex:inputField>
+                                </apex:pageblockSectionItem>
+                                <br />
+                            </apex:pageBlockSection>
+                            </span>
+                            <span id="showEditUserPasswordSettings">
+                                    <apex:pageBlockSection title="User Password Settings" collapsible="false">
+                                        <apex:outputText label="PMI Meeting Password (on zoom.us)" value="{!PMIPassword}"></apex:outputText><br/>
+                                        <apex:selectRadio layout="pageDirection" styleClass="radioClass"  value="{!loginUser.zoom_app__Meeting_Password_Type__c}" 
+                                        onclick="javascript:hidePassword(this.value);">
+                                        <apex:selectOption itemLabel="use PMI password for all non-PMI meetings" itemValue="1"></apex:selectOption> 
+                                        <apex:selectOption itemLabel="set a password for all non-PMI meetings" itemValue="2" id="fixedPassword"></apex:selectOption>  
+                                        <apex:selectOption itemLabel="generate a random password for each non-PMI meeting" itemValue="3"></apex:selectOption>
+                                      </apex:selectRadio>
+                                        <apex:inputField label="Set Your Password" value="{!loginUser.zoom_app__Zoom_Meeting_Password__c}" styleClass="password-inputbox"/>
+                                    </apex:pageBlockSection>
+                                </span>
+                            <apex:pageBlockSection title="User Webhook Bot Notification Settings" collapsible="false" rendered="false">
+                                <apex:pageblockSectionItem > Webhook Notification URL 
+                                    
+                                    <apex:inputField value="{!loginUser.zoom_app__Webhook_URL__c}" style="width:70%;"/>
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem > Secret Token 
+                                    
+                                    <apex:inputField value="{!loginUser.zoom_app__Secret_Token__c}" style="width:70%;" />
+                                </apex:pageblockSectionItem>
+                                <br />
+                            </apex:pageBlockSection>
+
+
+                            <apex:pageBlockSection title="User Google Calendar API Settings" collapsible="false" >
+                                <apex:pageblockSectionItem > Active 
+                                    
+                                    <apex:inputcheckbox value="{!Active}" disabled="false"/>
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem > API Key 
+                                    
+                                    <apex:inputText value="{!ApiKey}" size="38" style="width:70%;" />
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem > Client Id 
+                                    
+                                    <apex:inputText value="{!clientId}" size="38" style="width:70%;"/>
+                                </apex:pageblockSectionItem>
+                                <br />
+                                <apex:pageblockSectionItem > Client Secret 
+                                    
+                                    <apex:inputText value="{!clientSecret}" size="38" style="width:70%;"/>
+                                </apex:pageblockSectionItem>
+                                <br />
+                            </apex:pageBlockSection>
+                            <apex:pageBlockSection title="Create Events for Non Salesforce Zoom Meetings for matching Contacts / Leads" collapsible="false"  rendered="{!$ObjectType.zoom_app__Zoom__c.createable}">
+                                <apex:pageBlockSectionItem >    Active 
+                                    
+                                    <apex:inputCheckbox value="{!ZoomExternalBatch}" disabled="false"></apex:inputCheckbox>
+                                </apex:pageBlockSectionItem>
+                                <br />
+                                <apex:pageBlockSectionItem rendered="{!Not(ZoomExternalBatch)}"> Start Time 
+                                    
+                                    <apex:inputField value="{!evt.startDateTime}"/>
+                                </apex:pageBlockSectionItem>
+                                <br />
+                                <apex:pageBlockSectionItem rendered="{!Not(ZoomExternalBatch)}"> Run every Hour(s) interval 
+                                    
+                                    <apex:selectList value="{!hr}" size="1" multiselect="false" styleClass="myCustomSelect">
+                                        <apex:selectOptions value="{!hours}"/>
+                                    </apex:selectList>
+                                </apex:pageBlockSectionItem>
+                                <br/>
+                                <!-- apex:pageBlockSectionItem rendered="{!Not(ZoomExternalBatch)}">
+                    Run at specific minute(s) <apex:selectList value="{!mins}" size="1" multiselect="false"><apex:selectOptions value="{!minutes}" /></apex:selectList></apex:pageBlockSectionItem -->
+                            </apex:pageBlockSection>
+                            <div style="text-align: center; margin-bottom: 10px;">
+                                <apex:commandButton styleClass="myCustomBtn" action="{!Save}" value="Save"/>
+                                <button type="button" class="myCustomBtn"   style="margin-left: 15px;" onClick="location.reload();">Cancel</button>
+                            </div>
+                        </apex:pageBlock>
+                    </div>
+                </apex:form>
+            </apex:define>
+        </apex:composition>
+    </div>
+</apex:page>

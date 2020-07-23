@@ -1,0 +1,5 @@
+<apex:page standardController="cf123__Form__c" extensions="cf123.CTRL01_App" tabstyle="X123ContactForm__tab" sidebar="false">
+    <script type="text/javascript" src="/canvas/sdk/js/36.0/controller.js"></script>
+    <apex:canvasapp developername="ContactForm_123" width="100%" scrolling="yes" height="700" parameters="{formId:'{!JSENCODE(formExtId)}', sessionId:'{!$Api.Session_ID}'}" namespaceprefix="cf123" rendered="{!$ObjectType.cf123__Form__c.createable}" />
+    <apex:outputpanel rendered="{!NOT($ObjectType.cf123__Form__c.createable)}">You don't have permission to create forms. You need to user the admin permissions set or to add the rights manually. Please contact your system administrator.</apex:outputpanel>
+</apex:page>

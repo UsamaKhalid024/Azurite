@@ -1,0 +1,16 @@
+<apex:page standardcontroller="cf123__Form__c" extensions="cf123.Ext_FormTemplate" sidebar="false">
+    <apex:form >
+        <apex:pageblock mode="maindetail" id="form-template">
+            <apex:pageblockSection >
+                <apex:pageblocksectionitem >
+                    <apex:outputlabel value="{!$ObjectType.cf123__Form__c.fields.cf123__Email_Template_Id__c.Label}" for="template-id" />
+                    <apex:selectlist value="{!myForm.cf123__Email_Template_Id__c}" id="template-id" size="1">
+                        <apex:selectoption itemValue="" itemLabel="" />
+                        <apex:selectoptions value="{!templateOptions}" />
+                    </apex:selectlist>
+                </apex:pageblocksectionitem>
+                <apex:commandbutton value="Save Template" action="{!saveTemplate}" rerender="form-template"/>
+            </apex:pageblockSection>
+        </apex:pageblock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,163 @@
+<apex:page sidebar="false" showHeader="false" controller="zoom_app.ZoomVoiceLoginController">
+    <apex:stylesheet value="{! $Resource.zoomcomponentscss }"/>
+	<apex:stylesheet value="{!URLFOR($Resource.zoom_app__zoomcss, 'css/zoom-icon.css')}"/>
+	<apex:includeScript value="{! $Resource.Vuejs }"/>
+	<apex:includeScript value="{! $Resource.zoomcomponentsjs }"/>   
+	<apex:includeScript value="{! $Resource.ZoomDialCommon}" />
+
+
+    <html xmlns:v-bind="http://vue.org" xmlns:v-on="http://vue.org">
+        <style type="text/css">
+	    	.main-panel {
+	  			width: 198px;
+	  			height: 497px;
+	  			border-radius: 5px;
+	  			background-color: #ffffff;
+	  			border: solid 1px #e4e4ed;
+	  			position: relative;
+			}
+
+			.logo-banner {
+				bottom: 40px;
+				left: 10%;
+				width:90%;
+				position: absolute;
+			}
+			.zoom {
+	  			width: 60px;
+	  			height: 14px;
+	  			object-fit: contain;
+			}
+			
+			.cloud-phone {
+				height: 19px;
+				font-family: OpenSans;
+				font-size: 16px;
+				font-weight: normal;
+				font-style: normal;
+				font-stretch: normal;
+				line-height: normal;
+				letter-spacing: normal;
+				text-align: left;
+				position: absolute;
+				top:-3px;
+				right:10%;
+				color: #8A8A9E;
+				-webkit-transform: scale(0.8);
+			}
+
+            .errorMsg {
+                padding-top: 165px;
+                text-align: center;
+                color: red;
+                font-weight: bold;
+                font-size: 13px;
+            }
+        </style>
+        <div class="main-panel">
+            <div id="errorPanel">
+                <div class="errorMsg">
+                <span>
+                    {{errorMessage}}
+                    
+                </span>
+                </div>
+                
+            <div class ="logo-banner">						
+				<zm-row>
+					<zm-col v-bind:span="10">
+						<img src="{! $Resource.zoomLogo }" class="zoom" />
+					</zm-col>
+					<zm-col v-bind:span="14">
+						<div class="cloud-phone">
+							<a href="javascript:void(0)" v-on:click="signOut" style="color:#0E71EB;text-decoration:none;">Sign Out</a>
+						</div>
+					</zm-col>
+				</zm-row>
+	        </div>
+            </div>
+            
+        </div>
+        
+        <script>
+            var errorPanel = new Vue({
+				el:'#errorPanel',
+				data:{
+					errorMessage: '',
+					params: []
+                },
+                methods: {
+                    signOut: function () {
+						
+						localStorage.removeItem('errorCode');
+						var sfdcEmail = '{!$User.Email}';
+						console.log('SFDC Email: ' + sfdcEmail);
+						var userEmail = localStorage.getItem(sfdcEmail);
+						if (userEmail == null) {
+							//Already removed
+							redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceLogin', this.params);
+						} else {
+							localStorage.removeItem(sfdcEmail);
+							Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceLoginController.signOut}',
+								userEmail,
+								function (result, event) {
+									if (event.status) {
+										if (result) {
+											redirectWithOpenCTIAuth('/apex/{!ns}ZoomVoiceLogin', errorPanel.params);
+										}
+									} else if (event.type === 'exception') {
+										
+									} else {
+
+									}
+								},
+								{ escape: true }
+							);
+						}	
+					},
+                },
+                mounted() {
+                    this.params = parseUrlQueryString(location.search);
+					var errorCode = this.params['errorCode'];
+					var errorMap = JSON.parse('{!errorCodeJsonMap}');
+					if(errorCode == 3001 || errorCode ==3002 ){
+						// not in account or not zoom phone user,need to parse login user email.
+						var sfdcEmail = '{!$User.Email}';
+						var userEmail = localStorage.getItem(sfdcEmail);
+						if(userEmail!=null && userEmail!=''){
+							//zoom user email isn't null, get email info
+							Visualforce.remoting.Manager.invokeAction('{!$RemoteAction.ZoomVoiceLoginController.getLoginUserEmailByEncryptedInfo}',
+								userEmail,
+								function(result,event){
+									if (event.type == 'exception') {
+										console.log(event.message);
+									} else {
+										errorPanel.errorMessage = errorMap[errorCode].replace('{email}','('+ result+')');
+										if(errorPanel.errorMessage == null || errorPanel.errorMessage == ''){
+											errorPanel.errorMessage = "Call API error, errorCode: " + errorCode;
+										}
+									}
+								}
+							);
+						}else{
+							this.errorMessage = errorMap[errorCode].replace('{email}','');
+							if(this.errorMessage == null || this.errorMessage == ''){
+								this.errorMessage = "Call API error, errorCode: " + errorCode;
+							}
+						}
+					}else{
+						this.errorMessage = errorMap[errorCode];
+						if(this.errorMessage == null || this.errorMessage == ''){
+							this.errorMessage = "Call API error, errorCode: " + errorCode;
+						}
+					}	
+                }
+            });
+			
+        </script>
+
+    </html>
+
+
+    
+</apex:page>

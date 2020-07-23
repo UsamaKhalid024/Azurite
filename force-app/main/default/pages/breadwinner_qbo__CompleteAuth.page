@@ -1,0 +1,130 @@
+<apex:page controller="breadwinner_qbo.CompleteAuthController" sidebar="false" tabStyle="Breadwinner__tab">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}" >
+            </script>
+            
+            <script type="text/javascript">
+            
+            //var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                $("link.user[href$='elements.css']").each(function(){
+                    $(this).attr("href", "#");
+                });
+            }
+            function message()
+            {
+                $(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} );
+                $(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} );
+                $(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} ) ;
+                $(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} ) ;               
+                
+                $("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                $("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                $("table.messageTable td").css({"color" : "white"});
+                $("div[class*='warning'] table.messageTable td").css( "color", "black" );              
+            }
+            
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            $(function(){
+                addallfuncs();
+                checkifLightningUI();
+            });
+            
+            function checkifLightningUI(){
+                if($(".bPageHeader").outerHeight(true)==null){
+                    //alert('Lightning');
+                    continueAction(true);
+                }
+                else{
+                    //alert('Classic');
+                    continueAction(false);
+                }
+            }
+            </script>
+            <apex:outputPanel id="redirectpanel">
+                <script>
+                function NavigateToBreawinnerTab(){
+                    var isappConfigupdated={!isAppConfigUpdated};
+                    if(isappConfigupdated){
+                        var url ='{!$Site.BaseUrl}/one/one.app?source=aloha#/n/{!breadwinnerPageURL}';
+                        
+                        window.open(url,"_parent");
+                    }
+                    
+                }
+                </script>
+            </apex:outputPanel>
+            <style>
+                .message {
+                background-color: inherit;
+                border-style: none;
+                padding:initial;
+                }
+                .msgIcon{
+                display:none;
+                }
+                .message .messageText {
+                margin: 0px;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+            </style>
+        </head>
+        <body>                 
+            <apex:form id="theForm">
+                <div class="slds-scope">
+                    <apex:actionStatus id="assign-action-statuss" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert">
+                                    <span class="slds-assistive-text">Redirecting to Breadwinner.</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>
+                    
+                    <div class="slds-align_absolute-center">
+                        <div>
+                            <apex:outputPanel layout="block" rendered="{!isSuccess}">
+                                <!---------------------header start ------------------>
+                                <div class="slds-page-header" role="banner">
+                                    <div class="slds-media">
+                                        <div class="slds-media__body">
+                                            <p class="slds-page-header__title slds-truncate" title="Breadwinner is now connected to <i><b>{!QBOCompanyName}</b></i>">Breadwinner is now connected to <i><b>{!QBOCompanyName}</b></i></p>
+                                            <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!---------------------header END ------------------>
+                                <div class="slds-m-top_medium slds-text-align_center">
+                                    
+                                    <!-- <apex:outputPanel rendered="{!NOT(isAppConfigUpdated)}">
+                                        <apex:commandButton value="Continue" onclick="checkifLightningUI();this.disabled=true; this.value='Continue...';return false;"  reRender="theForm,redirectpanel"  styleClass="slds-button slds-button_brand"/>
+                                        
+                                    </apex:outputPanel> -->
+                                    <apex:actionFunction name="continueAction" action="{!upsertAppConfig}" reRender="theForm,redirectpanel" oncomplete="addallfuncs();NavigateToBreawinnerTab();" status="assign-action-statuss">
+                                        <apex:param name="islightingparam" value="" assignTo="{!isLightning}"/>
+                                    </apex:actionFunction>
+                                </div>
+                                
+                            </apex:outputPanel>
+                            <apex:pageMessages />
+                        </div>
+                    </div>
+                </div>   
+            </apex:form>
+            
+        </body>
+    </html>
+    
+</apex:page>

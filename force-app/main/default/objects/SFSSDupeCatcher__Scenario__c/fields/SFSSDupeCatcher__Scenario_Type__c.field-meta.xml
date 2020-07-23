@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Scenario_Type__c</fullName>
+    <deprecated>false</deprecated>
+    <description>This indicates the type of records that will be used to match on this filter.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The record types to compare.</inlineHelpText>
+    <label>FilterType</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Lead</fullName>
+                <default>true</default>
+                <label>Lead</label>
+            </value>
+            <value>
+                <fullName>Lead to Contact</fullName>
+                <default>false</default>
+                <label>Lead to Contact</label>
+            </value>
+            <value>
+                <fullName>Lead to Account</fullName>
+                <default>false</default>
+                <label>Lead to Account</label>
+            </value>
+            <value>
+                <fullName>Contact</fullName>
+                <default>false</default>
+                <label>Contact</label>
+            </value>
+            <value>
+                <fullName>Account</fullName>
+                <default>false</default>
+                <label>Account</label>
+            </value>
+            <value>
+                <fullName>Account (Person)</fullName>
+                <default>false</default>
+                <label>Account (Person)</label>
+            </value>
+            <value>
+                <fullName>Lead to Account (Person)</fullName>
+                <default>false</default>
+                <label>Lead to Account (Person)</label>
+            </value>
+            <value>
+                <fullName>Lead (Person)</fullName>
+                <default>false</default>
+                <label>Lead (Person)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

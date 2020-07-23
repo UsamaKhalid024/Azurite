@@ -1,0 +1,59 @@
+<apex:page controller="VisualAntidote.FastFormsLookupController" title="Search" showHeader="false" sideBar="false">
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__Base,'base.min.js')}" />
+    <link rel="stylesheet" href="{!URLFOR($Resource.Base,'style/base.min.css')}" />
+    <script src="{!URLFOR($Resource.FormLookup,'form-lookup-page.js')}"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.FormLookup,'form-lookup-page.min.css')}" />
+    <apex:form >
+        <apex:actionFunction id="searchAF" name="doSearchAF" action="{!search}" reRender="pnlSearchResults" status="searchStatus" oncomplete="searchComplete">
+            <apex:param name="searchString"  value="" />
+            <apex:param name="selectedObject" value="" /> 
+        </apex:actionFunction>       
+        
+        <apex:outputPanel id="page" layout="block" style="margin:5px;padding:10px;padding-top:2px;font-family: 'Open Sans';">     
+            
+            <apex:actionRegion >  
+                <apex:outputPanel id="top" layout="block" style="margin:5px;padding:10px;padding-top:2px;">
+                    <apex:outputLabel value="Search" style="font-weight:Bold;padding-right:10px;" for="txtSearch"/>
+                    <apex:outputPanel layout="block" rendered="{!IF((lookupType!=null && lookupType=='RecordType') || (lookupTypeList!=null && lookupTypeList.size<2),false,true)}" style="display:inline-block;vertical-align:top;">
+                    <apex:selectList id="objectList" styleClass="select-elem object-list" style="min-width:120px;" value="{!objectSelected}"   multiselect="false" size="1">
+                        <apex:selectOptions value="{!ObjectListOptions}"></apex:selectOptions> 
+                    </apex:selectList>
+                    </apex:outputPanel>
+                    <apex:inputText id="txtSearch" styleClass="ff-type-search" value="{!searchString}" />
+                    <button type="button" class="vabutton1" value="Search" onclick="doSearch();">Search</button>
+                </apex:outputPanel>
+                <apex:actionStatus id="searchStatus">
+                    <apex:facet name="start">
+                        <div class="inline-loading-wrapper" style="clear:both">
+                            <div class="inline-loading"></div>
+                        </div>
+                    </apex:facet>
+                </apex:actionStatus>
+                <apex:outputPanel id="pnlSearchResults" layout="block">
+                    <apex:outputPanel id="searchResults" styleClass="content-table" layout="block">
+                        <div class="content-row content-row--header"><div class="content-row__column-th">{!nameFieldLabel}</div></div>
+                        <apex:repeat value="{!currentPageSet}" var="a">
+                            <div class="content-row">
+                                <div class="content-row__column-td">
+                                    <apex:outputLink value="javascript:top.window.opener.lookupPick2('{!FormTag}','{!TextBox}_lkid','{!TextBox}','{!a.Id}', '{!JSENCODE(a.Name)}', false,'{!$CurrentPage.parameters.sourcePage}')" rendered="{!NOT(ISNULL(a.Id))}">{!a.Name}</apex:outputLink>
+                                </div>
+                            </div>
+                        </apex:repeat>
+                    </apex:outputPanel>
+                    <apex:outputPanel styleClass="fs-pagination-box" style="{!IF(pageCount<2,'display:none','')}">
+                        <ul class="pagination ul-nav-item" ><li class="first-item">
+                            <apex:commandLink title="First" action="{!first}" styleClass="nav-link first-link"></apex:commandlink>
+                            </li><li class="nav-item"><apex:commandLink title="Previous" action="{!previous}" styleClass="nav-link {!IF(hasPrevious,'','disabled')}"  >Previous</apex:commandlink>
+                            </li><li class="nav-item"><apex:commandLink title="Next" action="{!next}" styleClass="nav-link {!IF(hasNext,'','disabled')}"  >Next</apex:commandlink>
+                            </li><li class="last-item"><apex:commandLink title="Last" action="{!last}" styleClass="nav-link last-link"  ></apex:commandlink>
+                            </li></ul>
+                        <div class="fs-page-info">Page {!pageNumber} of {!pageCount}</div>
+                        
+                    </apex:outputPanel>
+                    <div style="{!IF(resultCount<1,'max-width: 200px;margin:10px auto;font-weight:600;','display:none')}" >No record found</div>
+                    
+                </apex:outputPanel>
+            </apex:actionRegion>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

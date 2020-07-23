@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__Native_Submissions_View</fullName>
+    <columns>NAME</columns>
+    <columns>VisualAntidote__Form__c</columns>
+    <columns>VisualAntidote__Objects__c</columns>
+    <columns>VisualAntidote__Objects_XML__c</columns>
+    <columns>VisualAntidote__Primary_Object__c</columns>
+    <columns>VisualAntidote__Submission_Date__c</columns>
+    <columns>VisualAntidote__Status__c</columns>
+    <columns>VisualAntidote__Is_Native__c</columns>
+    <columns>VisualAntidote__Document_Ids__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>VisualAntidote__Is_Native__c</field>
+        <operation>equals</operation>
+        <value>1</value>
+    </filters>
+    <label>Native Submissions View</label>
+</ListView>

@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>All_With_CRN</fullName>
+    <columns>NAME</columns>
+    <columns>CRN_Number__c</columns>
+    <columns>breadwinner_qbo__Status_Flag__c</columns>
+    <columns>breadwinner_qbo__Status__c</columns>
+    <columns>breadwinner_qbo__Account__c</columns>
+    <columns>breadwinner_qbo__Due_Date__c</columns>
+    <columns>breadwinner_qbo__Invoice_Date__c</columns>
+    <columns>breadwinner_qbo__Amount_Overdue__c</columns>
+    <columns>breadwinner_qbo__Amount_Due__c</columns>
+    <columns>breadwinner_qbo__Amount_Received__c</columns>
+    <columns>breadwinner_qbo__Total__c</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>CRN_Number__c</field>
+        <operation>notEqual</operation>
+    </filters>
+    <label>All With CRN</label>
+</ListView>

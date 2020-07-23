@@ -1,0 +1,1904 @@
+<apex:page sidebar="false" standardcontroller="breadwinner_qbo__Invoice__c" extensions="breadwinner_qbo.CreateInvoiceExtension" id="pg" title="{!IF(showAccountPanel,IF(isEditAccount, 'Edit QuickBooks Online Customer', 'Create a QuickBooks Online Customer'), 'Select QuickBooks Online Customer')}" action="{!actionMethod}">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+            <apex:slds />
+            <script>
+                
+            if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){                
+                if(document.getElementsByTagName("title")[0].innerText.includes("Create a QuickBooks Online Customer")){
+                    document.getElementsByTagName("title")[0].innerHTML = 'Create a QuickBooks Online Customer';
+                }
+                if(document.getElementsByTagName("title")[0].innerText.includes("Select QuickBooks Online Customer")){
+                    document.getElementsByTagName("title")[0].innerHTML = 'Select a QuickBooks Online Customer';
+                }
+                if(document.getElementsByTagName("title")[0].innerText.includes("Edit QuickBooks Online Customer")){
+                    document.getElementsByTagName("title")[0].innerHTML = 'Edit QuickBooks Online Customer';
+                }                           
+            }
+
+            var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                j$("link.user[href$='elements.css']").each(function(){
+                    j$(this).removeAttr("href");
+                });
+            }
+            function message()
+            {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left","background":"rgba(84,105,141,.95)"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left"} );
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left"} ) ;
+                
+                j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );
+            }
+            function selectTransactio(elevalue){
+                j$("input[id$='selectedTranGatewayId']").val(elevalue);
+            }
+            j$(function(){
+                HideStyleSheet();
+                message();
+                j$('form input').on('keypress', function(e) {
+                    return e.which !== 13;
+                });
+            });
+            function identifyfield(elementt,helptext,TopMinusParam,LeftMinusParam){
+                if(j$(".bPageHeader").outerHeight(true)==null){
+                    LeftMinusParam=LeftMinusParam-9;
+                    TopMinusParam=TopMinusParam-100;
+                }
+                var x = j$(elementt).offset();
+                //alert("Top position: " + x.top + " Left position: " + x.left+" height: "+$(elementt).height());                
+                var ToSetleft=x.left-LeftMinusParam;
+                j$("#help p").text(helptext);
+                var ToSetheight=x.top-TopMinusParam;
+                var heptextdiv=document.getElementById("help");
+                j$(heptextdiv).css({
+                    top: ToSetheight,
+                    left: ToSetleft,
+                    display:""
+                })
+            }
+            function mouseoutclose(){
+                var heptextdiv=document.getElementById("help");
+                j$(heptextdiv).css({top:"0px",left:"0px",display:"none"});
+            }
+            function reRenderAccountSVG(){
+                var imageURL = '{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}';
+                var SVG = j$('<svg/>', {
+                    class: 'slds-icon slds-icon-standard-user',
+                });
+                
+                var SVGUse = j$('<use/>');
+                SVGUse.attr('xlink:href',imageURL);
+                j$('#accountIcon').prepend(SVG.append(SVGUse));
+                j$('#accountIcon' ).html(j$('#accountIcon').html());
+            }
+            function showspinner(type){
+                if(type == 'withtext'){
+                    j$('#spinnerForReparent').show();
+                }
+                else{
+                    j$('#spinnerId').show();
+                }
+            }
+            function hidespinner(type){
+                if(type == 'withtext'){
+                    j$('#spinnerForReparent').hide();
+                }
+                else{
+                    j$('#spinnerId').hide();
+                }
+            }
+            function reRenderSVGIcons(svgIconName,svgIconId){
+                var imageURL = '';
+                var SVG;
+                var SVGUse;                 
+                if(svgIconName.endsWith('CloseIcon')){
+                    imageURL = '{!URLFOR($Asset.SLDS, 'assets/icons/action-sprite/svg/symbols.svg#close')}';
+                    SVG = j$('<svg/>', {
+                        class: 'slds-button__icon slds-button__icon_large',
+                    });                    
+                }
+                else{
+                    imageURL = '{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}';
+                    SVG = j$('<svg/>', {
+                        class: 'slds-icon slds-icon-standard-user',
+                    });
+                }
+                SVGUse = j$('<use/>');
+                SVGUse.attr('xlink:href',imageURL);
+                
+                j$(svgIconId).prepend(SVG.append(SVGUse));
+                j$(svgIconId).html(j$(svgIconId).html());
+                
+            }
+            function reRendercheckmarkSVGIcons(pathID){
+                var imageURL = '';
+                var SVG;
+                var SVGUse;                 
+                imageURL = '{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}';
+                SVG = j$('<svg/>', {
+                    class: 'slds-icon slds-icon_x-small',
+                });                    
+                
+                SVGUse = j$('<use/>');
+                SVGUse.attr('xlink:href',imageURL);
+                j$(pathID).prepend(SVG.append(SVGUse));
+                j$(pathID).html(j$(pathID).html());
+                
+            }
+            </script>
+            <style>
+                html body.sfdcBody{
+                padding: 0px 5px 0 5px;
+                }
+                .slds-scope .slds-section__title {
+                font-size: 1.05rem;
+                }
+                .slds-scope .slds-page-header__detail-block {
+                max-width: inherit;
+                width: 25%;
+                padding-right: 1rem;
+                padding-left: 0rem;
+                }
+                .slds-scope .slds-page-header__detail-block .slds-truncate{
+                white-space: normal;
+                }
+                .slds-scope .slds-radio .slds-form-element__label {
+                font-size: 1.15em;
+                }
+                .slds-scope .slds-notify_alert {
+                padding: 0.5rem;
+                text-align: justify;
+                }
+                .slds-scope .slds-section-title_divider {
+                font-size: 1.4em;
+                line-height: 1.25;
+                color: #54698d;
+                text-transform: capitalize;
+                padding: 0.75rem 1rem;
+                background: #f4f6f9;
+                }
+                .message {
+                background-color: inherit;
+                border-style: none;
+                padding:initial;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                }
+                .msgIcon{
+                display:none;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+                .select-editable {
+                position:relative;
+                background-color:white;
+                border:solid  #d8dde6 1px;
+                width:100%;
+                line-height: 1.875rem;
+                min-height: calc(1.875rem + (1px * 2));
+                display: inline-block;
+                border-radius: .25rem;
+                padding: 0 1rem 0 .75rem;
+                transition: border .1s linear,background-color .1s linear;
+                background-color: white;
+                }
+                .divfocus {
+                outline: 0;
+                border-color: #1589ee;
+                background-color: #fff;
+                box-shadow: 0 0 3px #0070D2;
+                }
+                .select-editable select {
+                position:absolute;
+                top: 0.25rem;
+                left:0px;
+                border:none;
+                width:100%;
+                margin:0;
+                padding: 4px 1rem 0 .75rem;
+                background-color: white;
+                }
+                .select-editable input {
+                position:absolute;
+                top:0.25rem;
+                left:0px;
+                width:92%;
+                padding: 4px 1rem 0 .75rem;
+                border:none;
+                }
+                .select-editable select:focus, .select-editable input:focus {
+                outline:none;
+                }
+                .slds-scope hr{
+                margin-top: 11px;
+                margin-bottom: -11px;
+                }
+                .slds-scope #maskCustomerPopUP .slds-modal__container {
+                margin: 0 auto;
+                width: 90%;
+                max-width: 100% !important;
+                min-width: 80%;
+                }
+                .slds-scope #maskCustomerPopUP .slds-table th {
+                white-space: initial;
+                }
+                .customerCoulmn {
+                width: 15%;
+                }
+                .customerCoulmnMini {
+                width: 10%;
+                }
+                .parentCustomerSectionTitle {
+                padding: 0.5rem 1rem;
+                background: #f4f6f9;
+                color: #54698d;
+                font-weight: 400;
+                font-size: 1.1rem;
+                line-height: 1.25;
+                }
+                .slds-scope .slds-spinner_container{
+                z-index: 9999; position: fixed;
+                }
+                .slds-spinner-displaytext {
+                position: absolute; top: 58%;
+                width: 100%;text-align: center;font-size: 1.4em;
+                }
+                
+                
+                .slds-scope .slds-radio [type=radio]:checked+.slds-radio--faux:after, .slds-scope .slds-radio [type=radio]:checked+.slds-radio__label .slds-radio--faux:after, .slds-scope .slds-radio [type=radio]:checked+.slds-radio__label .slds-radio_faux:after, .slds-scope .slds-radio [type=radio]:checked+.slds-radio_faux:after, .slds-scope .slds-radio [type=radio]:checked~.slds-radio--faux:after, .slds-scope .slds-radio [type=radio]:checked~.slds-radio_faux:after{
+                background:#1589ee;
+                }
+                .slds-scope .slds-radio .slds-radio--faux, .slds-scope .slds-radio .slds-radio_faux{
+                border:1px solid #d8dde6;
+                }
+                .slds-scope .slds-button--brand, .slds-scope .slds-button_brand{
+                background-color: #0070d2;
+                border: 1px solid #0070d2;
+                }
+                .slds-scope .slds-button--brand[disabled], .slds-scope .slds-button_brand[disabled]{
+                background: #e0e5ee;
+                border-color: transparent;
+                color: #fff;
+                }
+                .slds-scope .slds-modal_prompt .slds-modal__close, .slds-scope .slds-modal--prompt .slds-modal__close{
+                display:block;
+                }
+                .slds-scope .slds-theme--info, .slds-scope .slds-theme_info{
+                background-color: rgba(84,105,141,.95);
+                }
+                .slds-scope .slds-box {
+                padding: 1rem;
+                border-radius: .25rem;
+                border: 1px solid #d8dde6;
+                }
+                .slds-scope .slds-table th, .slds-scope .slds-table td {
+                padding: 0.5rem;
+                }
+                .slds-scope .slds-section-title_divider, .slds-scope .slds-section-title--divider
+                {padding: .75rem 1rem;
+                background: #f4f6f9;
+                }
+                .slds-scope .slds-section__title-action{
+                background: #f4f6f9;
+                }
+                .slds-scope .slds-select.slds-is-disabled, .slds-scope .slds-select[disabled]{
+                background-color: #e0e5ee;
+                border-color: #a8b7c7; 
+                }
+                .slds-scope .slds-input.slds-is-disabled, .slds-scope .slds-input[disabled] {
+                background-color: #e0e5ee;
+                border-color: #a8b7c7;
+                }
+                
+                .slds-scope .slds-page-header{
+                
+                border:0px;
+                border-bottom: 1px solid #d8dde6;
+                background: #f7f9fb;
+                box-shadow: 0 0px 0px 0;
+                }
+                .slds-scope .slds-path__nav .slds-is-complete{
+                background: rgb(75, 202, 129);
+                }
+                .slds-scope .slds-path__nav .slds-is-active{
+                background: rgb(0, 95, 178);
+                }
+                .slds-scope .slds-path__nav .slds-is-complete:before, .slds-scope .slds-path__nav .slds-is-complete:after{
+                background: rgb(75, 202, 129);
+                }
+                
+                .slds-scope .slds-path__nav .slds-is-active:before, .slds-scope .slds-path__nav .slds-is-active:after {
+                background: rgb(0, 95, 178);
+                }
+                
+                /*completed Element*/
+                .slds-scope .slds-path__nav .slds-is-complete:hover{
+                background:rgb(4, 132, 75);
+                }
+                .slds-scope .slds-path__nav .slds-is-complete:hover:before, .slds-scope .slds-path__nav .slds-is-complete:hover:after{
+                background: rgb(4, 132, 75);
+                }
+                .slds-scope .slds-path__nav .slds-is-complete:before, .slds-scope .slds-path__nav .slds-is-complete:after{
+                background: rgb(75, 202, 129);
+                }
+                /*Active elements*/
+                
+                .slds-scope .slds-path__nav .slds-is-active:hover{
+                background:rgb(0, 57, 107);
+                }
+                
+                .slds-scope .slds-path__nav .slds-is-active:hover:before, .slds-scope .slds-path__nav .slds-is-active:hover:after{
+                background: rgb(0, 57, 107);
+                }
+                .noSidebarCell, .sidebarCell .fixed{
+                    padding: 0px !important;
+                }
+                .sfdcBody{
+                    padding: 0px !important;
+                }
+                
+                
+            </style>
+        </head>
+        <body>
+            <apex:form id="theForm">
+                <div class="slds-scope slds-p-around_x-small" style="background-color: white">
+
+                    <div id="spinnerId" class="slds-spinner_container" style="display:none;">
+                        <div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                    </div>
+                    
+                    <!-- ----------------------------------- fields level help ---------------------------------- -->
+                    <div id="help"  class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" aria-live="polite" style="display:none;position:absolute;top:0px;left:0px;">
+                        <div class="slds-popover__body slds-text-longform">
+                            <p>Help text will come here dynamically</p>
+                        </div>
+                    </div>
+                    <!-- ----------------------------------- fields level help ---------------------------------- -->
+                    
+                    <apex:pageMessages id="pmg" escape="false"></apex:pageMessages>
+
+                    <apex:actionstatus id="action_status">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_large" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionstatus>
+
+                    <apex:outputPanel layout="block" styleClass="warningM3" style="color:black;justify-content: left;" rendered="{!subscribeBreadwinner}">
+                        <div>
+                            <b> Your trial/subscription has expired </b>
+                            <br/>
+                            You must have a valid subscription to Breadwinner to create and sync invoices. Please visit the Billing section of Breadwinner tab for more info.
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel style="font-size:14px; " rendered="{!OR(notInitializedWithAccount,isInvoiceFromLead,AND(isInvoiceFromCustomURL, Plan_Code < 80),AND(isInvoiceFromCustomLineItemURL, Plan_Code < 80), AND(isInvoiceFromOrder, Plan_Code < 35))}">
+                        <apex:outputPanel rendered="{!OR(notInitializedWithAccount,isInvoiceFromLead)}">
+                            <div class="slds-m-top_small" >
+                                <apex:pageMessage rendered="{!notInitializedWithAccount}" summary="Please go to the Account or Opportunity from which you want to create this new Invoice. " detail="If that Account doesn't exist yet, please create it first." severity="Warning" strength="3" />
+                                <apex:pageMessage rendered="{!isInvoiceFromLead}" summary="Sorry, You can not create Invoices from Leads." detail="This is because once the Lead is converted it is no longer accessible through the User Interface." severity="Warning" strength="3" />
+                            </div>
+                        </apex:outputPanel>
+                        <apex:pagemessage rendered="{!AND(isInvoiceFromOrder, Plan_Code < 35)}" summary="Sorry, you must be on a higher subscription to create an Invoice from Order, please contact support from Breadwinner tab." severity="Warning" strength="3"></apex:pagemessage>
+                        <apex:outputPanel rendered="{!OR(AND(isInvoiceFromCustomURL, Plan_Code < 80),AND(isInvoiceFromCustomLineItemURL, Plan_Code < 80))}">
+                            <apex:pagemessage rendered="{!AND(isInvoiceFromCustomURL, Plan_Code < 80)}" summary="Sorry, you must be on a higher subscription to create an Invoice using Custom URL, please contact support from Breadwinner tab." severity="error" strength="3"></apex:pagemessage>
+                            <apex:pagemessage rendered="{!AND(isInvoiceFromCustomLineItemURL, Plan_Code < 80)}" summary="Sorry, you must be on a higher subscription to create an Invoice using Custom Line Items URL, please contact support from Breadwinner tab." severity="error" strength="3"></apex:pagemessage>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="mainPanel" rendered="{!initialized}">
+                        <apex:outputPanel id="newInvoicePanel" rendered="{!showInvoicePanel}">
+                            <!-- ---------------------------- Page Header Start ---------------------------- -->
+                            <div class="slds-page-header" role="banner">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <span class="slds-icon_container slds-icon-standard-user">
+                                            <svg class="slds-icon" aria-hidden="true">
+                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#moneybag')}"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <p class="slds-page-header__title">New QuickBooks Online Invoice</p>
+                                        <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <apex:outputPanel id="pathPanel">
+                                <article class="slds-card" style="border:0px;box-shadow: 0 0px">
+                                    <div class="slds-path slds-path_has-coaching slds-p-top_small">
+                                        <div class="slds-grid slds-path__track">
+                                            <div class="slds-grid slds-path__scroller-container">
+                                                
+                                                <div class="slds-path__scroller" role="application">
+                                                    <div class="slds-path__scroller_inner">
+                                                        <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                                            <li class="slds-path__item slds-is-complete" role="presentation">
+                                                                <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" id="path-1" role="option" tabindex="-1">
+                                                                    <span class="slds-path__stage" id="pathifo1">
+                                                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                        </svg>
+                                                                        <span class="slds-assistive-text">Chosen {!IF(NOT(ISBLANK(Parent_Object_Id)),Parent_Object_Label,IF(isInvoiceFromOrder, 'Order',IF(NOT(ISBLANK(oppId)),'Opportunity','Account')))}</span>
+                                                                    </span>
+                                                                    <span class="slds-path__title">Chosen {!IF(NOT(ISBLANK(Parent_Object_Id)),Parent_Object_Label,IF(isInvoiceFromOrder, 'Order',IF(NOT(ISBLANK(oppId)),'Opportunity','Account')))}</span>
+                                                                </a>
+                                                            </li>                  
+                                                            <li class="slds-path__item slds-is-active slds-is-current" role="presentation">
+                                                                <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-2" role="option" tabindex="-1">
+                                                                    <span class="slds-path__stage">
+                                                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                        </svg>
+                                                                        <apex:outputPanel styleClass="slds-assistive-text"  >Select a QuickBooks Online Customer</apex:outputPanel>
+                                                                    </span>
+                                                                    <apex:outputPanel styleClass="slds-path__title" >Select a QuickBooks Online Customer</apex:outputPanel>
+                                                                </a>
+                                                            </li>
+                                                            <li class="slds-path__item slds-is-incomplete" role="presentation" style="display:{!IF(selectedQBOAccount=='createNewQBOAccount','','none')}">
+                                                                <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-3" role="option" tabindex="-1">
+                                                                    <span class="slds-path__stage">
+                                                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                        </svg>
+                                                                        <span class="slds-assistive-text">Create a new QuickBooks Online Customer</span>
+                                                                    </span>
+                                                                    <span class="slds-path__title">Create a new QuickBooks Online Customer</span>
+                                                                </a>
+                                                            </li>                                                         
+                                                            <li class="slds-path__item slds-is-incomplete" role="presentation">
+                                                                <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-4" role="option" tabindex="-1">
+                                                                    <span class="slds-path__stage">
+                                                                        <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                        </svg>
+                                                                        <span class="slds-assistive-text">Create a QuickBooks Online {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')}</span>
+                                                                    </span>
+                                                                    <span class="slds-path__title">Create a QuickBooks Online {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')}</span>
+                                                                </a>
+                                                            </li>
+                                                        </ul>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                        
+                                    </div>
+                                </article>
+                            </apex:outputPanel>
+                            <hr/>
+                            <!-- ----------------------- Page Header END -------------------------------- -->
+
+                            <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="3"/>
+                            
+                            
+                            <!-- ------------------- Opportunity Section Start ----------------------- -->
+                            <div class="slds-grid slds-wrap ">
+                                <div class="slds-m-top_medium slds-col_padded slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12"  style="display:{!IF(AND(NOT(isNoAccesOptyProduct),OR(isInvoiceFromOrder, NOT(ISBLANK(oppId)), NOT(ISBLANK(Parent_Object_Id)) )) ,'','none')};">
+                                    <apex:outputPanel rendered="{!ISBLANK(Parent_Object_Id)}">
+                                        <h3 class="slds-section__title">Using {!IF(isInvoiceFromOrder, 'Order','Opportunity')} Products</h3>
+                                        <apex:outputPanel rendered="{!AND(ISBLANK(oppId), NOT(isInvoiceFromOrder))}">
+                                            <apex:pageMessage severity="info" strength="3"  summary="Opportunity Products can only be added to an Invoice when clicking 'New Invoice' from that Opportunity."></apex:pageMessage>
+                                        </apex:outputPanel>
+                                        
+                                        <apex:outputPanel rendered="{!OR(isInvoiceFromOrder, NOT(ISBLANK(oppId)))}">
+                                            <script>
+                                            function oppselect(inputvalue) {
+                                                document.getElementById('{!JSENCODE($Component.theForm.OppSelectId)}').value = inputvalue;
+                                            }
+                                            </script>
+                                            <apex:inputHidden id="OppSelectId" value="{!UseOpportunityProducts}" />
+                                            
+                                            <fieldset class="slds-form-element slds-m-top_small">
+                                                
+                                                <div class="slds-form-element__control">
+                                                    <label class="slds-radio">
+                                                        <input type="radio" name="oppoptions" id="DoNotUse" onclick="oppselect('DoNotUse')" />
+                                                        <span class="slds-radio_faux"></span>
+                                                        <span class="slds-form-element__label">{!IF(ISBLANK(oppId),'Blank Invoice','Do not use Opportunity Products')}</span>
+                                                    </label>
+                                                    <label class="slds-radio">
+                                                        <apex:outputPanel rendered="{!opportunityHaveProducts}">
+                                                            <input type="radio" name="oppoptions" id="UseProducts" onclick="oppselect('UseProducts')" />
+                                                            <span class="slds-radio_faux"></span>
+                                                            <span class="slds-form-element__label">{!IF(opportunityHaveProducts,'Pre-Populate Invoice with '&IF(isInvoiceFromOrder, 'Order','Opportunity')&' Products','(there are no '&IF(isInvoiceFromOrder, 'Order','Opportunity')&' Products on this '&IF(isInvoiceFromOrder, 'Order','Opportunity')&')')}</span>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!NOT(opportunityHaveProducts)}">
+                                                            <span class="slds-form-element__label slds-m-left_large">{!IF(opportunityHaveProducts,'Pre-Populate Invoice with '&IF(isInvoiceFromOrder, 'Order','Opportunity')&' Products','(There are no '&IF(isInvoiceFromOrder, 'Order','Opportunity')&' Products on this '&IF(isInvoiceFromOrder, 'Order','Opportunity')&')')}</span>
+                                                        </apex:outputPanel>
+                                                    </label>
+                                                </div>
+                                                <apex:outputPanel layout="block" styleClass="slds-form-element__control" rendered="{!isInvoiceLineItemfromOpptyfieldsEnabled}">
+                                                    <div class="slds-text-body_small"> 
+                                                        <label class="slds-checkbox slds-m-top_small">
+                                                            <apex:inputCheckbox id="invoicelineitemfromOpty" value="{!isInvoiceLineItemfromOpptyfieldsEnabled}"  />
+                                                            <span class="slds-checkbox_faux"></span>
+                                                            <span class="slds-form-element__label">
+                                                                Include Invoice Line Item from Opportunity fields
+                                                                <apex:outputPanel styleClass="slds-m-left_small slds-form-element__icon">
+                                                                    <a href="javascript:void(0);" onmouseover="identifyfield(this,'Invoice Line Item from Opportunity fields mapping can be done on Invoice Configuration section of Breadwinner tab.','183','32')" onmouseout="mouseoutclose();">
+                                                                        <img style="margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                                                    </a>
+                                                                </apex:outputPanel>
+                                                            </span>
+                                                        </label>
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </fieldset>
+                                            <script>
+                                            document.getElementById('{!JSENCODE(UseOpportunityProducts)}').checked = true;
+                                            </script>
+                                        </apex:outputPanel>
+                                        
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!NOT(ISBLANK(Parent_Object_Id))}">
+                                        <h3 class="slds-section__title">{!IF( NOT(ISBLANK(Child_Relationship_Name)),'Using '+Child_Object_Plural_Label, IF(isLineItemURL, 'Using '+Parent_Object_Label, 'Blank Invoice'))}</h3>
+                                        <apex:outputPanel >
+                                            <script>
+                                            function lineselect(inputvalue) {
+                                                document.getElementById('{!JSENCODE($Component.theForm.lineSelectId)}').value = inputvalue;
+                                            }
+                                            </script>
+                                            <apex:inputHidden id="lineSelectId" value="{!UseCustomLineItems}" />
+                                            
+                                            <fieldset class="slds-form-element slds-m-top_small">
+                                                
+                                                <div class="slds-form-element__control">
+                                                    <label class="slds-radio">
+                                                        <input type="radio" name="lineoptions" id="DoNotUse" onclick="lineselect('DoNotUse')" />
+                                                        <span class="slds-radio_faux"></span>
+                                                        <span class="slds-form-element__label">Blank Invoice</span>
+                                                    </label>
+                                                    <label class="slds-radio">
+                                                        <apex:outputPanel rendered="{!NOT(AND(NOT(isLineItemURL), OR(NOT(SobjectHasLineItems),ISBLANK(Child_Relationship_Name))))}">
+                                                            <input type="radio" name="lineoptions" id="UseLineItems" onclick="lineselect('UseLineItems')" />
+                                                            <span class="slds-radio_faux"></span>
+                                                            <span class="slds-form-element__label">{!IF(ISBLANK(Child_Relationship_Name), IF(isLineItemURL, 'Custom Line Items will be populated, if any', 'No object chosen to pre-populate Line Items'), IF(SobjectHasLineItems,'Pre-Populate Invoice with '+Child_Object_Plural_Label,'(there are no '+Child_Object_Plural_Label+' on this '+Parent_Object_Label+')'))}</span>
+                                                        </apex:outputPanel>
+                                                        <apex:outputPanel rendered="{!AND(NOT(isLineItemURL), OR(NOT(SobjectHasLineItems),ISBLANK(Child_Relationship_Name)))}">
+                                                            <span class="slds-form-element__label slds-m-left_large">{!IF(ISBLANK(Child_Relationship_Name), IF(isLineItemURL, 'Custom Line Items will be populated, if any', 'No object chosen to pre-populate Line Items'), IF(SobjectHasLineItems,'Pre-Populate Invoice with '+Child_Object_Plural_Label,'(there are no '+Child_Object_Plural_Label+' on this '+Parent_Object_Label+')'))}</span>
+                                                        </apex:outputPanel>
+                                                    </label>
+                                                </div>
+                                            </fieldset>
+                                            <script>
+                                            document.getElementById('{!JSENCODE(UseCustomLineItems)}').checked = true;
+                                            </script>
+                                        </apex:outputPanel>
+                                        
+                                    </apex:outputPanel>
+                                    
+                                </div>
+                                <div class="slds-m-top_medium slds-col_padded slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" style='display:{!if(OR((NOT(isMultiOrgEnabled)&&syncSalesReceiptsEnabled),isMultiOrgEnabled),"block","none")}'>
+                                    <apex:outputPanel >
+                                        <h3 class="slds-section__title">Create this transaction as</h3>
+                                        <script>
+                                        function Invoiceselect(inputvalue) {
+                                            document.getElementById('{!JSENCODE($Component.theForm.seletedInvoiceorSalesReceipt)}').value = inputvalue;
+                                            reRenderChargentSection();
+                                            refreshpathInfo();
+                                        }
+                                        </script>
+                                        <apex:inputHidden id="seletedInvoiceorSalesReceipt" value="{!invoiceOrSalesReceipt}" />
+                                        <fieldset class="slds-form-element slds-m-top_small">
+                                            <div class="slds-form-element__control">
+                                                <label class="slds-radio">
+                                                    <input type="radio" name="Invoptions" id="invoice" onclick="Invoiceselect('invoice')" />
+                                                    <span class="slds-radio_faux"></span>
+                                                    <span class="slds-form-element__label">Invoice</span>
+                                                </label>
+                                                <label class="slds-radio">
+                                                    <input type="radio" name="Invoptions" id="salesReceipt" onclick="Invoiceselect('salesReceipt')" />
+                                                    <span class="slds-radio_faux"></span>
+                                                    <span class="slds-form-element__label">Sales Receipt
+                                                    </span>
+                                                </label>
+                                            </div>
+                                        </fieldset>
+                                        <script>
+                                        document.getElementById('{!JSENCODE(invoiceOrSalesReceipt)}').checked = true;
+                                        </script>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            <apex:actionFunction name="reRenderChargentSection" reRender="ChargentPaymentSection" />
+                            <!-- ----------------------------- Opportunity Section END ------------------------------- -->
+                            <apex:outputPanel id="ChargentPaymentSection">
+                                <apex:outputPanel layout="block" styleclass="slds-m-top_medium slds-col_padded" rendered="{!AND(sfInvoice.breadwinner_qbo__Opportunity__c!=null,isAllowedToUseChargentTransaction,invoiceOrSalesReceipt=='invoice')}">
+                                    <hr/>
+                                    <h1 class="slds-section__title slds-m-top_large">Transaction Info</h1>
+                                    <div class="slds-text-body_small slds-m-horizontal_small slds-m-top_small" style="color: gray;">
+                                        The Chargent Transaction shown below will be created in QuickBooks Online as a Payment and applied to the Invoice. Optionally you can choose to &nbsp;
+                                        <apex:commandLink reRender="ChargentPaymentSection,pmg" value="not create a payment with Chargent Transaction." style="color: gray;text-decoration: underline;" >
+                                            <apex:param name="DoNotApplyChargentTransaction" value="false" assignTo="{!isAllowedToUseChargentTransaction}"/>
+                                        </apex:commandLink>
+                                        &nbsp;<apex:commandLink reRender="ChargentPaymentSection,pmg" value="Not the transaction you want to apply?" style="text-decoration: underline;" rendered="{!isMultipleTransactionsExist&&isRecentTransactionsExist&&NOT(showAllTrasactionRecords)}" oncomplete="HideStyleSheet();message();">
+                                        <apex:param name="showAlltransactionParam" value="true" assignTo="{!showAllTrasactionRecords}"/>
+                                        </apex:commandLink>
+                                    </div>
+                                    <apex:outputPanel id="tranSection">
+                                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_small infoM3 slds-m-top_small" style="border-radius: 5px;" rendered="{!AND(NOT(isRecentTransactionsExist),NOT(showAllTrasactionRecords))}">
+                                            There are no Chargent Transactions from the last 14 days, however you can optionally 
+                                            &nbsp;<apex:commandLink reRender="ChargentPaymentSection,pmg" action="{!QueryAllTransactionRecrods}" value="select older Chargent Transactions" style="text-decoration: underline;" oncomplete="HideStyleSheet();message();"  >
+                                            <apex:param name="showAlltransactionParam" value="true" assignTo="{!showAllTrasactionRecords}"/>
+                                            </apex:commandLink>.
+                                        </apex:outputPanel>   
+                                        <apex:outputPanel layout="block" rendered="{!AND(NOT(showAllTrasactionRecords),isRecentTransactionsExist)}" styleclass="slds-grid slds-wrap slds-m-top_small slds-m-bottom_small">
+                                            <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">Gateway Transaction ID</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!GatewayTrasactionId}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">Chargent Transaction ID</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!ChargentTrasactionId}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">Amount</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!ChargentPaymentAmount}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            
+                                            <div class="slds-size_1-of-1 slds-medium-size_1-of-2 slds-large-size_1-of-2">
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">{!if(isChargentOrders,'Chargent Order','Opportunity')}</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!ChargentOpportunityName}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">Payment Method</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!ChargentPaymentMethod}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-2 ">
+                                                    <div class="slds-form-element">
+                                                        <span class="slds-form-element__label">Transaction Date/Time</span>
+                                                        <div class="slds-form-element__control">
+                                                            <span class="slds-form-element__static">{!ChargentTransactionCreatedDateTime}</span>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" rendered="{!showAllTrasactionRecords}">
+                                            <div class="slds-text-body_small slds-m-horizontal_small slds-m-top_small" style="color: gray;">
+                                                Please select one of the following transactions to apply as payment.
+                                            </div>
+                                            <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal slds-m-top_medium">
+                                                <thead>
+                                                    <tr class="slds-text-title_caps">
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Select?">Select?</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Gateway Transaction ID">Gateway Transaction ID</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Chargent Transaction ID">Chargent Transaction ID</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Payment Method">Payment Method</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Amount">Amount</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Transaction Date/Time">Transaction Date/Time</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <apex:repeat value="{!TransactionListSorted}" var="tran">
+                                                        <tr>
+                                                            <td data-label="Select?">
+                                                                <span class="slds-radio">
+                                                                    <input type="radio" id="{!transactionsMap[tran].GatewayTransactionId}" name="Strans" onchange="selectTransactio('{!transactionsMap[tran].GatewayTransactionId}');"/>
+                                                                    <label class="slds-radio__label" for="{!transactionsMap[tran].GatewayTransactionId}">
+                                                                        <span class="slds-radio_faux"></span>
+                                                                    </label>
+                                                                </span>
+                                                            </td>
+                                                            <td data-label="Gateway Transaction ID">{!transactionsMap[tran].GatewayTransactionId}</td>
+                                                            <td data-label="Chargent Transaction ID">{!transactionsMap[tran].TransactionId}</td>
+                                                            <td data-label="Payment Method">{!transactionsMap[tran].PaymentMethod}</td>
+                                                            <td data-label="Amount">{!transactionsMap[tran].PaymentAmount}</td>
+                                                            <td data-label="Transaction Date/Time">{!transactionsMap[tran].TransactionCreatedDateTime}</td>
+                                                        </tr>
+                                                    </apex:repeat>
+                                                </tbody>
+                                            </table>
+                                            <apex:inputHidden value="{!selectedTransactionGatewayId}" id="selectedTranGatewayId"/>
+                                            <script>
+                                            document.getElementById('{!JSENCODE(selectedTransactionGatewayId)}').checked = true;
+                                            </script>
+                                            <script>
+                                            document.getElementById('{!JSENCODE(GatewayTrasactionId)}').checked = true;
+                                            </script>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            
+                            <!-- -----------------Select Customer Start------------------------------------------- -->
+                            <apex:outputPanel id="theBlock" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.accessible}">
+                                <hr/>
+                                <div class="slds-m-top_medium slds-col_padded">
+                                    <h1 class="slds-section__title">Select the QuickBooks Online Customer for this {!IF(syncSalesReceiptsEnabled, 'Transaction', 'Invoice')}</h1>
+                                    <fieldset class="slds-form-element slds-m-top_medium">
+                                        <div class="slds-form-element__control">
+                                            <label class="slds-radio">
+                                                <input type="radio" name="customeroptions" id="createNewQBOAccount" onchange="pushselectedQBOAccount('createNewQBOAccount'); " value="createNewQBOAccount" />
+                                                <span class="slds-radio_faux"></span>
+                                                <span class="slds-form-element__label">Create a new QuickBooks Online Customer</span>
+                                                <div class="slds-m-left_x-large slds-text-body_small">You can have multiple QuickBooks Online Customers associated with a single Salesforce Account. This might happen if you have different departments, branches, or offices of the same company. </div>
+                                                
+                                            </label>
+                                            <apex:repeat value="{!selectedAccount.QBO_Companies__r}" var="xA">
+                                                <apex:outputPanel rendered="{!xA.breadwinner_qbo__Reference_Id__c!=NULL}">
+                                                    <label class="slds-radio slds-m-top_medium">
+                                                        <input type="radio" name="customeroptions" id="{!xA.Reference_Id__c}" onchange="pushselectedQBOAccount('{!xA.Reference_Id__c}'); " value="{!xA.Reference_Id__c}" />
+                                                        <span class="slds-radio_faux"></span>
+                                                        <span class="slds-form-element__label" for="{!xA.Reference_Id__c}"> 
+                                                            Use Existing QuickBooks Online Customer: {!xA.Display_Name__c} 
+                                                            <apex:commandLink action="{!editQboContact}" id="editContact" value="Edit QuickBooks Online Customer before Creating the Invoice" style="text-decoration:underline;" styleClass="slds-text-body_small slds-p-left_x-small" rendered="{!if(AND(Plan_code>=20,isAllowedToUpdateBAC), true, false)}">
+                                                                <apex:param name="contIdParam" value="{!xA.id}" assignTo="{!qboContactEditId}"/>
+                                                                <apex:param name="selectedContactWrapperRecord.ContactId" value="" assignTo="{!selectedContactWrapperRecord.ContactId}"/>
+                                                            </apex:commandLink>
+                                                        </span>
+                                                        <apex:outputPanel styleClass="" title="{!xA.breadwinner_qbo__Fully_Qualified_Name__c}" rendered="{!Contains(xA.breadwinner_qbo__Fully_Qualified_Name__c,':')}">
+                                                            <p class="slds-truncate slds-m-left_x-large slds-m-top_x-small slds-text-body_regular" > This QuickBooks Online Company is a Sub Company. The full Company Hierarchy is {!xA.breadwinner_qbo__Fully_Qualified_Name__c} </p>
+                                                        </apex:outputPanel>
+                                                        <div class="slds-grid slds-m-top_small">
+                                                            
+                                                            <div class="slds-m-left_x-large slds-page-header__detail-block">
+                                                                <p class="slds-truncate slds-m-bottom_xx-small"><b>Company Information:</b></p>
+                                                                <div class="slds-text-body_regular slds-truncate">
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Company_Name__c}" id="companyName" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Company_Name__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Company_Name__c.accessible)}">
+                                                                        {!xA.breadwinner_qbo__Company_Name__c}
+                                                                        <br/>
+                                                                    </apex:outputPanel>
+                                                                    
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Street_Address__c}" id="companyStreetAddress" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Street_Address__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Street_Address__c.accessible)}">
+                                                                        {!xA.breadwinner_qbo__Street_Address__c}
+                                                                        <br/>
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__City__c} {!xA.breadwinner_qbo__Region__c} {!xA.breadwinner_qbo__Postal_Code__c}" id="companyPostalcode" rendered="{!AND(OR(NOT(ISBLANK(xA.breadwinner_qbo__Region__c)),NOT(ISBLANK(xA.breadwinner_qbo__Postal_Code__c))),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__City__c.accessible,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Region__c.accessible,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Postal_Code__c.accessible)}">
+                                                                        {!xA.City__c}&nbsp;{!xA.Region__c}&nbsp;{!xA.Postal_Code__c}
+                                                                        <br/>
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Country__c}" id="companyCountry" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Country__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Country__c.accessible)}">
+                                                                        {!xA.breadwinner_qbo__Country__c}
+                                                                    </apex:outputPanel>
+                                                                </div>
+                                                            </div>
+                                                            <div class="slds-page-header__detail-block">
+                                                                <p class="slds-truncate slds-m-bottom_xx-small"><b>Contact Info:</b></p>
+                                                                <div class="slds-text-body_regular slds-truncate">
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Given_Name__c}" id="conName" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Given_Name__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Given_Name__c.accessible)}" >
+                                                                        {!xA.breadwinner_qbo__Given_Name__c} <BR/>
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Email__c}" id="conEmail" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Email__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Email__c.accessible)}" style="word-break: break-word;" >
+                                                                        {!xA.breadwinner_qbo__Email__c} <BR/>
+                                                                    </apex:outputPanel>
+                                                                    <apex:outputPanel title="{!xA.breadwinner_qbo__Phone_Number__c}" id="conPhoneNumber" rendered="{!AND(NOT(ISBLANK(xA.breadwinner_qbo__Phone_Number__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.accessible)}" >
+                                                                        {!xA.breadwinner_qbo__Phone_Number__c} <BR/>
+                                                                    </apex:outputPanel>
+                                                                </div>
+                                                            </div>
+                                                            <apex:outputPanel styleClass="slds-page-header__detail-block"  rendered="{!AND(isMultiOrgEnabled,OR(NOT(ISBLANK(xA.breadwinner_qbo__QBO_Org_Name__c)),NOT(ISBLANK(appConfigMap[xA.breadwinner_qbo__QBO_Org_ID__c].Display_Name))),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__QBO_Org_Name__c.accessible)}">
+                                                                <p class="slds-truncate slds-m-bottom_xx-small"><b>QuickBooks Online Org:</b></p>
+                                                                <div class="slds-text-body_regular slds-truncate" title="{!IF(ISBLANK(appConfigMap[xA.QBO_Org_ID__c].Display_Name), xA.QBO_Org_Name__c, appConfigMap[xA.QBO_Org_ID__c].Display_Name)}">
+                                                                    {!IF(ISBLANK(appConfigMap[xA.QBO_Org_ID__c].Display_Name), xA.QBO_Org_Name__c, appConfigMap[xA.QBO_Org_ID__c].Display_Name)}
+                                                                </div>
+                                                                <apex:outputPanel rendered="{!NOT(ISBLANK(appConfigMap[xA.breadwinner_qbo__QBO_Org_ID__c].LogoURL))}">
+                                                                    <apex:image style="height: 40px" url="{!appConfigMap[xA.breadwinner_qbo__QBO_Org_ID__c].LogoURL}" />
+                                                                </apex:outputPanel>                                                        
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel styleClass="slds-page-header__detail-block"  rendered="{!AND(isMultiCurrencyEnabled,Plan_Code>=35,NOT(ISBLANK(xA.breadwinner_qbo__Currency__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Currency__c.accessible)}">
+                                                                <p class="slds-truncate slds-m-bottom_xx-small"><b>Currency:</b></p>
+                                                                <div class="slds-text-body_regular slds-truncate">
+                                                                    {!xA.Currency__c}
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </div>
+                                                    </label>
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+                                            <!-- <label class="slds-radio slds-m-top_medium">
+                                                <input type="radio" name="customeroptions" id="searchBAC" onchange="pushselectedQBOAccount('searchBAC'); " value="searchBAC" />
+                                                <span class="slds-radio_faux"></span>
+                                                <span class="slds-form-element__label">Search for another QuickBooks Online Customer</span>
+                                            </label> -->
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <!-- ---------------------------Select Customer End -------------- -->
+                                <script>
+                                document.getElementById('{!JSENCODE(selectedQBOAccount)}').checked = true;
+                                if({!(!isAllowedToCreateBAC)}){
+                                    document.getElementById('createNewQBOAccount').checked = false;
+                                    document.getElementById('createNewQBOAccount').disabled = true;
+                                }
+                                </script>
+                                <script>
+                                function pushselectedQBOAccount(refId) {
+                                    document.getElementById('{!JSENCODE($Component.theForm.selectedQBOAccount)}').value = refId;
+                                    refreshpathInfo();
+                                }
+                                </script>
+                                <apex:actionFunction name="refreshpathInfo" rerender="pathPanel" oncomplete="reRendercheckmarkSVGIcons('#pathifo1');"/>
+                                <!-- <apex:inputHidden id="selectedQBOAccount" value="{!selectedQBOAccount}" /> -->
+                                <div class="slds-m-top_medium" style="text-align:center;font-size: 10px;">
+                                    <apex:commandLink value="Search for another QuickBooks Online Customer" onclick="pushselectedQBOAccount('searchBAC');showspinner('withouttext');" reRender="selectedQBOAccount,goSearchPanel" oncomplete="goSearchPanel();" style="color: #f3f3f3;"/>
+                                    <apex:actionFunction id="goSearchPanel" name="goSearchPanel" action="{!next}"/>
+                                </div>
+                                <div class="slds-m-bottom_large" style="text-align:center;">
+                                    <apex:commandButton value="Next" id="createInvoice" action="{!next}" disabled="{!AND(NOT(isAllowedToCreateBAC),OR(NOT(isAllowedToCreateOrUpdateInvoice),AND(isAllowedToCreateOrUpdateInvoice,selectedAccount.QBO_Companies__r.size==0)))}" onclick="showspinner('withouttext');" styleClass="slds-button slds-button_brand slds-m-top_medium slds-m-horizontal_xx-small"/>
+                                    
+                                    <apex:commandButton value="Cancel" id="cancelCreatingInvoice" action="{!cancel}" styleClass="slds-button slds-button_neutral slds-m-top_medium" />
+                                </div>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+
+                        <apex:inputHidden id="selectedQBOAccount" value="{!selectedQBOAccount}" />
+
+                        <!--- Create or Edit BAC Section Start -->
+                        <apex:outputPanel id="accountPanel" rendered="{!AND(showAccountPanel,OR($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.createable,AND(isEditAccount,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.updateable)))}">
+                            <apex:outputPanel rendered="{!AND(OR(AND($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.createable,ISNULL(sfAccountChild.Id)),AND(isEditAccount,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.updateable)))}">
+                                <apex:actionFunction reRender="displaynameid" name="DisplayName"/>
+                                <apex:inputHidden id="storeSelectedContactId" value="{!selectedContactWrapperRecord.ContactId}"></apex:inputHidden>
+                                <script type="text/javascript">
+                                var j$ = jQuery.noConflict();
+                                HideStyleSheet(); message();
+                                function changeTheContact(firstname, lastname, email, phone, mobile, conId) {
+                                    j$('input[id$=confirstname]').val(firstname);
+                                    j$('input[id$=conlastname]').val(lastname);
+                                    j$('input[id$=email]').val(email);
+                                    j$('input[id$=conphonenumber]').val(phone);
+                                    j$('input[id$=conmobilenumber]').val(mobile);
+                                    j$('input[id$=storeSelectedContactId]').val(conId);
+                                    DisplayName();
+                                }
+                                
+                                function showSubCompanyLookup(showSubLookup){
+                                    if(showSubLookup=='TRUE'){
+                                        j$('#SubCompanyLookupDivId').show();
+                                        j$('#maskCustomerPopUP').show();
+                                        refreshlist('');
+                                        j$("body.sfdcBody").css({"overflow" : "hidden"});
+                                    }
+                                    else{
+                                        j$('#SubCompanyLookupDivId').hide();
+                                        j$('input[id$="companyParentRefId"]').val('');
+                                        j$('input[id$="companyParentRefvalue"]').val('');
+                                    }
+                                    j$('input[id$="searchCustomer"]').val(''); // empty search value
+                                    
+                                }
+                                
+                                function hideSubCompanyLookupPopup(){
+                                    j$('#maskCustomerPopUP').hide();
+                                    j$("body.sfdcBody").css({"overflow" : "auto"});
+                                }
+                                function selectParentQBOCompany(){
+                                    
+                                    var selectedparentCompanyValue='';
+                                    var isSelectedOtherCompany =j$('input[id$="isTopOther"]').val()=='Other';
+                                    
+                                    console.log('isSelectedOtherCompany'+isSelectedOtherCompany);
+                                    if(isSelectedOtherCompany ){
+                                        selectedparentCompanyValue=j$('input[id$="companyParentRefvalue"]').val();
+                                    }
+                                    j$('input[id$="searchCustomer"]').val(selectedparentCompanyValue);
+                                    refreshlist(selectedparentCompanyValue);
+                                    
+                                    j$('#maskCustomerPopUP').show();
+                                    j$("body.sfdcBody").css({"overflow" : "hidden"});
+                                }
+                                function setParentCompany(DisplayName, CompanyId,isTopOther){
+                                    
+                                    CompanyId=CompanyId.substring(CompanyId.lastIndexOf("-")+1,CompanyId.length);
+                                    j$('input[id$="isTopOther"]').val(isTopOther);
+                                    j$('input[id$="companyParentRefId"]').val(CompanyId);
+                                    j$('input[id$="companyParentRefvalue"]').val(decodeHtml(DisplayName));
+                                    j$('input[id$="searchCustomer"]').val(decodeHtml(DisplayName));
+                                    hideSubCompanyLookupPopup();
+                                }
+                                function refreshParentCompanyReference(){
+
+                                    var sfAccountChildParentRef ='{!sfAccountChild.breadwinner_qbo__ParentRef__c}';
+                                    
+                                   if(sfAccountChildParentRef==''){
+                                        j$('input[id$="companyParentRefvalue"]').val('');
+                                        
+                                        j$('input[id$="searchCustomer"]').val('');
+                                    
+                                    }
+                                }
+                                function decodeHtml(htmlstr) { 
+                                    var txt = document.createElement("textarea"); 
+                                    txt.innerHTML = htmlstr;
+                                    var decodedURIComp = decodeURIComponent(txt.value);
+                                    var repalceAmpersend=decodedURIComp.replace(/&amp;/g, '&');
+                                    var repalceQuotes=repalceAmpersend.replace(/&quot/g, '"');
+                                    var repalceNewLines=repalceQuotes.replace(/&nl/g, ' ');
+                                    return repalceNewLines;
+                                }
+                                </script>
+                                
+                                <!-- --------------------------- Page Header Start ----------------------------- -->
+                                <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                                    <div class="slds-media slds-media_center">
+                                        <div class="slds-media__figure" id="accountIcon">
+                                            <svg aria-hidden="true" class="slds-icon slds-icon-standard-user">
+                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+                                            </svg>
+                                        </div>
+                                        <div class="slds-media__body">
+                                            <p class="slds-text-title_caps slds-line-height_reset" style='display:{!IF(OR(isEditAccount,isAtQBOModify),"block","none")}'>Editing</p> <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="{!if(OR(isEditAccount,isAtQBOModify),bacName,"New QuickBooks Online Customer")}" style='font-size:1.6em'>{!if(OR(isEditAccount,isAtQBOModify),bacName,"New QuickBooks Online Customer")}</h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <apex:outputPanel id="pathPanelNewBAC" layout="block">
+                                    <article class="slds-card" style="border:0px;box-shadow: 0 0px">
+                                        <div class="slds-path slds-path_has-coaching slds-p-bottom_x-small">
+                                            <div class="slds-grid slds-path__track">
+                                                <div class="slds-grid slds-path__scroller-container">                                                    
+                                                    <div class="slds-path__scroller" role="application">
+                                                        <div class="slds-path__scroller_inner">
+                                                            <ul class="slds-path__nav" role="listbox" aria-orientation="horizontal">
+                                                                <li class="slds-path__item slds-is-complete" role="presentation">
+                                                                    <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" id="path-1" role="option" tabindex="-1">
+                                                                        <span class="slds-path__stage" id="pathifo2-1">
+                                                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                            </svg>
+                                                                            <span class="slds-assistive-text">Chosen {!IF(NOT(ISBLANK(Parent_Object_Id)),Parent_Object_Label,IF(isInvoiceFromOrder, 'Order',IF(NOT(ISBLANK(oppId)),'Opportunity','Account')))}</span>
+                                                                        </span>
+                                                                        <span class="slds-path__title">Chosen {!IF(NOT(ISBLANK(Parent_Object_Id)),Parent_Object_Label,IF(isInvoiceFromOrder, 'Order',IF(NOT(ISBLANK(oppId)),'Opportunity','Account')))}</span>
+                                                                    </a>
+                                                                </li>                  
+                                                                <li class="slds-path__item slds-is-complete" role="presentation">
+                                                                    <a aria-selected="false" class="slds-path__link" href="javascript:void(0);" id="path-2" role="option" tabindex="-1">
+                                                                        <span class="slds-path__stage" id="pathifo2-2">
+                                                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                            </svg>
+                                                                            <apex:outputPanel styleClass="slds-assistive-text"  >Selected QuickBooks Online Customer</apex:outputPanel>
+                                                                        </span>
+                                                                        <apex:outputPanel styleClass="slds-path__title" >Selected QuickBooks Online Customer</apex:outputPanel>
+                                                                    </a>
+                                                                </li>
+                                                                <li class="slds-path__item slds-is-active slds-is-current" role="presentation" style="display:{!IF(OR(selectedQBOAccount=='createNewQBOAccount', isEditAccount),'','none')}">
+                                                                    <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-3" role="option" tabindex="-1">
+                                                                        <span class="slds-path__stage">
+                                                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                            </svg>
+                                                                            <span class="slds-assistive-text">{!If(isEditAccount,'Edit ','Create a new ')}QuickBooks Online Customer</span>
+                                                                        </span>
+                                                                        <span class="slds-path__title">{!If(isEditAccount,'Edit ','Create a new ')}QuickBooks Online Customer</span>
+                                                                    </a>
+                                                                </li>                                                         
+                                                                <li class="slds-path__item slds-is-incomplete" role="presentation">
+                                                                    <a aria-selected="true" class="slds-path__link" href="javascript:void(0);" id="path-4" role="option" tabindex="-1">
+                                                                        <span class="slds-path__stage">
+                                                                            <svg class="slds-icon slds-icon_x-small" aria-hidden="true">
+                                                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#check')}" />
+                                                                            </svg>
+                                                                            <span class="slds-assistive-text">Create a QuickBooks Online {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')}</span>
+                                                                        </span>
+                                                                        <span class="slds-path__title">Create a QuickBooks Online {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')}</span>
+                                                                    </a>
+                                                                </li>
+                                                            </ul>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                            </div>
+                                            
+                                        </div>
+                                    </article>
+                                </apex:outputPanel>
+                                <!-- ---------------------------- Page Header END ------------------------------------ -->
+                                
+                                <apex:pageMessage id="readOnlyModeInfoMessage" summary="You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way." severity="Info" rendered="{!isReadOnlyMode}"/>
+                                <apex:pageMessage id="oAuthExceptionMessage" rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="3"/>
+                                <div class="errorM3" style="display:{!IF(AND(isAtQBO,NOT(isatQBOModify)),"block","none")};">
+                                    <div>
+                                        A QuickBooks Online Company already exists with this exact Display Name at QuickBooks Online<div style='display:{!IF(isEditAccount,"initial","none")}'> but not yet synced into Salesforce</div>.<div style='display:{!IF(isEditAccount,"none","block")}'>As QuickBooks Online Company with this exact Display Name is not yet synchronized into salesforce by Breadwinner. You can&nbsp;<apex:commandLink id="getQBOCustomerResponse" action="{!getQBOCustomerResponse}" value="refresh data from QuickBooks Online and then you can modify" >
+                                        </apex:commandLink>
+                                        or else you can create with different Display Name.</div>   
+                                    </div>
+                                </div>                          
+                                <apex:outputPanel rendered="{!AND(NOT(isAtQBO),OR(NOT(ISBLANK(exceptionMessageOnCustomerCreation)),AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),OR((dupBAC.breadwinner_qbo__Salesforce_Account__c !=selectedAccount.Id),(dupBAC.breadwinner_qbo__Salesforce_Account__c =selectedAccount.Id)))))}" id="pmgspanel">                        
+                                    <apex:pageMessage id="exceptionMessageOnCustomerCreation" summary="{!IF(CONTAINS(exceptionMessageOnCustomerCreation,'Inactive at QuickBooks Online'),"Warning","Error")} " detail="{!exceptionMessageOnCustomerCreation}" rendered="{!AND(NOT(ISBLANK(exceptionMessageOnCustomerCreation)),ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c))}"  severity="{!IF(CONTAINS(exceptionMessageOnCustomerCreation,'Inactive at QuickBooks Online'),"Warning","ERROR")}" strength="3" escape="false"/>
+                                    <div class="{!IF(CONTAINS(exceptionMessageOnCustomerCreation,'Inactive at QuickBooks Online'),"warningM3","errorM3")}" style='display:{!IF(AND(NOT(ISBLANK(dupBAC.Salesforce_Account__c)),OR((dupBAC.Salesforce_Account__c !=selectedAccount.Id),(dupBAC.Salesforce_Account__c =selectedAccount.Id))),"block","none")};border-radius: 4px'>
+                                        <apex:outputPanel rendered="{!AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),(dupBAC.breadwinner_qbo__Salesforce_Account__c !=selectedAccount.Id))}" style="text-align:left">
+                                            <div>Error:<br/> 
+                                                <div class='slds-m-left_large' id="QBOCustomerAlreadyExistsMsg">
+                                                    A QuickBooks Online {!dupBAC.type__c} "{!dupBAC.Display_Name__c}" already exists and is related to the Salesforce Account:
+                                                    <a id="duplicateSFAccountNameMsg" href="/{!dupBAC.Salesforce_Account__c}" target="_blank">{!dupBAC.Salesforce_Account__r.name}</a>. <br/> 
+                                                    You may wish to create a new QuickBooks Online Company by giving it a different Display Name.
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>   
+                                        <apex:outputPanel rendered="{!(dupBAC.breadwinner_qbo__Salesforce_Account__c ==selectedAccount.Id)}" style="text-align:left">
+                                            <div>Error:<br/>
+                                                <div class='slds-m-left_large' id="duplicateBACMsg">
+                                                    A QuickBooks Online {!dupBAC.type__c} "{!dupBAC.Display_Name__c}" already exists and is related to the current Salesforce Account 
+                                                    <a id="selectedAccountMsg" href="/{!selectedAccount.Id}" target="_blank">{!selectedAccount.Name}</a>.<br/> 
+                                                    You can either create a new QuickBooks Online Company by giving it a different Display Name or choose the existing QuickBooks Online Company in the previous page.
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>   
+                                    </div>
+                                </apex:outputPanel>                             
+                                <apex:pageMessage summary="Insufficient Access" severity="WARNING" strength="3" rendered="{!AND(isEditAccount, NOT(isAllowedToUpdateBAC))}">
+                                    You can create an Invoice under existing QuickBooks Online Companies but your current Salesforce Permissions do not allow you to create a new QuickBooks Online Company. If you need to update this QuickBooks Online Company, Please ask your Salesforce Administrator to give you the "Breadwinner Full User" permission set. Please go through the <a target="{!IF(OR($User.UIThemeDisplayed = 'Theme4d',$User.UIThemeDisplayed = 'Theme4t'),'','_blank')}" href="{!breadwinnerSupportPortalURL}/support/solutions/articles/44001664706" style="color: black">Instructions</a>.
+                                </apex:pageMessage>
+                                
+                                <div class="slds-grid slds-wrap">
+                                    <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!if(AND(isMultiCurrencyEnabled,Plan_Code<35),"block","none")};">  
+                                        <font color="red">
+                                            Breadwinner Basic edition does not support QuickBooks Online Multi-Currency.<br/> You can create a QuickBooks Online Company using this page, but the new company will have the currency set to your default QuickBooks Online Currency and this can not be changed later due to QuickBooks Online limitations.<br/> If you want to create a new QuickBooks Online Company using your non-default currency, we recommend you either upgrade to Breadwinner Professional or create this QuickBooks Online Company directly in QuickBooks Online
+                                        </font>
+                                    </div>
+                                    <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-3" >
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small"  style="display:{!if(AND(isMultiOrgEnabled,$ObjectType.Breadwinner_Account_Connection__c.fields.QBO_Org_Name__c.accessible),"block","none")};">  
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">QuickBooks Online Org Name</span>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList id="QuickBooksOnlineOrgname" value="{!selectedQBOOrgID}" multiselect="false" size="1"  styleClass="slds-select" disabled="{!OR(isEditAccount,isAtQBOModify)}">
+                                                            <apex:actionSupport event="onchange" action="{!onchangeQBOCompany}"  rerender="accountPanel,pmg" status="spinnerimg" oncomplete="reRenderSVGIcons('NewBACPanel','#accountIcon');reRenderSVGIcons('CustomerCloseIcon','#customercloseIcon');refreshParentCompanyReference();reRendercheckmarkSVGIcons('#pathifo2-1');reRendercheckmarkSVGIcons('#pathifo2-2');"/>
+                                                            <apex:selectOptions value="{!orgsList}"/>                                                                
+                                                        </apex:selectList> 
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <apex:actionstatus id="spinnerimg">
+                                                <apex:facet name="start">
+                                                    <div class="slds-spinner_container">
+                                                        <div class="slds-spinner_brand slds-spinner slds-spinner_large" role="alert">
+                                                            <span class="slds-assistive-text">Loading</span>
+                                                            <div class="slds-spinner__dot-a"></div>
+                                                            <div class="slds-spinner__dot-b"></div>
+                                                        </div>
+                                                    </div>
+                                                </apex:facet>
+                                            </apex:actionstatus>
+                                            
+                                        </div>
+                                        
+                                        <apex:outputPanel layout="block" styleclass="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" rendered="{!AND(Plan_Code>=35,NOT(isEditAccount))}">
+                                            <div class="slds-box slds-theme_shade">
+                                                <div class="slds-form-element">
+                                                    <span class="slds-form-element__label" style="font-weight: bold;">Create a new Company or a Sub-Company?</span>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!isCreateQBOSubCompany}" id="choosetocreateCompanyorSubCompany" multiselect="false" size="1" onchange="showSubCompanyLookup(this.value);"  styleClass="slds-select" disabled="{!OR(isEditAccount,isAtQBOModify)}">
+                                                                <apex:selectOption itemValue="FALSE" itemLabel="Create a new Company"></apex:selectOption>
+                                                                <apex:selectOption itemValue="TRUE" itemLabel="Create a Sub-Company or Project under a Company"></apex:selectOption>
+                                                            </apex:selectList>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                
+                                                <div id="SubCompanyLookupDivId" class="slds-form-element slds-m-top_small" style="display:{!IF(AND(isCreateQBOSubCompany,$ObjectType.Breadwinner_Account_Connection__c.fields.ParentRef__c.createable),'','none')}">
+                                                    <span class="slds-form-element__label" style="font-weight: bold;">Parent Company</span>
+                                                    <div class="slds-form-element__control slds-input-has-icon slds-input-has-icon_right">
+                                                        <svg class="slds-icon slds-input__icon slds-input__icon_right slds-icon-text-default" aria-hidden="true" onclick="selectParentQBOCompany();">
+                                                            <use xmlns:xlink="http://www.w3.org/1999/xlink" xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#search')}" />
+                                                        </svg>
+                                                        <apex:inputHidden id="companyParentRefId" value="{!sfAccountChild.breadwinner_qbo__ParentRef__c}"></apex:inputHidden>
+                                                        <apex:inputHidden id="isTopOther" ></apex:inputHidden>
+                                                        <apex:inputtext id="companyParentRefvalue" styleClass="slds-input" onclick="selectParentQBOCompany();"/>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Given_Name__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Given_Name__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Given_Name__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Given_Name__c}" styleClass="slds-input" id="confirstname" >
+                                                        <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                                    </apex:inputtext>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Family_Name__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Family_Name__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Family_Name__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Family_Name__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Family_Name__c.createable}" styleClass="slds-input" id="conlastname" >
+                                                        <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                                    </apex:inputtext>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Company_Name__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Company_Name__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Company_Name__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Company_Name__c}" styleClass="slds-input" id="companyName" >
+                                                        <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                                    </apex:inputtext>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!---         <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small">
+                                            <div class="slds-form-element">
+                                            <span class="slds-form-element__label">
+                                            <abbr class="slds-required" title="required">*</abbr> {!$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.label}
+                                            </span>
+                                            <div class="slds-form-element__control">                               
+                                            <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Display_Name__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.createable}" styleClass="slds-input" /> 
+                                            </div>
+                                            </div>
+                                            </div>   ---->
+                                        
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">
+                                                    <abbr class="slds-required" title="required">*</abbr> {!$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.label}
+                                                </span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:outputPanel id="displaynameid" styleClass="select-editable" rendered="{!NOT(isatQBOModify)}">
+                                                        <select onchange="this.nextElementSibling.value=this.value" onfocus="j$(this).parent().addClass('divfocus')" onblur="j$(this).parent().removeClass('divfocus')" >
+                                                            <option style="display:{!IF(AND(sfAccountChild.Company_Name__c!=null,sfAccountChild.Company_Name__c == sfAccountChild.Display_Name__c),'','none')}" selected ="{!IF(sfAccountChild.Company_Name__c == sfAccountChild.Display_Name__c,'selected','')}"> {!sfAccountChild.breadwinner_qbo__Display_Name__c} </option>
+                                                            <option style="display:{!IF(AND(sfAccountChild.Company_Name__c!=null,sfAccountChild.Company_Name__c != sfAccountChild.Display_Name__c,OR(sfAccountChild.Company_Name__c== sfAccountChild.Given_Name__c,sfAccountChild.Company_Name__c == sfAccountChild.Family_Name__c,TRUE)),'','none')}"> {!sfAccountChild.breadwinner_qbo__Company_Name__c} </option>
+                                                            <option style="display:{!IF(AND(sfAccountChild.Given_Name__c != null, sfAccountChild.Family_Name__c == null,sfAccountChild.Company_Name__c!= sfAccountChild.Given_Name__c),'','none')}"> {!sfAccountChild.breadwinner_qbo__Given_Name__c} </option>
+                                                            <option style="display:{!IF(AND(sfAccountChild.Given_Name__c == null, sfAccountChild.Family_Name__c!= null,sfAccountChild.Company_Name__c != sfAccountChild.Family_Name__c ),'','none')}"> {!sfAccountChild.breadwinner_qbo__Family_Name__c} </option>  
+                                                            <option style="display:{!IF(AND(sfAccountChild.Given_Name__c != null, sfAccountChild.Family_Name__c!= null ),'','none')}"> {!sfAccountChild.breadwinner_qbo__Given_Name__c} {!sfAccountChild.breadwinner_qbo__Family_Name__c}</option>
+                                                            <option style="display:{!IF(AND(sfAccountChild.Given_Name__c != null, sfAccountChild.Family_Name__c!= null ),'','none')}"> {!sfAccountChild.breadwinner_qbo__Family_Name__c}, {!sfAccountChild.breadwinner_qbo__Given_Name__c} </option>
+                                                        </select>
+                                                        <apex:inputtext html-autocomplete="off" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.createable}" value="{!sfAccountChild.breadwinner_qbo__Display_Name__c}" onfocus="j$(this).parent().addClass('divfocus')" onblur="j$(this).parent().removeClass('divfocus')" />                      
+                                                    </apex:outputPanel>
+                                                    <apex:inputtext html-autocomplete="off" rendered="{!AND($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.createable,isatQBOModify)}" value="{!sfAccountChild.breadwinner_qbo__Display_Name__c}" styleClass="slds-input" disabled="true" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputTextarea value="{!sfAccountChild.breadwinner_qbo__Street_Address__c}" cols="22" id="streetAddress" rows="3" styleClass="slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.City__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.City__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.City__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__City__c}" id="city" styleClass="slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Region__c}" id="region" styleClass="slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Postal_Code__c}" id="postalcode" styleClass="slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Country__c}" id="country" styleClass="slds-input" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Email__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Email__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Email__c.label}</span>
+                                                <div class="slds-form-element__control">
+                                                    <apex:inputtext value="{!sfAccountChild.breadwinner_qbo__Email__c}" styleClass="slds-input" id="conemail" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <apex:outputPanel rendered="{!IF(OR($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.createable,AND(isEditAccount,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.updateable)), true, false)}">
+                                            <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Phone_Number__c.label}
+                                                    </span>
+                                                    <div class="slds-form-element__control">
+                                                        <apex:inputField value="{!sfAccountChild.breadwinner_qbo__Phone_Number__c}" styleClass="slds-input" id="conphonenumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!IF(OR($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Mobile_Number__c.createable,AND(isEditAccount,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Mobile_Number__c.updateable)), true, false)}">
+                                            <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small">
+                                                <div class="slds-form-element">
+                                                    <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Mobile_Number__c.label}
+                                                    </span>
+                                                    <div class="slds-form-element__control">
+                                                        <apex:inputField value="{!sfAccountChild.breadwinner_qbo__Mobile_Number__c}" styleClass="slds-input" id="conmobilenumber" />
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Default_Payment_Method_Ref__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Default_Payment_Method_Ref__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">Preferred Payment Method</span>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!sfAccountChild.breadwinner_qbo__Default_Payment_Method_Ref__c}" id="paymentMethod" size="1" styleClass="slds-select">
+                                                            <apex:selectOption value="{!null}" />
+                                                            <apex:selectOptions value="{!paymentMethodList}" />
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(OR($ObjectType.Breadwinner_Account_Connection__c.fields.Default_Terms_Ref__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Default_Terms_Ref__c.updateable)),'','none')}">
+                                            <div class="slds-form-element">
+                                                <span class="slds-form-element__label">Terms</span>
+                                                <div class="slds-form-element__control">
+                                                    <div class="slds-select_container">
+                                                        <apex:selectList value="{!sfAccountChild.breadwinner_qbo__Default_Terms_Ref__c}" size="1" id="terms" styleClass="slds-select">
+                                                            <apex:selectOption value="{!null}" />
+                                                            <apex:selectOptions value="{!termsList}" />
+                                                        </apex:selectList>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(AND(isMultiCurrencyEnabled,OR($ObjectType.Breadwinner_Account_Connection__c.fields.Currency__c.createable,AND(isEditAccount,$ObjectType.Breadwinner_Account_Connection__c.fields.Currency__c.updateable))),'','none')}">
+                                            <apex:outputPanel >
+                                                <div class="slds-form-element">
+                                                    <span class="slds-form-element__label">
+                                                        <abbr class="slds-required" title="required">*</abbr> Default Currency
+                                                    </span>
+                                                    <div class="slds-form-element__control">
+                                                        <div class="slds-select_container">
+                                                            <apex:selectList value="{!sfAccountChild.breadwinner_qbo__Currency__c}" size="1" id="currency" styleClass="slds-select" disabled="{!if(OR(Plan_Code<35,isEditAccount,isAtQBOModify),true,false)}">
+                                                                <apex:selectOption value="{!null}"/>
+                                                                <apex:selectOptions value="{!multiCurrencylist}" />
+                                                            </apex:selectList>  
+                                                        </div>
+                                                    </div>
+                                                    
+                                                </div>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                    <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_2-of-3 slds-large-size_2-of-3 slds-m-top_large">
+                                        <div style="display: {!IF(OR(isEditAccount,isAtQBOModify),"none","block")}">
+                                            <p>
+                                                <b>The Company Name and Address is populated from the Salesforce Account <i>"{!selectedAccount.Name}"</i>, using Account Name and Billing Address.</b>
+                                            </p>
+                                            <p>
+                                                <b>Optionally, you can populate the fields First Name, Last Name, Email, Phone, and Mobile from a Contact on the Account.</b>
+                                            </p>
+                                        </div>
+                                        <div style="display: {!IF(OR(isEditAccount,isAtQBOModify),"block","none")}"> <b>You can populate the fields First Name, Last Name, Email, Phone, and Mobile on the QuickBooks Online Customer from one of the Salesforce Contacts below.</b></div>
+                                        <font color="red">
+                                            <apex:outputText rendered="{!contactWrapperList.size==0}">No Salesforce Contacts exist for this Salesforce Account</apex:outputText>
+                                        </font>
+                                        <div class="slds-m-top_medium" style="display:{!IF(AND($ObjectType.Contact.accessible,OR($ObjectType.Contact.fields.firstname.accessible,$ObjectType.Contact.fields.lastname.accessible,$ObjectType.Contact.fields.Email.accessible)),'','none')}">
+                                            
+                                            <apex:repeat value="{!contactWrapperList}" var="con">
+                                                <div class="slds-form-element__control slds-m-top_small">
+                                                    <label class="slds-radio">
+                                                        <input type="radio" name="SalesforceContact" id="{!con.ContactId}" value="{!con.ContactId}" onchange="changeTheContact('{!con.firstname}','{!con.lastname}', '{!con.Email}', '{!con.Phone}', '{!con.Mobile}', '{!con.ContactId}');" />
+                                                        <span class="slds-radio_faux"></span>
+                                                        <span class="slds-form-element__label" for="{!con.ContactId}">{!con.textToDisplay}</span>
+                                                    </label>
+                                                </div>
+                                            </apex:repeat>
+                                        </div>
+                                        <script>
+                                        if('{!selectedContactWrapperRecord.ContactId}')
+                                            document.getElementById('{!selectedContactWrapperRecord.ContactId}').checked = true;
+                                        </script>
+                                    </div>
+                                    
+                                    <apex:outputPanel id="customerPSPopop" rendered="{!AND(Plan_Code>=35,NOT(isEditAccount))}">
+                                        <apex:actionFunction name="refreshlist"  status="assign-action-status" action="{!querySelectedCustomersforSelectedAccount}" reRender="customerTablePanel,buttonsPanel">
+                                            <apex:param name="customersearch" value="{!searchCustomer}" />
+                                        </apex:actionFunction>
+                                        <apex:actionFunction name="sorting"  status="assign-action-status" action="{!querySelectedCustomersforSelectedAccount}" reRender="customerTablePanel,buttonsPanel">
+                                            <apex:param name="sortExp" value="" assignto="{!sortExpression}" />
+                                        </apex:actionFunction>
+                                        <div id="maskCustomerPopUP" style="display:none;">
+                                            <div aria-hidden="false" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" role="alertdialog" class="slds-modal slds-modal_prompt slds-fade-in-open">
+                                                <div class="slds-modal__container slds-modal_prompt" role="document" id="prompt-message-wrapper" tabindex="0">
+                                                    <div class="slds-modal__header slds-theme_info">
+                                                        <button class="slds-button slds-button_icon-inverse slds-modal__close" type="button" onclick="hideSubCompanyLookupPopup();" id="customercloseIcon">
+                                                            <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                                                                <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/action-sprite/svg/symbols.svg#close')}" ></use>
+                                                            </svg>
+                                                            <span class="slds-assistive-text">Close</span>
+                                                        </button>
+                                                        <h2 class="slds-text-heading_medium">Choose a Parent Company</h2>
+                                                    </div>
+                                                    <div class="slds-modal__content slds-p-around_medium">
+                                                        <div>
+                                                            <apex:outputPanel layout="block" styleClass="slds-m-bottom_x-large slds-m-top_x-small" rendered="{!queryTopQBOCompanies.size>0}">
+                                                                
+                                                                <div class="parentCustomerSectionTitle" >QuickBooks Online Companies already associated with this Salesforce Account</div>
+                                                                
+                                                                <div class="slds-m-horizontal_small slds-m-top_small">
+                                                                    <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal" width="80%">
+                                                                        
+                                                                        <thead>
+                                                                            <tr class="slds-text-heading_label">
+                                                                                <th class="customerCoulmnMini"  style="padding: 0.5%;"  >
+                                                                                    QBO Company#
+                                                                                </th>
+                                                                                <th class="customerCoulmn"  style="padding: 0.5%;">
+                                                                                    Display Name
+                                                                                </th>
+                                                                                <th class="customerCoulmn"  style="padding: 0.5%;">
+                                                                                    Company Name
+                                                                                </th>
+                                                                                <th class="customerCoulmn"  style="padding: 0.5%;">
+                                                                                    Associated With
+                                                                                </th>
+                                                                                <th  style="padding: 0.5%;width:2%;">
+                                                                                    Currency
+                                                                                </th>
+                                                                                <th class="customerCoulmnMini"  style="padding: 0.5%;">
+                                                                                    Phone
+                                                                                </th>
+                                                                                <th class="customerCoulmnMini"  style="padding: 0.5%;">
+                                                                                    Email
+                                                                                </th>
+                                                                                <th class="customerCoulmn"  style="padding: 0.5%;">
+                                                                                    Town/City
+                                                                                </th>
+                                                                                <th class="customerCoulmn"  style="padding: 0.5%;">
+                                                                                    State/Region
+                                                                                </th>
+                                                                            </tr>
+                                                                        </thead>
+                                                                        
+                                                                        <apex:repeat id="ToplevelCompanies" value="{!queryTopQBOCompanies}" var="customer" >
+                                                                            <tr class="slds-hint-parent">
+                                                                                <th class="slds-truncate customerCoulmnMini"   data-label="QBO Company#" >
+                                                                                    <apex:commandlink value="{!customer.Name}"  styleclass="close" onclick="setParentCompany('{!JSINHTMLENCODE(customer.breadwinner_qbo__Display_Name__c)}','{!customer.breadwinner_qbo__Reference_Id__c}','top');" reRender="pmg"/>
+                                                                                </th>
+                                                                                <th class="slds-truncate customerCoulmn" data-label="Display Name" >{!customer.Display_Name__c}</th>
+                                                                                <th class="slds-truncate customerCoulmn" data-label="Company Name" >{!customer.Company_Name__c}</th>
+                                                                                <th class="slds-truncate customerCoulmn" data-label="Associated With" >{!customer.Salesforce_Account__r.Name}</th>
+                                                                                <th class="slds-truncate" data-label="Currency" style="width:9%;">{!customer.Currency__c}</th>
+                                                                                <th class="slds-truncate customerCoulmnMini" data-label="Phone" >{!customer.Phone_Number__c}</th>
+                                                                                <th class="slds-truncate customerCoulmnMini" data-label="Email" >{!customer.Email__c}</th>
+                                                                                <th class="slds-truncate customerCoulmnMini" data-label="Town/City" >{!customer.City__c}</th>
+                                                                                <th class="slds-truncate customerCoulmnMini" data-label="State/Region" >{!customer.Region__c}</th>
+                                                                            </tr>
+                                                                            
+                                                                        </apex:repeat>
+                                                                    </table>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                            
+                                                            <apex:outputPanel layout="block" styleClass="infoM3 slds-m-bottom_x-large slds-m-top_x-small" style="border-radius:4px;" rendered="{!queryTopQBOCompanies.size==0}">
+                                                                Currently, no top level QuickBooks Online Companies are associated with this Salesforce Account
+                                                            </apex:outputPanel>
+                                                            <div class="parentCustomerSectionTitle" >All Other QuickBooks Online Companies</div>
+                                                            <div class="slds-m-horizontal_small slds-m-top_large">
+                                                                <div class="slds-grid slds-wrap" >
+                                                                    <div class="slds-size_1-of-2 slds-medium-size_2-of-3 slds-large-size_3-of-12">
+                                                                        
+                                                                        <div class="slds-form_horizontal slds-form-element" style="text-align:left;">
+                                                                            <label class="slds-form-element__label" for="inputSample2">Display Name:</label>
+                                                                            <div class="slds-form-element__control">
+                                                                                    <apex:inputText label="" value="{!searchCustomer}"   html-placeholder="Search by Display Name" id="searchCustomer" styleClass="slds-input">   
+                                                                                        <apex:actionSupport event="onkeyup" status="popup-statusval" action="{!querySelectedCustomersforSelectedAccount}" reRender="customerTablePanel,buttonsPanel">
+                                                                                            <apex:param name="customersearch" value="{!searchCustomer}" />
+                                                                                        </apex:actionSupport>
+                                                                                    </apex:inputText>
+                                                                            </div>
+                                                                        </div>
+                                                                        
+                                                                    </div>
+                                                                    <div class=" slds-size_1-of-2 slds-medium-size_1-of-3 slds-large-size_6-of-12">
+                                                                        <apex:actionStatus id="popup-statusval" layout="block">
+                                                                            <apex:facet name="start">
+                                                                                <div class="slds-spinner_medium">
+                                                                                    <img src="{!URLFOR($Asset.SLDS,'assets/images/spinners/slds_spinner_brand.gif')}" alt="Loading..." />
+                                                                                </div>
+                                                                            </apex:facet>
+                                                                        </apex:actionStatus>
+                                                                    </div>
+                                                                </div><br/>
+                                                                <apex:actionFunction name="refreshPageSize" action="{!refreshPageSize}" status="assign-action-status" reRender="customerTable,buttonsPanel"/>
+                                                                
+                                                                <apex:outputPanel id="customerTablePanel">
+                                                                    <apex:outputPanel id="customerTable" >
+                                                                        
+                                                                        <table class="slds-table slds-table_bordered slds-max-medium-table_stacked-horizontal" width="80%" id="customerTable">
+                                                                            
+                                                                            <thead>
+                                                                                <tr class="slds-text-heading_label">
+                                                                                    <th class="customerCoulmnMini"  style="padding: 0.5%;"  onclick="sorting('Name')">
+                                                                                        QBO Company# {!IF(sortExpression=='Name',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmn"  style="padding: 0.5%;" onclick="sorting('Display_Name__c')">
+                                                                                        Display Name {!IF(sortExpression=='Display_Name__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmn"  style="padding: 0.5%;" onclick="sorting('Company_Name__c')">
+                                                                                        Company Name {!IF(sortExpression=='Company_Name__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmn"  style="padding: 0.5%;" onclick="sorting('Salesforce_Account__r.Name')">
+                                                                                        Associated With {!IF(sortExpression=='Salesforce_Account__r.Name',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th  style="padding: 0.5%;width:2%;" onclick="sorting('Currency__c')">
+                                                                                        Currency {!IF(sortExpression=='Currency__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmnMini"  style="padding: 0.5%;" onclick="sorting('Phone_Number__c')">
+                                                                                        Phone {!IF(sortExpression=='Phone_Number__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmnMini"  style="padding: 0.5%;" onclick="sorting('Email__c')">
+                                                                                        Email {!IF(sortExpression=='Email__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmn"  style="padding: 0.5%;" onclick="sorting('City__c')">
+                                                                                        Town/City {!IF(sortExpression=='City__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                    <th class="customerCoulmn"  style="padding: 0.5%;" onclick="sorting('Region__c')">
+                                                                                        State/Region {!IF(sortExpression=='Region__c',IF(sortDirection='ASC','▼','▲'),'')}
+                                                                                    </th>
+                                                                                </tr>
+                                                                            </thead>
+                                                                            <apex:repeat id="customerListid" value="{!CustomersList}" var="customer">
+                                                                                <tr class="slds-hint-parent">
+                                                                                    <th class="slds-truncate customerCoulmnMini"   data-label="QBO Company#" >
+                                                                                        <apex:commandlink value="{!customer.Name}"  styleclass="close" onclick="setParentCompany('{!JSINHTMLENCODE(customer.breadwinner_qbo__Display_Name__c)}','{!customer.breadwinner_qbo__Reference_Id__c}','Other');" reRender="pmg"/>
+                                                                                    </th>
+                                                                                    <th class="slds-truncate customerCoulmn" data-label="Display Name" >{!customer.Display_Name__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmn" data-label="Company Name" >{!customer.Company_Name__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmn" data-label="Associated With" >{!customer.Salesforce_Account__r.Name}</th>
+                                                                                    <th class="slds-truncate" data-label="Currency" style="width:9%;">{!customer.Currency__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmnMini" data-label="Phone" >{!customer.Phone_Number__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmnMini" data-label="Email" >{!customer.Email__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmnMini" data-label="Town/City" >{!customer.City__c}</th>
+                                                                                    <th class="slds-truncate customerCoulmnMini" data-label="State/Region" >{!customer.Region__c}</th>
+                                                                                </tr>
+                                                                                
+                                                                            </apex:repeat>
+                                                                        </table>
+                                                                        
+                                                                        
+                                                                    </apex:outputPanel>
+                                                                    
+                                                                </apex:outputPanel>
+                                                                
+                                                                
+                                                                <apex:outputPanel layout="block" id="buttonsPanel">
+                                                                    <table>
+                                                                        <tr>
+                                                                            <td>
+                                                                                <div class="slds-form-element slds-m-top_small">
+                                                                                    <label class="slds-form-element__label" >Records per Page</label>
+                                                                                    <div class="slds-form-element__control">
+                                                                                        <div class="slds-select_container slds-size_2-of-12">
+                                                                                            <apex:selectList value="{!size}" multiselect="false" size="1" onchange="refreshPageSize();" styleClass="slds-select">
+                                                                                                <apex:selectOption itemLabel="10" itemValue="10"></apex:selectOption>
+                                                                                                <apex:selectOption itemLabel="20" itemValue="20"></apex:selectOption>
+                                                                                                <apex:selectOption itemLabel="30" itemValue="30"></apex:selectOption>
+                                                                                                <apex:selectOption itemLabel="40" itemValue="40"></apex:selectOption>
+                                                                                                <apex:selectOption itemLabel="50" itemValue="50"></apex:selectOption>
+                                                                                            </apex:selectList>
+                                                                                        </div>
+                                                                                    </div>
+                                                                                </div>
+                                                                            </td>
+                                                                            <td style="float:right;">
+                                                                                <apex:commandButton status="assign-action-status" reRender="customerTablePanel,buttonsPanel" value="First" action="{!setConBAc.first}" disabled="{!!setConBAc.hasPrevious}" title="First Page" styleClass="slds-button slds-button_brand slds-m-top_medium"/>
+                                                                                <apex:commandButton status="assign-action-status" reRender="customerTablePanel,buttonsPanel" value="Previous" action="{!setConBAc.previous}" disabled="{!!setConBAc.hasPrevious}" title="Previous Page" styleClass="slds-button slds-button_brand slds-m-top_medium"/>
+                                                                                <apex:commandButton status="assign-action-status" reRender="customerTablePanel,buttonsPanel" value="Next" action="{!setConBAc.next}" disabled="{!!setConBAc.hasNext}" title="Next Page" styleClass="slds-button slds-button_brand slds-m-top_medium"/>
+                                                                                <apex:commandButton status="assign-action-status" reRender="customerTablePanel,buttonsPanel" value="Last" action="{!setConBAc.last}" disabled="{!!setConBAc.hasNext}" title="Last Page" styleClass="slds-button slds-button_brand slds-m-top_medium"/>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </apex:outputPanel>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div class="slds-backdrop slds-backdrop_open"></div>
+                                        </div>
+                                        
+                                    </apex:outputPanel>
+                                    
+                                </div>
+                                <div align='center'  style="display:{!if((syncSalesReceiptsEnabled==false)&&(createSalesReceipt),'block','none')};">
+                                    <div style='color:red'> You are creating this QuickBooks Online Company in a QuickBooks Online Org that Breadwinner has been configured to sync Invoices but not Sales Receipts.</div><br/>
+                                    <div style='color:red'>You can create this QuickBooks Online Company but you cannot create Sales Receipts for it, only Invoices.</div>
+                                </div>
+                            </apex:outputPanel>
+                            <div style="text-align:center;" class="slds-m-bottom_large">
+                                <apex:commandButton disabled="{!IF(OR(AND(isEditAccount,NOT(sfAccountChild.breadwinner_qbo__Active__c)),isOAuthIssue,isReadOnlyMode),true,false)}" id="createCompany" value="{!if(OR(isEditAccount,isAtQBOModify),'Save and Proceed to '+IF(createSalesReceipt,'Sales Receipt','Invoice')+' Creation','Create QuickBooks Online Customer')}" onclick="upsertQBOAccount(); this.disabled=true; this.value='{!IF(OR(isEditAccount,isAtQBOModify),"Updating...","Creating...")}'; return false;" rendered="{!OR(AND(isEditAccount,isAllowedToUpdateBAC),isAllowedToCreateBAC)}" styleClass="slds-button slds-button_brand slds-m-top_medium" reRender="" />
+                                <apex:commandButton value="Cancel" onclick="showspinner('withouttext');" action="{!goNewInvoicePanel}" id="cancelCreatingNewCompany" styleClass="slds-button slds-button_neutral slds-m-top_medium"/>
+                                <apex:actionFunction name="upsertQBOAccount" action="{!upsertQBOAccount}" reRender="" oncomplete="redirectToCreateInvoice();" status="action_status"/>
+                                <apex:actionFunction name="redirectToCreateInvoice" action="{!redirectToCreateInvoice}"  status="action_status">
+                                    <apex:param name="selectedQBOOrgID" value="{!selectedQBOOrgID}" assignTo="{!selectedQBOOrgID}" />
+                                </apex:actionFunction>
+                                <apex:outputPanel id="readOnlyModeInfoMsg" layout="block" styleclass="slds-text-heading_small slds-m-top_small" style="font-weight: bold;font-style: italic;" rendered="{!isReadOnlyMode}">You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way.</apex:outputPanel>
+                            </div>
+                        </apex:outputPanel>
+                        <!--- Create or Edit BAC Section END -->
+
+                        <!--- Search for BAC Section Start -->
+                        <apex:outputPanel id="searchPanel" rendered="{!showBACSearchPanel}">
+                            <!-- -----------------------Page Header Start----------------- -->
+                            <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                                <div class="slds-media slds-media_center">
+                                    <div class="slds-media__figure">
+                                        <span class="slds-icon_container slds-icon-standard-avatar">
+                                            <svg class="slds-icon" aria-hidden="true">
+                                                <use xlink:href="{!URLFOR($Asset.SLDS,'assets/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+                                            </svg>
+                                        </span>
+                                    </div>
+                                    <div class="slds-media__body">
+                                        <h1 class="slds-page-header__title slds-m-right_small slds-align-middle slds-truncate" title="Search QuickBooks Online Customer" style='font-size:1.6em'>Search QuickBooks Online Customer</h1>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- -----------------------Page Header End----------------- -->
+
+                            <div class="slds-col_padded">
+                                <div class="warningM2" style="border-radius: 4px;">
+                                   <apex:outputPanel style="text-align:left;color:#000;">
+                                     This functionality is in Beta. Please only use if recommended to do so by Breadwinner Support.
+                                   </apex:outputPanel>
+                               </div>
+                           </div>
+
+                            <apex:outputPanel id="searchPanelContent">
+                                <div class="slds-col_padded">
+                                    <h1 class="slds-section__title">If you're trying to create {!IF(invoiceOrSalesReceipt!='salesReceipt','an Invoice','a Sales Receipt')} and are expecting to see an existing QuickBooks Online Customer, you can search for that QuickBooks Online Customer here.</h1>
+                                    <div class="slds-form-element slds-m-vertical_small">
+                                        <label class="slds-form-element__label" for="text-input-id-1">Please enter the part of that QuickBooks Online Customer Name</label>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!searchCustomer}" styleClass="slds-input slds-size_2-of-3 slds-small-size_6-of-12 slds-medium-size_4-of-12 slds-large-size_3-of-12" style="min-width: 25rem;"/>
+                                            <apex:commandButton value="Search" action="{!querySelectedCustomersforSelectedAccount}" styleClass="slds-button slds-button_brand slds-m-left_medium slds-m-right_xx-small" status="action_status" reRender="searchPanelContent,selectedQBOAccount" oncomplete="message();"/>
+                                            <apex:commandButton value="Switch to the previous screen" onclick="showspinner('withouttext');" action="{!goNewInvoicePanel}" styleClass="slds-button slds-button_neutral" />
+                                        </div>
+                                    </div>
+                                    <apex:actionFunction name="createNewBAC" action="{!next}" reRender="mainPanel" status="action_status" oncomplete="reRenderAccountSVG();reRenderSVGIcons('CustomerCloseIcon','#customercloseIcon');"/>
+                                    <apex:actionFunction name="reRenderbutton" reRender="nextbutton"/>
+                                </div>
+                                <apex:outputPanel rendered="{!showSearchedBACPanel}">
+                                    <apex:outputPanel rendered="{!CustomersList.size == 0}">
+                                        <div class="slds-col_padded slds-text-heading_small slds-m-top_large">No results found. Try to search using fewer characters. If you don't think the QBO company exists, you can <apex:commandLink onclick="assignSelectedQBOAccount('createNewQBOAccount')" status="action_status" reRender="searchPanelContent"> create this {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')} under a new QuickBooks Online Company.</apex:commandLink></div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!CustomersList.size > 0}" id="customersListPanel">
+                                        <div class="slds-col_padded">
+                                            <div class="slds-section slds-m-top_large slds-m-bottom_medium">
+                                                <h1 class="slds-section__title" style="padding: 0.3rem 0.7rem;background: #f4f6f9;">
+                                                    Breadwinner found the following {!noOfRecords} QuickBooks Online {!IF(CustomersList.size == 1,'Customer','Customers')} in Salesforce.
+                                                </h1>
+                                            </div>
+                                            <apex:repeat value="{!CustomersList}" var="XA">
+                                                <apex:outputPanel rendered="{!XA.breadwinner_qbo__Reference_Id__c!=NULL}">
+                                                    <div class="slds-card slds-m-bottom_large" style="background: none;">
+                                                        <div class="slds-card__header slds-grid">
+                                                            <h2 class="slds-card__header-title" style="font-weight: 700;">
+                                                                <apex:outputPanel title="{!XA.breadwinner_qbo__Display_Name__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.accessible}">
+                                                                    <span class="slds-text-heading_small">QuickBooks Online Customer: {!XA.breadwinner_qbo__Display_Name__c}</span>
+                                                                </apex:outputPanel>
+                                                            </h2>
+                                                        </div>
+                                                        <div class="slds-card__body slds-card__body_inner">
+                                                            <apex:outputPanel title="{!XA.breadwinner_qbo__Fully_Qualified_Name__c}" rendered="{!Contains(XA.breadwinner_qbo__Fully_Qualified_Name__c,':')}">
+                                                                <p class="slds-truncate slds-text-body_regular" > This QuickBooks Online Company is a Sub Company. The full Company Hierarchy is {!XA.breadwinner_qbo__Fully_Qualified_Name__c} </p>
+                                                            </apex:outputPanel>
+                                                            <div class="slds-grid slds-m-top_x-small">
+                                                                <div class="slds-page-header__detail-block">
+                                                                    <p class="slds-truncate slds-m-bottom_xx-small" style="font-weight: bold;">Company Information:</p>
+                                                                    <div class="slds-text-body_regular slds-truncate">
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Company_Name__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Company_Name__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Company_Name__c.accessible)}">
+                                                                            {!XA.breadwinner_qbo__Company_Name__c}
+                                                                            <br/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Display_Name__c}" rendered="{!AND(ISBLANK(XA.breadwinner_qbo__Company_Name__c),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.accessible)}">
+                                                                            {!XA.breadwinner_qbo__Display_Name__c}
+                                                                            <br/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Street_Address__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Street_Address__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Street_Address__c.accessible)}">
+                                                                            {!XA.breadwinner_qbo__Street_Address__c}
+                                                                            <br/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__City__c} {!XA.breadwinner_qbo__Region__c} {!XA.breadwinner_qbo__Postal_Code__c}" rendered="{!AND(OR(NOT(ISBLANK(XA.breadwinner_qbo__City__c)),NOT(ISBLANK(XA.breadwinner_qbo__Region__c)),NOT(ISBLANK(XA.breadwinner_qbo__Postal_Code__c))),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__City__c.accessible,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Region__c.accessible,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Postal_Code__c.accessible)}">
+                                                                            {!XA.City__c}&nbsp;{!XA.Region__c}&nbsp;{!XA.Postal_Code__c}
+                                                                            <br/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Country__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Country__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Country__c.accessible)}">
+                                                                            {!XA.breadwinner_qbo__Country__c}
+                                                                        </apex:outputPanel>
+                                                                    </div>
+                                                                </div>
+                                                                <div class="slds-page-header__detail-block">
+                                                                    <p class="slds-truncate slds-m-bottom_xx-small" style="font-weight: bold;">Contact Info:</p>
+                                                                    <div class="slds-text-body_regular slds-truncate">
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Given_Name__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Given_Name__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Given_Name__c.accessible)}" >
+                                                                            {!XA.breadwinner_qbo__Given_Name__c} <BR/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Email__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Email__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Email__c.accessible)}" >
+                                                                            {!XA.breadwinner_qbo__Email__c} <BR/>
+                                                                        </apex:outputPanel>
+                                                                        <apex:outputPanel title="{!XA.breadwinner_qbo__Phone_Number__c}" rendered="{!AND(NOT(ISBLANK(XA.breadwinner_qbo__Phone_Number__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.accessible)}" >
+                                                                            {!XA.breadwinner_qbo__Phone_Number__c} <BR/>
+                                                                        </apex:outputPanel>
+                                                                    </div>
+                                                                </div>
+                                                                <apex:outputPanel styleClass="slds-page-header__detail-block"  rendered="{!AND(isMultiOrgEnabled,OR(NOT(ISBLANK(XA.breadwinner_qbo__QBO_Org_Name__c)),NOT(ISBLANK(appConfigMap[XA.breadwinner_qbo__QBO_Org_ID__c].Display_Name))),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__QBO_Org_Name__c.accessible)}">
+                                                                    <p class="slds-truncate slds-m-bottom_xx-small" style="font-weight: bold;">QuickBooks Online Org:</p>
+                                                                    <div class="slds-text-body_regular slds-truncate" title="{!IF(ISBLANK(appConfigMap[XA.QBO_Org_ID__c].Display_Name), XA.QBO_Org_Name__c, appConfigMap[XA.QBO_Org_ID__c].Display_Name)}">
+                                                                        {!IF(ISBLANK(appConfigMap[XA.QBO_Org_ID__c].Display_Name), XA.QBO_Org_Name__c, appConfigMap[XA.QBO_Org_ID__c].Display_Name)}
+                                                                    </div>
+                                                                    <apex:outputPanel rendered="{!NOT(ISBLANK(appConfigMap[XA.breadwinner_qbo__QBO_Org_ID__c].LogoURL))}">
+                                                                        <apex:image style="height: 40px" url="{!appConfigMap[XA.breadwinner_qbo__QBO_Org_ID__c].LogoURL}" />
+                                                                    </apex:outputPanel>   
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel styleClass="slds-page-header__detail-block"  rendered="{!AND(isMultiCurrencyEnabled,Plan_Code>=35,NOT(ISBLANK(XA.breadwinner_qbo__Currency__c)),$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Currency__c.accessible)}">
+                                                                    <p class="slds-truncate slds-m-bottom_xx-small" style="font-weight: bold;">Currency:</p>
+                                                                    <div class="slds-text-body_regular slds-truncate">
+                                                                        {!XA.Currency__c}
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                            </div>
+                                                            <apex:outputPanel rendered="{!NOT(ISBLANK(XA.Salesforce_Account__r.Name))}">
+                                                                <apex:outputPanel rendered="{!selectedAccountId==XA.breadwinner_qbo__Salesforce_Account__c}">
+                                                                    <div class="slds-m-top_x-small" style="font-weight: bold;">
+                                                                        This QuickBooks Online Customer has already been matched to the current Salesforce Account.
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                                <apex:outputPanel rendered="{!selectedAccountId!=XA.breadwinner_qbo__Salesforce_Account__c}">
+                                                                    <div class="slds-m-top_x-small" style="font-weight: bold;">
+                                                                        However, this QuickBooks Online Customer has already been matched to the following Salesforce Account:
+                                                                    </div>
+                                                                    <div class="slds-m-top_x-small">
+                                                                        <div class="slds-text-body_regular slds-truncate">
+                                                                            <apex:outputPanel title="{!XA.Salesforce_Account__r.Name}" rendered="{!AND(NOT(ISBLANK(XA.Salesforce_Account__r.Name)),$ObjectType.Account.fields.Name.accessible)}">
+                                                                                {!XA.Salesforce_Account__r.Name}
+                                                                                <br/>
+                                                                            </apex:outputPanel>
+                                                                            
+                                                                            <apex:outputPanel title="{!XA.Salesforce_Account__r.BillingStreet}" rendered="{!AND(NOT(ISBLANK(XA.Salesforce_Account__r.BillingStreet)),$ObjectType.Account.fields.BillingStreet.accessible)}">
+                                                                                {!XA.Salesforce_Account__r.BillingStreet}
+                                                                                <br/>
+                                                                            </apex:outputPanel>
+                                                                            <apex:outputPanel title="{!XA.Salesforce_Account__r.BillingCity} {!XA.Salesforce_Account__r.BillingState} {!XA.Salesforce_Account__r.BillingPostalCode}" rendered="{!AND(OR(NOT(ISBLANK(XA.Salesforce_Account__r.BillingCity)),NOT(ISBLANK(XA.Salesforce_Account__r.BillingState)),NOT(ISBLANK(XA.Salesforce_Account__r.BillingPostalCode))),$ObjectType.Account.fields.BillingCity.accessible,$ObjectType.Account.fields.BillingState.accessible,$ObjectType.Account.fields.BillingPostalCode.accessible)}">
+                                                                                {!XA.Salesforce_Account__r.BillingCity}&nbsp;{!XA.Salesforce_Account__r.BillingState}&nbsp;{!XA.Salesforce_Account__r.BillingPostalCode}
+                                                                                <br/>
+                                                                            </apex:outputPanel>
+                                                                            <apex:outputPanel title="{!XA.Salesforce_Account__r.BillingCountry}" rendered="{!AND(NOT(ISBLANK(XA.Salesforce_Account__r.BillingCountry)),$ObjectType.Account.fields.BillingCountry.accessible)}">
+                                                                                {!XA.Salesforce_Account__r.BillingCountry}
+                                                                            </apex:outputPanel>
+                                                                        </div>
+                                                                    </div>
+                                                                </apex:outputPanel>
+                                                            </apex:outputPanel>
+                                                            <apex:outputPanel rendered="{!ISBLANK(XA.Salesforce_Account__r.Name)}">
+                                                                <div class="slds-m-top_x-small" style="font-weight: bold;">
+                                                                    This QuickBooks Online Customer has not yet been matched to any Salesforce Account.
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                            <div class="slds-m-top_small" style="text-align: left;font-weight: bold;">
+                                                                <apex:commandLink value="I want to generate {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')} for this QuickBooks Online Customer" onclick="showspinner('withouttext');" action="{!selectedQBOAccountFromSearch}" reRender="popupid,selectedQBOAccount" oncomplete="selectedQBOAccountFromSearch();">
+                                                                    <apex:param name="contIdParam" value="{!XA.breadwinner_qbo__Reference_Id__c}" assignTo="{!selectedQBOAccount}"/>
+                                                                </apex:commandLink>
+                                                            </div>
+                                                        </div>
+                                                        <!-- <div class="slds-card__footer">
+                                                            <a class="slds-card__footer-action" href="javascript:void(0);">
+                                                                I want to Invoice this QuickBooks Online Customer
+                                                            </a>
+                                                        </div> -->
+                                                    </div>
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+                                        </div>
+                                        <div class="slds-m-bottom_medium" style="text-align: center;font-size: 1.15em;">
+                                            <apex:outputPanel rendered="{!OR(setConBAc.hasNext,setConBAc.hasPrevious)}">
+                                                <apex:commandButton value="Previous" onclick="showspinner('withouttext');" action="{!setConBAc.previous}" oncomplete="hidespinner('withouttext');" disabled="{!!setConBAc.hasPrevious}" reRender="customersListPanel" styleClass="slds-button slds-button_brand slds-m-right_x-small"/>
+                                                <apex:commandButton value="Next" onclick="showspinner('withouttext');" action="{!setConBAc.next}" oncomplete="hidespinner('withouttext');" disabled="{!!setConBAc.hasNext}" reRender="customersListPanel" styleClass="slds-button slds-button_brand"/>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:actionfunction name="redirectToInvoicePageFromSearch" action="{!next}"/>
+                                </apex:outputPanel>
+                                <apex:outputPanel id="popupid">
+                                    <div id="spinnerForReparent" class="slds-spinner_container" style="display: none;">
+                                        <div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+                                            <div class="slds-spinner__dot-a"></div>
+                                            <div class="slds-spinner__dot-b"></div>
+                                        </div>
+                                        <div class="slds-spinner-displaytext" role="alert"> 
+                                            <apex:outputPanel id="reparentStatus">
+                                                <apex:outputText rendered="{!isErrorOnReparenting}">QuickBooks Online Customer <b>{!selectedBACFromSearch.breadwinner_qbo__Display_Name__c}</b> is associating with the Salesforce Account <b>{!selectedAccount.Name}</b>.
+                                                </apex:outputText>
+                                                <apex:outputText rendered="{!!isErrorOnReparenting}">
+                                                    Please wait, redirecting to the create {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')} page.
+                                                </apex:outputText>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>                                    
+                                    <div id="ModelPopUP" style="display:none;">
+                                        <div aria-hidden="false" aria-labelledby="prompt-heading-id" aria-describedby="prompt-message-wrapper" role="dialog" class="slds-modal slds-modal_prompt slds-fade-in-open slds-modal_large">
+                                            <div class="slds-modal__container slds-modal_prompt" role="document" id="prompt-message-wrapper" tabindex="0" >
+                                                <div class="slds-modal__header slds-theme_info">
+                                                    <button id="closeIcon" class="slds-button slds-button_icon-inverse slds-modal__close" type="button" onclick="hidePopup();">
+                                                        <svg aria-hidden="true" class="slds-button__icon slds-button__icon_large">
+                                                            <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/action-sprite/svg/symbols.svg#close')}" ></use>
+                                                        </svg>
+                                                        <span class="slds-assistive-text">Close</span>
+                                                    </button>
+                                                    <h2 class="slds-text-heading_medium">
+                                                        You have {!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'the following option','following options')}
+                                                    </h2>
+                                                </div>
+                                                <div class="slds-modal__content slds-p-around_medium">
+                                                    <div class="slds-section slds-is-open" id="reparentsectiondivId">
+                                                        <h3 class="slds-section-title_divider slds-m-top_medium" style="font-size: 1.03em; text-transform: none;">{!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'Associate','Reparent')} the QuickBooks Online Customer under the current Salesforce Account</h3>
+                                                        <div class="slds-section__content slds-m-horizontal_small">
+                                                            <apex:pageMessages escape="false" id="pmgReparenting"/>
+                                                            <div class="slds-m-bottom_small">
+                                                                The QuickBooks Online Customer {!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'is not associated with any Salesforce Account','might be associated with the wrong Salesforce Account')}. You can {!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'associate','reparent')} the QuickBooks Online Customer <b>{!selectedBACFromSearch.Display_Name__c}</b> to this Salesforce Account <b>{!selectedAccount.Name}</b>.
+                                                            </div>
+                                                            <div class="slds-m-bottom_small" style="display:{!IF(selectedBACFromSearch.Invoices__r.size==0,'none','')}">
+                                                                <b>Note:</b> Please be aware that this will also bring over that QuickBooks Customer's <b>{!selectedBACFromSearch.Invoices__r.size}</b> Invoices and <b>{!selectedBACFromSearch.Payments__r.size}</b> Payments and associate them as well with this Salesforce Account.
+                                                            </div>
+                                                            <div class="slds-clearfix slds-m-bottom_small" style="display:{!IF(selectedBACFromSearch.Invoices__r.size==0,'none','')}">
+                                                                <div class="slds-form-element slds-float_left" style="text-align:center;">
+                                                                   <label class="slds-checkbox_toggle slds-grid">
+                                                                       <apex:inputCheckbox value="{!removeInvOppOnReparent}"/>
+                                                                       <span class="slds-checkbox_faux_container" aria-live="assertive">
+                                                                           <span class="slds-checkbox_faux"></span>
+                                                                       </span>
+                                                                       <span class="slds-m-top_xx-small slds-m-left_x-small">Remove the link between the QuickBooks Online All Invoices and any Opportunities on the old Salesforce Account</span>
+                                                                   </label>
+                                                               </div>
+                                                            </div>
+                                                            <apex:commandLink value="Proceed to {!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'associate','reparent')} this QuickBooks Online Customer" onclick="showspinner('withtext');" action="{!associateWithCurrentAccount}" oncomplete="redirectToInvoicePageJS();" reRender="pmgReparenting,selectedQBOAccount,scriptpanel,reparentStatus" style="font-weight: bold;" rendered="{!isBACReparentable}"/>
+                                                            <apex:commandlink value="Proceed to {!IF(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name),'associate','reparent')} this QuickBooks Online Customer" rendered="{!NOT(isBACReparentable)}" style="font-weight: bold;color: grey;cursor: not-allowed;" id="reparentDisabledlink"/>
+                                                            <apex:actionfunction name="redirectToInvoicePage" action="{!next}"/>
+                                                        </div>
+                                                    </div>
+                                                    <apex:outputPanel rendered="{!NOT(ISBLANK(selectedBACFromSearch.Salesforce_Account__r.Name))}">
+                                                        <div class="slds-section slds-is-open" id="mergesectiondivId" >
+                                                            <h3 class="slds-section-title_divider slds-m-top_medium" style="font-size: 1.03em; text-transform: none;">Merge duplicate Salesforce Accounts</h3>
+                                                            <div class="slds-section__content slds-m-horizontal_small">
+                                                                <apex:pageMessage summary="Warning:" detail="Please contact your administrator to do this operation." severity="Warning" strength="3" escape="false" rendered="{!NOT(isAdministrator)}"/>
+                                                                <div class="slds-m-bottom_small">
+                                                                    You might have duplicate Salesforce Accounts, and need to merge them. You can do this with the help of Salesforce Account Merge wizard.
+                                                                </div>
+                                                                <div class="slds-m-bottom_small">
+                                                                    <b>Note:</b> After merging, you'll need to return to the merged Account and start creating the {!IF(invoiceOrSalesReceipt!='salesReceipt','Invoice','Sales Receipt')} again.
+                                                                </div>
+                                                                <apex:commandlink onclick="redirectToMergingWizard(); return false;" value="Go to Salesforce Account Merge wizard" rendered="{!isAdministrator}" style="font-weight: bold;" />
+                                                                <apex:commandlink value="Go to Salesforce Account Merge wizard" rendered="{!NOT(isAdministrator)}" style="font-weight: bold;color: grey;cursor: not-allowed;" id="mergingDisabledlink"/>
+                                                            </div>
+                                                        </div>
+                                                        <div class="slds-section slds-is-open" id="createInvsectiondivId" >
+                                                            <h3 class="slds-section-title_divider slds-m-top_medium" style="font-size: 1.03em; text-transform: none;">Create {!IF(invoiceOrSalesReceipt!='salesReceipt','an Invoice','a Sales Receipt')} under the Salesforce Account <b>{!selectedBACFromSearch.Salesforce_Account__r.Name}</b></h3>
+                                                            <div class="slds-section__content slds-m-horizontal_small">
+                                                                You might just want to create {!IF(invoiceOrSalesReceipt!='salesReceipt','an Invoice','a Sales Receipt')} under the Salesforce Account <b>{!selectedBACFromSearch.Salesforce_Account__r.Name}</b>, rather than the Salesforce Account <b>{!selectedAccount.Name}</b>. If that's the case, you can go to the Salesforce Account&nbsp;<apex:commandlink onclick="redirectToRelatedAccount(); return false;" value="{!selectedBACFromSearch.Salesforce_Account__r.Name}"  style="font-weight: bold;"/>.
+                                                            </div>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="slds-backdrop slds-backdrop_open"></div>
+                                    </div>
+                                    <apex:outputPanel id="scriptpanel">
+                                        <script type="text/javascript">
+                                        var j$ = jQuery.noConflict();
+                                        function redirectToInvoicePageJS(){
+                                            if({!isErrorOnReparenting}==false){
+                                                setTimeout(function(){ redirectToInvoicePage(); }, 4000);
+                                            }
+                                            else{
+                                                hidespinner('withtext');
+                                                message();
+                                            }
+                                        }
+                                        </script>
+                                    </apex:outputPanel>
+                                    <script type="text/javascript" >
+                                        var j$ = jQuery.noConflict();
+                                        function redirectToMergingWizard(){
+                                            j$('#spinnerId').show();
+                                            window.open('{!mergingurl}','_top');
+                                        }
+                                        function redirectToRelatedAccount(){
+                                            window.open('/{!selectedBACFromSearch.Salesforce_Account__c}');
+                                        }
+                                        function selectedQBOAccountFromSearch(){
+                                            if({!isSelectedAccountBAC}){
+                                                redirectToInvoicePageFromSearch();
+                                            }
+                                            else{
+                                                showPopup();
+                                                message();
+                                                hidespinner('withouttext');
+                                            }
+                                        }                                            
+                                        function showPopup(){
+                                            j$('#ModelPopUP').show();
+                                            message();
+                                            j$("a[id$='Disabledlink']").removeAttr("onclick");
+                                            reRenderSVGIcons('SearchingPanelCloseIcon','#closeIcon');
+                                        }
+                                        function hidePopup(){
+                                            j$('#ModelPopUP').hide();
+                                        }
+                                    </script>
+                                </apex:outputPanel>
+                                <script type="text/javascript" >
+                                    function assignSelectedQBOAccount(refId) {
+                                        document.getElementById('{!JSENCODE($Component.theForm.selectedQBOAccount)}').value = refId;
+                                        if(refId == 'createNewQBOAccount'){
+                                            createNewBAC();
+                                        }
+                                        else{
+                                            reRenderbutton();
+                                        }
+                                    }
+                                </script>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!--- Search for BAC Section End -->
+                    </apex:outputPanel>
+                </div>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>

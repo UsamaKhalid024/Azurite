@@ -1,0 +1,979 @@
+<apex:page sidebar="false" controller="breadwinner_qbo.AddressSyncController" tabStyle="Breadwinner__tab" showHeader="false" title="Beadwinner Address Sync">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <meta charset="utf-8" />
+            <meta http-equiv="x-ua-compatible" content="ie=edge" />
+            <meta name="viewport" content="width=device-width, initial-scale=1" />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}">
+            </script>
+            <apex:slds />
+            <apex:outputpanel id="ScriptSection">  
+                <script>
+
+                 if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                    document.getElementsByTagName("title")[0].innerHTML="Breadwinner Address Sync";
+                }
+                
+                var j$ = jQuery.noConflict();
+                function HideStyleSheet(){
+                    j$("link.user[href$='elements.css']").each(function(){
+                        j$(this).removeAttr("href");
+                    });
+                }
+                function scrollWindowUp(){ 
+                    var testing = {!(IsOccuredError)};
+                    if({!(IsOccuredError)}==true){
+                        window.scrollTo(0,0);
+                    }
+                }
+                function message()
+                {
+                    j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left"} );
+                    j$(".NoRecords").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                    j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                    j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","justify-content": "left"} ) ;
+                    j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                    
+                    j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                    j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                    j$("table.messageTable td").css({"color" : "white"});
+                    j$("div[class*='warning'] table.messageTable td").css( "color", "black" );
+                    scrollWindowUp();
+                }
+                j$(function() {
+                    HideStyleSheet();
+                    message();
+                    j$("#Page-load-spinner").css( "display", "none" );
+                });
+                
+                </script>
+            </apex:outputpanel>
+            <style>
+                .SFTable td{margin-left:5%}
+                .big_arrow{color:#42B7F4;font-size:2.5vw;}
+                .big_arrow1{color:#42B7F4;font-size:2.5vw;}
+                .widget_big_arrow{color:#42B7F4;font-size:1.8vw;}
+                .commandlink{text-decoration:none !important;}
+                .small_arrow{color:#42B7F4;font-size:14px;}
+                .small_arrow1{color:#42B7F4;font-size:14px;margin-left:12px}
+                .rotate_arrow{-ms-transform: rotate(180deg); /* IE 9 */ -webkit-transform: rotate(180deg); /* Chrome, Safari, Opera */ transform: rotate(180deg);}c
+                .slds-scope .slds-spinner_container{ 
+                position: fixed;z-index: 1000; 
+                }
+                .Error{
+                font-weight:500;
+                line-height:2;
+                word-spacing:1px;
+                }
+                .message {
+                background-color: inherit;
+                border-style: none;
+                padding:initial;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                }
+                .msgIcon{
+                display:none;
+                }                
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+                @media only screen and (min-width: 64em) {
+                .centerDiv{
+                width: 50%;
+                }
+                }
+                @media only screen and (max-width: 64em) {
+                .centerDiv{
+                width: 75%;
+                }
+                }
+                .slds-scope .slds-select_container:after {
+                top: 20px;
+                }
+            </style>
+        </head>
+        <body>
+            <apex:form >
+                <div class="slds-scope {!IF(OR($User.UIThemeDisplayed == 'Theme4d',$User.UIThemeDisplayed == 'Theme4t'),'slds-p-around_x-small','')}">
+                    <div id="Page-load-spinner" class="slds-spinner_container">
+                        <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert" >
+                            <div class="slds-spinner__dot-a"></div>
+                            <div class="slds-spinner__dot-b"></div>
+                        </div>
+                        <div class="slds-spinner-displaytext slds-text-heading_medium slds-align_absolute-center slds-m-left_x-large" role="alert" style="position: absolute; top: 53%; left: 24%"> 
+                            <P>
+                                We are comparing addresses in Salesforce and QuickBooks Online. This can take up to 30 seconds or more
+                            </P>
+                        </div>
+                    </div>
+                    
+                    <!----------- PAGE HEADER START---------- ----------->
+                    <div class="slds-page-header slds-m-bottom_large" role="banner">
+                        <div class="slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                                <span class="slds-icon_container slds-icon-standard-user" title="Address Sync">
+                                    <svg class="slds-icon" aria-hidden="true">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#product_request')}"></use>
+                                    </svg>                            
+                                </span>
+                            </div>
+                            <div class="slds-media__body ">
+                                <p class="slds-page-header__title slds-truncate">Breadwinner Address Sync</p>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!----------- PAGE HEADER END ---------- ----------->
+                    <!-- WIDGET AND VIDEO SECTION START -->
+                    <apex:outputPanel layout="block" rendered="{!IF(AND((AppConfigOrgIds.size>0),AND(isAllowedToAccessBAC,isAllowedToAccessSFAccount)),true,false)}" >
+                        <div class="slds-grid slds-m-horizontal_x-large slds-wrap slds-m-bottom_x-large" style="align-items:inherit;">
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_5-of-12 slds-box">
+                                <table style="width:100%;">
+                                    <tr>
+                                        <td style="width:4%;vertical-align:top;padding-right: 0.3%;padding-top: 0.3%;">
+                                            <div class="slds-grid slds-grid_align-end"><div style="width:1.1em;height:1.1em;background-color:rgba(255, 0, 0, 0.19);"></div></div>
+                                        </td>
+                                        <td style="width:96%;vertical-align:top;">
+                                            <div class="slds-p-left_x-small">The color red indicates that the line is different between Salesforce and Quickbooks Online.</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="vertical-align:top;padding-right: 0.3%;padding-top: 0.3%;">
+                                            <div class="slds-grid slds-grid_align-end slds-p-top_small"><div style="width:1.1em;height:1.1em;background-color:rgba(255, 228, 128, 0.33);"></div></div>
+                                        </td>
+                                        <td>
+                                            <div class="slds-p-left_x-small slds-p-top_small">The color yellow indicates that the line is populated in one, but missing in the other.</div>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td style="padding-right: 0.3%;"><div class="slds-grid slds-grid_align-end slds-p-top_small"><span class="small_arrow">&#10140;</span></div></td>
+                                        <td><div class="slds-p-left_x-small slds-p-top_small">A Small Arrow will copy just that line.</div></td>
+                                    </tr>    
+                                    <tr>
+                                        <td><div class="slds-grid slds-grid_align-end"><span class="widget_big_arrow">&#10140;</span></div></td>
+                                        <td><div class="slds-p-left_x-small" style="white-space: nowrap;">A Large Arrow will copy the entire company name and address.</div></td>
+                                    </tr>                                                                            
+                                </table>   
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_1-of-12" style="width:1%;">&nbsp;</div>
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_5-of-12 slds-box slds-grid slds-grid_vertical-align-center">                                   
+                                <table style="width: 100%;">
+                                    <tr>
+                                        <td style="width: 25%;">
+                                            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video.js')}" type="text/javascript"></script>
+                                            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/Wistia_Video1.jsonp')}" type="text/javascript" ></script>
+                                            <span class="wistia_embed  wistia_async_lt3auvl5gk popover=true popoverAnimateThumbnail=true"  style="display:inline-block;height:8em;width:15em">&nbsp;</span>
+                                        </td>
+                                        <td style="width: 75%;">
+                                            <div class="slds-m-horizontal_small slds-text-heading_small" style="font-size: 24px;">Watch a video on how the <br/>Address Sync works</div>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>              
+                    </apex:outputPanel>
+                    <!-- WIDGET AND VIDEO SECTION END -->
+                    <!------------ PICKLIST SECTION START --------------------------->
+                    <apex:outputPanel layout="block" rendered="{!if(AND(IsSingleOnetoOneOrg==false,(IsAccountSyncCompleted),isAllowedToAccessBAC,isAllowedToAccessSFAccount,(isFieldsAccessible)),true,false)}" styleClass="slds-m-horizontal_x-large">
+                        <div class="slds-grid">
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_5-of-12">
+                                <div style="width: 100%;">
+                                    <div class="slds-form-element centerDiv" style="margin: 0 auto;">
+                                        <label class="slds-form-element__label">Show:</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <apex:selectList value="{!SelectedRecords}" size="1" styleClass="slds-form-element__label slds-select slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1" style="background-color:white;font-size:1.1em;" >
+                                                    <apex:selectOption itemValue="Records with Differences" itemLabel="Records with Differences"/>
+                                                    <apex:selectOption itemValue="Everything" itemLabel="Everything"/>
+                                                    <apex:actionSupport event="onchange"  action="{!RecordTypes}" rerender="panel" status="assign-action-status" oncomplete="message()" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_1-of-12" style="width:1%;height:5px;"></div>
+                            <div class="slds-col slds-size_1-of-1 slds-small-size_12-of-12 slds-medium-size_12-of-12 slds-large-size_5-of-12">
+                                <div style="width: 100%;">
+                                    <div class="slds-form-element centerDiv" style="margin: 0 auto;">
+                                        <label class="slds-form-element__label" style="white-space: nowrap;">Show Salesforce Accounts mapped with:</label>
+                                        <div class="slds-form-element__control" >
+                                            <div class="slds-select_container">
+                                            <apex:selectList size="1" value="{!SelectedCustomer}" styleClass="slds-form-element__label slds-select slds-size_1-of-1 slds-small-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1" style="background-color:white;font-size:1.1em;">
+                                                <apex:selectOption itemValue="1 QBO Customer" itemLabel="1 QuickBooks Online Company"/>
+                                                <apex:selectOption itemValue="2 or More QBO Customers" itemLabel="2 or More QuickBooks Online Companies"/>
+                                                <apex:actionSupport event="onchange"  action="{!RecordTypes}"  rerender="panel" status="assign-action-status" oncomplete="message();"/>
+                                            </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>  
+                                </div>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <apex:outputPanel layout="block"  rendered="{!if(AND(IsSingleOnetoOneOrg==true, (IsAccountSyncCompleted),isAllowedToAccessBAC,isAllowedToAccessSFAccount,(isFieldsAccessible)) ,true,false)}" styleClass="slds-m-horizontal_x-large">
+                        <div align="center" style="padding-right:1%;">
+                            <span class="slds-form-element__label" style="font-size:1.1em">Show:</span>
+                            <div class="slds-select_container slds-size_2-of-3 slds-small-size_6-of-12 slds-medium-size_4-of-12 slds-large-size_3-of-12">
+                                <apex:selectList value="{!selectedRecords}" multiselect="false" size="1" styleClass="slds-form-element__label slds-select" style="background-color:white;font-size:1.1em">
+                                    <apex:selectOption itemLabel="Records with Differences" itemValue="Records with Differences"/>
+                                    <apex:selectOption itemLabel="Everything" itemValue="Everything"/>
+                                    <apex:actionSupport event="onchange" action="{!RecordTypes}" status="assign-action-status" reRender="panel" oncomplete="message();" />
+                                </apex:selectList>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <!------------ PICKLIST SECTION END --------------------------->
+                    <div>
+                        <apex:actionStatus id="assign-action-status" layout="block">
+                            <apex:facet name="start">
+                                <div class="slds-spinner_container" style="position:fixed;z-index:9999;" >
+                                    <div class="slds-spinner_brand slds-spinner slds-spinner_medium slds-align_absolute-center" aria-hidden="false" role="alert">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </apex:facet>
+                        </apex:actionStatus>   
+                    </div>
+                    
+                    
+                    <apex:outputPanel id="panel">
+                        <!------------ ERROR MESSAGES SECTION START ------------>
+                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_x-large slds-m-top_x-small" id="ErrorMessagesSection">
+                            <apex:outputPanel layout="block" rendered="{!AND(isStateAndCountryPicklistsEnabled, IsAccountSyncCompleted)}">
+                                <div class="warningM6" style="color:black;border-radius: 4px">
+                                    <p>Salesforce's 'State and Country Picklists' are enabled. So, Salesforce will prevent you from updating Accounts with a State or Country that is not in its list of possible States / Countries. </p>  
+                                </div>
+                            </apex:outputPanel>
+                            <apex:pageMessages id="ErrorMessage" rendered="{!ISBLANK(PageMessage)}" />
+                            <apex:pageMessage escape="false" summary="Error:" detail="{!PageMessage}" rendered="{!IF(IsBlank(PageMessage),"false","true")}"  severity="ERROR" strength="2" />
+                            <apex:pageMessage escape="false" rendered="{!IF(AppConfigOrgIds.size>0,"false","true")}" summary="Please connect a Quickbooks Online Org from the setup on Breadwinner Tab." severity="WARNING" strength="2" /> 
+                            <apex:pageMessage escape="false"  rendered="{!isOAuthIssue}"  detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="2" />
+                            <apex:pageMessage summary="You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way." severity="Info" rendered="{!isReadOnlyMode}" />
+                            <div class="infoM6" style='display:{!IF((AppConfigOrgIds.size>0) && (!IsAccountSyncCompleted),"block","none")};border-radius: 4px'  >
+                                Customer Match or Vendor Match not completed. Please go to Setup in&nbsp;<a href="{!URLFOR($Page.Breadwinner)}" target="{!IF(OR($User.UIThemeDisplayed == 'Theme4d',$User.UIThemeDisplayed == 'Theme4t'),'','_blank')}" >Breadwinner tab</a>&nbsp;and Start Customer/Vendor Match.
+                            </div>
+                            <div class="errorM3" style='display:{!IF((isAtQBO),"block","none")};border-radius: 4px' >
+                                A QuickBooks Online Company already exists with same Display name "{!bac.Salesforce_Account__r.Name}" in QuickBooks Online but not yet synced into Salesforce.
+                            </div>
+                            <apex:pageMessage summary="Error:" detail="{!exceptionMessageOnCustomerCreation}"  rendered="{!AND(NOT(ISBLANK(exceptionMessageOnCustomerCreation)),ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c),NOT(isAtQBO))}" severity="ERROR" strength="3"/>  
+                            <div class="errorM3" style='display:{!IF(AND((isAtBac),NOT(ISBLANK(dupBAC.Salesforce_Account__c))),"block","none")};border-radius: 4px'> 
+                                <apex:outputPanel rendered="{!AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),(dupBAC.breadwinner_qbo__Salesforce_Account__c != bac.breadwinner_qbo__Salesforce_Account__c ))}" style="text-align:left" >
+                                    <div>Error:<br/>
+                                        <div class='slds-m-left_small'>
+                                            A <span>{!bac.Salesforce_Account__r.Name}</span> with the same Display Name already exists and is related to the Salesforce Account:
+                                            <a href="/{!dupBAC.Salesforce_Account__c}" target="_blank">{!dupBAC.Salesforce_Account__r.Name}</a>. <br/> 
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>   
+                            </div>
+                            <apex:outputPanel layout="block"  rendered="{!AND(CheckFieldAccessibility,isAllowedToAccessSFAccount,isAllowedToAccessBAC)}" >  
+                                <div  class="warningM6" style="color:black;border-radius: 5px;" >
+                                    <span>{!NotAccessibleFields}</span>
+                                </div>
+                            </apex:outputPanel> 
+                        </apex:outputPanel>   
+                        <!------------ ERROR MESSAGES SECTION END ------------>
+                        <!--- Message to display There are no records with Differences and Not possible to edit Salesforce account with two or more Quickbooks Online companies  Start-->
+                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_x-large" rendered="{!if((SelectedCustomer=='2 or More QBO Customers') && (AccountswithmultipleQBOCompaniesList.size>0),'true','false')}" >  
+                            <div  class="warningM6" style="color:black;border-radius: 5px;" >
+                                Currently, it is not possible to use this method to edit the address when there are multiple QuickBooks Online Companies for an Account. For these Companies and Accounts, please edit the address manually in either QuickBooks Online or Salesforce
+                            </div>
+                        </apex:outputPanel> 
+                         <!-- End ------>
+                        <apex:outputPanel rendered="{!if(AND(displayList.size!=0, (IsAccountSyncCompleted), isAllowedToAccessBAC,isAllowedToAccessSFAccount,(isFieldsAccessible)) ,true,false)}">
+                            <div class="slds-grid slds-text-heading_medium slds-m-top_medium">
+                                <div class="slds-col slds-size_1-of-1 slds-small-size_5-of-12 slds-medium-size_5-of-12" style="text-align: center;">Company Details in QuickBooks Online</div>
+                                <div class="slds-col slds-size_1-of-1 slds-small-size_1-of-12 slds-medium-size_1-of-12"><div style="visibility: hidden;"></div></div>
+                                <div class="slds-col slds-size_1-of-1 slds-small-size_5-of-12 slds-medium-size_5-of-12" style="text-align: center;">Company Details in Salesforce</div>
+                            </div>
+                        </apex:outputPanel>
+                        <!----------- ONE QUICKBOOKS ONLINE COMPANY SECTION START-------------->
+                        <apex:outputpanel rendered="{!if((SelectedCustomer=='2 or More QBO Customers') || (!IsAccountSyncCompleted) || (!isFieldsAccessible),'false','true')}" >
+                            <apex:outputpanel layout="block"  styleclass="slds-m-bottom_small slds-m-horizontal_x-large"  rendered="{!if(OR(displayList.size>0, IsAccountSyncCompleted=false, !isAllowedToAccessBAC, !isAllowedToAccessSFAccount, !isFieldsAccessible),false,true)}" >
+                            <div class="infoM6" style="border-radius: 4px">There are no records with differences found</div>
+                        </apex:outputpanel>
+                            <div class="slds-m-top_small">
+                                <table style="width:100%" >
+                                    <apex:repeat value="{!DisplayList}" var="bac"> 
+                                            <tr>
+                                                <td style="width:46%" >
+                                                    <div class="slds-m-left_x-large ">
+                                                        <table  class="slds-table slds-box slds-no-row-hover" style="width:100%">
+                                                            <tr>
+                                                                <td><div class="slds-text-heading_medium slds-m-left_x-large slds-m-top_large" >  
+                                                                    <div style="white-space:normal;word-break: break-word">{!bac.Display_Name__c}
+                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.Name) > len(bac.Display_Name__c),RIGHT(bac.Salesforce_Account__r.Name,len(bac.Salesforce_Account__r.Name)-len(bac.Display_Name__c)),'')}</span>   
+                                                                    </div>
+                                                                    </div>
+                                                                </td>
+                                                                <td style="width:20%"></td>
+                                                            </tr>
+                                                            <tr> 
+                                                                <td  style="width:85%;vertical-align: top">
+                                                                    <div class="slds-m-left_x-large">
+                                                                        <table  class="slds-table slds-no-row-hover slds-border_top slds-theme_shade slds-no-row-hover ">       
+                                                                            <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Display_Name__c),ISBLANK(bac.Salesforce_Account__r.Name)), 'none', IF($ObjectType.Account.fields.Name.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Accessible,'table-row','none'))};" >
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td  style="background-color:{!if((bac.Salesforce_Account__r.Name!=null),if(
+                                                                                            bac.Display_Name__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                            if(lower(bac.Salesforce_Account__r.Name)!=lower(bac.Display_Name__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                            if(bac.Display_Name__c!=null,'rgba(255, 228, 128, 0.33)',''))};width:85%">
+                                                                                    <div style="white-space:normal;word-break: break-word">{!bac.Display_Name__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Display_Name__c) < len(bac.Salesforce_Account__r.Name),RIGHT(bac.Salesforce_Account__r.Name,len(bac.Salesforce_Account__r.Name)-len(bac.Display_Name__c)),'')}</span>   
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus5" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus5" rendered="{!if(AND((lower(bac.Salesforce_Account__r.Name)!=lower(bac.breadwinner_qbo__Display_Name__c)),($ObjectType.Account.fields.Name.Updateable)),'true','false')}">
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="Name" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.Name)!=lower(bac.breadwinner_qbo__Display_Name__c)), NOT($ObjectType.Account.fields.Name.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Name on Account"  style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Street_Address__c),ISBLANK(bac.Salesforce_Account__r.BillingStreet)), 'none', IF($ObjectType.Account.fields.Billingstreet.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td  style="background-color:{!if((bac.Salesforce_Account__r.BillingStreet!=null),if(
+                                                                                            bac.Street_Address__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                            if(lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.Street_Address__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                            if(bac.Street_Address__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;" >{!bac.Street_Address__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Street_Address__c) < len(bac.Salesforce_Account__r.BillingStreet),RIGHT(bac.Salesforce_Account__r.BillingStreet,len(bac.Salesforce_Account__r.BillingStreet)-len(bac.Street_Address__c)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message()" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.breadwinner_qbo__Street_Address__c)),($ObjectType.Account.fields.BillingStreet.Updateable)),'true','false')}">
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="StreetAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.breadwinner_qbo__Street_Address__c)), NOT($ObjectType.Account.fields.Billingstreet.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Billing Street on Account" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.City__c),ISBLANK(bac.Salesforce_Account__r.BillingCity)), 'none', IF($ObjectType.Account.fields.BillingCity.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td class="slds-truncate" style="background-color:{!if((bac.Salesforce_Account__r.BillingCity!=null),if(
+                                                                                                                 bac.City__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                                 if(lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.City__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                                 if(bac.City__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.City__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.City__c) < len(bac.Salesforce_Account__r.BillingCity),RIGHT(bac.Salesforce_Account__r.BillingCity,len(bac.Salesforce_Account__r.BillingCity)-len(bac.City__c)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus1" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message()" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus1" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.breadwinner_qbo__City__c)),($ObjectType.Account.fields.BillingCity.Updateable)),'true','false')}">
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="CityAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.breadwinner_qbo__City__c)), NOT($ObjectType.Account.fields.BillingCity.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Billing City on Account" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Region__c),ISBLANK(bac.Salesforce_Account__r.BillingState)), 'none', IF($ObjectType.Account.fields.BillingState.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td class="slds-truncate" style="background-color:{!if((bac.Salesforce_Account__r.BillingState!=null),if(
+                                                                                                                 bac.Region__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                                 if(lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.Region__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                                 if(bac.Region__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Region__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Region__c) < len(bac.Salesforce_Account__r.BillingState),RIGHT(bac.Salesforce_Account__r.BillingState,len(bac.Salesforce_Account__r.BillingState)-len(bac.Region__c)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus2" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                            
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink"  oncomplete="message()" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus2" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.breadwinner_qbo__Region__c)),($ObjectType.Account.fields.BillingState.Updateable)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="StateAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.breadwinner_qbo__Region__c)), NOT($ObjectType.Account.fields.BillingState.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Billing State on Account" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Postal_Code__c),ISBLANK(bac.Salesforce_Account__r.BillingPostalCode)), 'none', IF($ObjectType.Account.fields.BillingPostalCode.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td class="slds-truncate" style="background-color:{!if((bac.Salesforce_Account__r.BillingPostalCode!=null),if(
+                                                                                                                 bac.Postal_Code__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                                 if(lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.Postal_Code__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                                 if(bac.Postal_Code__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Postal_Code__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Postal_Code__c) < len(bac.Salesforce_Account__r.BillingPostalCode),RIGHT(bac.Salesforce_Account__r.BillingPostalCode,len(bac.Salesforce_Account__r.BillingPostalCode)-len(bac.Postal_Code__c)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus3" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                        
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink"  oncomplete="message()" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus3" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.breadwinner_qbo__Postal_Code__c)),($ObjectType.Account.fields.BillingPostalCode.Updateable)),'true','false')}">
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="PostalcodeAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.breadwinner_qbo__Postal_Code__c)), NOT($ObjectType.Account.fields.BillingPostalCode.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Billing Postal Code on Account" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Country__c),ISBLANK(bac.Salesforce_Account__r.BillingCountry)), 'none', IF($ObjectType.Account.fields.BillingCountry.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                                <td class="slds-truncate" style="background-color:{!if((bac.Salesforce_Account__r.BillingCountry!=null),if(
+                                                                                                                 bac.Country__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                                 if(lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.Country__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                                 if(bac.Country__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Country__c}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Country__c) < len(bac.Salesforce_Account__r.BillingCountry),RIGHT(bac.Salesforce_Account__r.BillingCountry,len(bac.Salesforce_Account__r.BillingCountry)-len(bac.Country__c)),'')}</span>   
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:10%;" class="slds-text-align_center">
+                                                                                    <apex:actionStatus id="myStatus4" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                          
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message()" action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus4" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.breadwinner_qbo__Country__c)),($ObjectType.Account.fields.BillingCountry.Updateable)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to Salesforce" class="small_arrow">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="CountryAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.breadwinner_qbo__Country__c)), NOT($ObjectType.Account.fields.BillingCountry.Updateable)),'true','false')}">
+                                                                                        <span   class="small_arrow" title="You do not have permission to update Billing Country on Account"  style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                </td>
+                                                                            </tr>
+                                                                            <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </td>
+                                                                <td style="width:15%">
+                                                                    <div class="slds-m-left--large">
+                                                                        <apex:actionStatus id="myStatus7" >
+                                                                            <apex:facet name="start" >
+                                                                                <div class="slds-spinner_container" id="Loading" >
+                                                                                    <div class="slds-spinner_brand slds-spinner slds-theme_shade slds-spinner_medium"  role="status" layout="block">
+                                                                                        <div class="slds-spinner__dot-a"></div>
+                                                                                        <div class="slds-spinner__dot-b"></div>
+                                                                                    </div>  
+                                                                                </div>
+                                                                            </apex:facet>
+                                                                            <apex:facet name="stop">
+                                                                                <apex:commandlink styleClass="commandlink" oncomplete="message()"  action="{!QuickbooksOnlineToSalesforceValueCopy}" reRender="panel,ScriptSection" status="myStatus7" rendered="{!IF(UPPER(bac.Display_Name__c) == UPPER(bac.Salesforce_Account__r.Name), IF(UPPER(bac.Street_Address__c) == UPPER(bac.Salesforce_Account__r.BillingStreet),
+                                                                                                                                                                                                                                                                 IF(UPPER(bac.City__c) == UPPER(bac.Salesforce_Account__r.BillingCity),IF(UPPER(bac.Region__c) == UPPER(bac.Salesforce_Account__r.BillingState),
+                                                                                                                                                                                                                                                                 IF(UPPER(bac.Postal_Code__c) == UPPER(bac.Salesforce_Account__r.BillingPostalCode),IF(UPPER(bac.Country__c) == UPPER(bac.Salesforce_Account__r.BillingCountry),false,true)
+                                                                                                                                                                                                                                                                 ,true)    ,true)    ,true)    ,true)    ,true) && ($ObjectType.Account.fields.Name.Updateable) && ($ObjectType.Account.fields.BillingStreet.Updateable) && ($ObjectType.Account.fields.BillingCity.Updateable) && ($ObjectType.Account.fields.BillingState.Updateable)
+                                                                                                                                                                                                                                                                 && ($ObjectType.Account.fields.BillingPostalCode.Updateable) && ($ObjectType.Account.fields.BillingCountry.Updateable) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Accessible) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Accessible)
+                                                                                                                                                                                                                                                                 && ($ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Accessible) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Accessible)
+                                                                                                                                                                                                                                                                 && ($ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Accessible) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Accessible)}" >
+                                                                                    <span title="Copy the entire Name and Address to Salesforce" class="big_arrow" styleclass="commandlink">&#10140;</span>  
+                                                                                    <apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.id}" /><apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="Addressvalue" value="TotalAddress" />
+                                                                                </apex:commandlink>
+                                                                            </apex:facet>
+                                                                        </apex:actionStatus> 
+                                                                        <apex:outputText rendered="{!IF(UPPER(bac.Display_Name__c) == UPPER(bac.Salesforce_Account__r.Name),
+                                                                                                   IF(UPPER(bac.Street_Address__c) == UPPER(bac.Salesforce_Account__r.BillingStreet),
+                                                                                                   IF(UPPER(bac.City__c) == UPPER(bac.Salesforce_Account__r.BillingCity),
+                                                                                                   IF(UPPER(bac.Region__c) == UPPER(bac.Salesforce_Account__r.BillingState),
+                                                                                                   IF(UPPER(bac.Postal_Code__c) == UPPER(bac.Salesforce_Account__r.BillingPostalCode),
+                                                                                                   IF(UPPER(bac.Country__c) == UPPER(bac.Salesforce_Account__r.BillingCountry),false,true)
+                                                                                                   ,true)    ,true)    ,true)    ,true)    ,true)
+                                                                                                   && (!$ObjectType.Account.fields.Name.Updateable || !$ObjectType.Account.fields.BillingStreet.Updateable || !$ObjectType.Account.fields.BillingCity.Updateable || !$ObjectType.Account.fields.BillingState.Updateable
+                                                                                                   || !$ObjectType.Account.fields.BillingPostalcode.Updateable || !$ObjectType.Account.fields.BillingCountry.Updateable || !$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Accessible || !$ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Accessible
+                                                                                                   || !$ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Accessible || !$ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Accessible || !$ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Accessible || !$ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Accessible)}"  
+                                                                                                   >
+                                                                            <span   class="big_arrow1" title="You do not have permission to update some of the fields on Account" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                        </apex:outputText>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr><td colspan="2" class="slds-box" style="border-top:0px;">
+                                                                <div class="slds-m-top_small slds-m-left_small">
+                                                                    <img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/qbo_logo_30px.png')}"/> &nbsp; QuickBooks Online&nbsp;<span>{!If(IsBlank(bac.Type__C)||Isnull(bac.Type__c)||(bac.Type__C=='Customer'),'Customer',bac.Type__c)}</span>                                                             
+                                                                </div>
+                                                                </td></tr>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                                <td style="width:8%">
+                                                </td>
+                                                <td style="width:46%" >
+                                                    <div class="slds-m-right_x-large">
+                                                        <table class="slds-table slds-box slds-no-row-hover " style="width:100%;">
+                                                            <tr>
+                                                                <td style="width:15%"></td>
+                                                                <td><div class="slds-text-heading_medium slds-text-align_right  slds-m-right_x-large slds-m-top_large" >
+                                                                    <div style="white-space:normal;word-break: break-word">
+                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.Name) < len(bac.Display_Name__c),RIGHT(bac.Display_Name__c,len(bac.Display_Name__c)-len(bac.Salesforce_Account__r.Name)),'')}</span>
+                                                                        {!bac.Salesforce_Account__r.Name}
+                                                                    </div></div></td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td style="width:15%">    
+                                                                    <div class="rotate_arrow slds-m-right_large">
+                                                                        <apex:actionStatus id="bigStatus2">
+                                                                            <apex:facet name="start" >
+                                                                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="status">
+                                                                                    <div class="slds-spinner__dot-a"></div>
+                                                                                    <div class="slds-spinner__dot-b"></div>
+                                                                                </div>
+                                                                            </apex:facet>
+                                                                            <apex:facet name="stop">
+                                                                                <apex:commandLink styleClass="commandlink" oncomplete="message()"  status="bigStatus2"   action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection"  rendered="{!IF(UPPER(bac.Display_Name__c) == UPPER(bac.Salesforce_Account__r.Name),IF(UPPER(bac.Street_Address__c) == UPPER(bac.Salesforce_Account__r.BillingStreet),
+                                                                                                                                                                                                                                                                     IF(UPPER(bac.City__c) == UPPER(bac.Salesforce_Account__r.BillingCity),IF(UPPER(bac.Region__c) == UPPER(bac.Salesforce_Account__r.BillingState),
+                                                                                                                                                                                                                                                                     IF(UPPER(bac.Postal_Code__c) == UPPER(bac.Salesforce_Account__r.BillingPostalCode), IF(UPPER(bac.Country__c) == UPPER(bac.Salesforce_Account__r.BillingCountry),false,true)
+                                                                                                                                                                                                                                                                     ,true)    ,true)    ,true)    ,true)    ,true) && (!isReadOnlyMode) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Updateable) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Updateable) && ($ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Updateable) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Updateable)
+                                                                                                                                                                                                                                                                     && ($ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Updateable) && ($ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Updateable) && ($ObjectType.Account.fields.Name.Accessible) && ($ObjectType.Account.fields.BillingStreet.Accessible) && ($ObjectType.Account.fields.BillingCity.Accessible)
+                                                                                                                                                                                                                                                                     && ($ObjectType.Account.fields.BillingState.Accessible) && ($ObjectType.Account.fields.BillingPostalCode.Accessible) && ($ObjectType.Account.fields.BillingCountry.Accessible)}"> 
+                                                                                    <span title="Copy the entire Name and Address to QuickBooks Online" class="big_arrow1"  >&#10140;</span>
+                                                                                    <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.id}" /><apex:param name="Addressvalue" value="TotalAddress" />                                                                               
+                                                                                </apex:commandLink>
+                                                                            </apex:facet>
+                                                                        </apex:actionStatus>
+                                                                        <apex:outputText rendered="{!IF(UPPER(bac.Display_Name__c) == UPPER(bac.Salesforce_Account__r.Name),IF(UPPER(bac.Street_Address__c) == UPPER(bac.Salesforce_Account__r.BillingStreet),
+                                                                                                   IF(UPPER(bac.City__c) == UPPER(bac.Salesforce_Account__r.BillingCity),IF(UPPER(bac.Region__c) == UPPER(bac.Salesforce_Account__r.BillingState),
+                                                                                                   IF(UPPER(bac.Postal_Code__c) == UPPER(bac.Salesforce_Account__r.BillingPostalCode),IF(UPPER(bac.Country__c) == UPPER(bac.Salesforce_Account__r.BillingCountry),false,true)
+                                                                                                   ,true)    ,true)    ,true)    ,true)    ,true)&&( (isReadOnlyMode) || !$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Updateable || !$ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Updateable || !$ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Updateable || !$ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Updateable || !$ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Updateable 
+                                                                                                   || !$ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Updateable || (!$ObjectType.Account.fields.Name.Accessible) || (!$ObjectType.Account.fields.BillingStreet.Accessible) || (!$ObjectType.Account.fields.BillingCity.Accessible)
+                                                                                                   || (!$ObjectType.Account.fields.BillingState.Accessible) || (!$ObjectType.Account.fields.BillingPostalCode.Accessible) || (!$ObjectType.Account.fields.BillingCountry.Accessible))}">
+                                                                            <span   class="big_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update some of the fields on QuickBooks Online Company')} "  style="color:#d9d9d9;" >&#10140;</span>  
+                                                                        </apex:outputText>
+                                                                    </div> 
+                                                                </td>
+                                                                <td style="width:85%;vertical-align: top">
+                                                                    <div class="slds-m-right_x-large">
+                                                                        <table class="slds-table slds-no-row-hover slds-border_top slds-theme_shade slds-no-row-hover " style="width:100%">
+                                                                            <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Display_Name__c),ISBLANK(bac.Salesforce_Account__r.Name)), 'none', IF($ObjectType.Account.fields.Name.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.Accessible,'table-row','none'))};">                                                                        
+                                                                                <td style="width:10%"><div class="rotate_arrow">
+                                                                                    <apex:actionStatus id="Status5" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                                                                                              
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection" status="Status5" rendered="{!if(AND((lower(bac.Salesforce_Account__r.Name)!=lower(bac.breadwinner_qbo__Display_Name__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.Updateable), (!isReadOnlyMode)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to QuickBooks Online"  class="small_arrow1">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="Name" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.Name)!=lower(bac.breadwinner_qbo__Display_Name__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.Updateable || (isReadOnlyMode))),'true','false')}">
+                                                                                        <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update Display Name on QuickBooks Online Company')}" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                    </div>
+                                                                                </td>  
+                                                                                <td style="background-color:{!if((bac.Salesforce_Account__r.Name!=null),if(
+                                                                                           bac.Display_Name__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.Name)!=lower(bac.Display_Name__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.Display_Name__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.Name}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.Name) < len(bac.Display_Name__c),RIGHT(bac.Display_Name__c,len(bac.Display_Name__c)-len(bac.Salesforce_Account__r.Name)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Street_Address__c),ISBLANK(bac.Salesforce_Account__r.BillingStreet)), 'none', IF($ObjectType.Account.fields.Billingstreet.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:10%">
+                                                                                    <div class="rotate_arrow">
+                                                                                        <apex:actionStatus id="Status6" >
+                                                                                            <apex:facet name="start" >
+                                                                                                <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                    <div class="slds-spinner__dot-a"></div>
+                                                                                                    <div class="slds-spinner__dot-b"></div>
+                                                                                                </div>                                                                                                                                              
+                                                                                            </apex:facet>
+                                                                                            <apex:facet name="stop">
+                                                                                                <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection" status="Status6" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.breadwinner_qbo__Street_Address__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Street_Address__c.Updateable),!(isReadOnlyMode)),'true','false')}" >
+                                                                                                    <span title="Copy this line in the address to QuickBooks Online"  class="small_arrow1">&#10140;</span>  
+                                                                                                    <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="StreetAddress" />
+                                                                                                </apex:commandlink>
+                                                                                            </apex:facet>
+                                                                                        </apex:actionStatus>
+                                                                                        <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.breadwinner_qbo__Street_Address__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Street_Address__c.Updateable || (isReadOnlyMode))),'true','false')}">
+                                                                                            <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update Street Address on QuickBooks Online Company')}" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                        </apex:outputText>
+                                                                                    </div></td>  
+                                                                                <td style="width:85%;background-color:{!if((bac.Salesforce_Account__r.BillingStreet!=null),if(
+                                                                                           bac.Street_Address__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.BillingStreet)!=lower(bac.Street_Address__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.Street_Address__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.BillingStreet}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.BillingStreet) < len(bac.Street_Address__c),RIGHT(bac.Street_Address__c,len(bac.Street_Address__c)-len(bac.Salesforce_Account__r.BillingStreet)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.City__c),ISBLANK(bac.Salesforce_Account__r.BillingCity)), 'none', IF($ObjectType.Account.fields.BillingCity.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.City__c.Accessible,'table-row','none'))};">
+                                                                                <td style="width:10%;"><div class="rotate_arrow">
+                                                                                    <apex:actionStatus id="Status1" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                                                                                              
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection" status="Status1" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.breadwinner_qbo__City__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__City__c.Updateable),(!isReadOnlyMode)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to QuickBooks Online"  class="small_arrow1">&#10140;</span> 
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="CityAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.breadwinner_qbo__City__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__City__c.Updateable || (isReadOnlyMode))),'true','false')}">
+                                                                                        <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update City on QuickBooks Online Company')}" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                    </div></td>   
+                                                                                <td style="width:85%;background-color:{!if((bac.Salesforce_Account__r.BillingCity!=null),if(
+                                                                                           bac.City__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.BillingCity)!=lower(bac.City__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.City__c!=null,'rgba(255, 228, 128, 0.33)',''))};width:80%">
+                                                                                    <div  style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.BillingCity}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.BillingCity) < len(bac.City__c),RIGHT(bac.City__c,len(bac.City__c)-len(bac.Salesforce_Account__r.BillingCity)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Region__c),ISBLANK(bac.Salesforce_Account__r.BillingState)), 'none', IF($ObjectType.Account.fields.BillingState.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.Accessible,'table-row','none'))};">
+                                                                                <td><div class="rotate_arrow">
+                                                                                    <apex:actionStatus id="Status2" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                                                                                              
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}"  reRender="panel,ScriptSection" status="Status2" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.breadwinner_qbo__Region__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Region__c.Updateable),(!isReadOnlyMode)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to QuickBooks Online"  class="small_arrow1">&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="StateAddress" />
+                                                                                                
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.breadwinner_qbo__Region__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Region__c.Updateable || (isReadOnlyMode))),'true','false')}">
+                                                                                        <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update State on QuickBooks Online Company')}" style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                    </div></td>  
+                                                                                <td style="background-color:{!if((bac.Salesforce_Account__r.BillingState!=null),if(
+                                                                                           bac.Region__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.BillingState)!=lower(bac.Region__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.Region__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.BillingState}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.BillingState) < len(bac.Region__c),RIGHT(bac.Region__c,len(bac.Region__c)-len(bac.Salesforce_Account__r.BillingState)),'')}</span>  
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Postal_Code__c),ISBLANK(bac.Salesforce_Account__r.BillingPostalCode)), 'none', IF($ObjectType.Account.fields.BillingPostalCode.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.Accessible,'table-row','none'))};">
+                                                                                <td><div class="rotate_arrow">
+                                                                                    <apex:actionStatus id="Status3" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                                                                                               
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection" status="Status3" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.breadwinner_qbo__Postal_Code__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Postal_Code__c.Updateable), (!isReadOnlyMode)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to QuickBooks Online" class="small_arrow1" >&#10140;</span>  
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="PostalcodeAddress" />
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.breadwinner_qbo__Postal_Code__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Postal_Code__c.Updateable ||(isReadOnlyMode))),'true','false')}">
+                                                                                        <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update Postal Code on QuickBooks Online Company')}"  style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                    </div>
+                                                                                </td>                                    
+                                                                                <td style="background-color:{!if((bac.Salesforce_Account__r.BillingPostalCode!=null),if(
+                                                                                           bac.Postal_Code__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.BillingPostalCode)!=lower(bac.Postal_Code__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.Postal_Code__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <apex:outputText value="" style="white-space:normal" />
+                                                                                    <div  style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.BillingPostalCode}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.BillingPostalCode) < len(bac.Postal_Code__c),RIGHT(bac.Postal_Code__c,len(bac.Postal_Code__c)-len(bac.Salesforce_Account__r.BillingPostalCode)),'')}</span> 
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr style="display: {!IF(and(ISBLANK(bac.Country__c),ISBLANK(bac.Salesforce_Account__r.BillingCountry)), 'none', IF($ObjectType.Account.fields.BillingCountry.Accessible && $ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.Accessible,'table-row','none'))};">
+                                                                                <td><div class="rotate_arrow">
+                                                                                    <apex:actionStatus id="Status4" >
+                                                                                        <apex:facet name="start" >
+                                                                                            <div class="slds-spinner_brand slds-spinner slds-spinner_x-small" role="status">
+                                                                                                <div class="slds-spinner__dot-a"></div>
+                                                                                                <div class="slds-spinner__dot-b"></div>
+                                                                                            </div>                                                                                                                                            
+                                                                                        </apex:facet>
+                                                                                        <apex:facet name="stop">
+                                                                                            <apex:commandlink styleClass="commandlink" oncomplete="message();" action="{!SalesforcetoQuickBooksOnlineValueCopy}" reRender="panel,ScriptSection" status="Status4" rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.breadwinner_qbo__Country__c)),($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Country__c.Updateable), (!isReadOnlyMode)),'true','false')}" >
+                                                                                                <span title="Copy this line in the address to QuickBooks Online"  class="small_arrow1">&#10140;</span> 
+                                                                                                <apex:param name="idofqbo" value="{!bac.id}" /><apex:param name="idofaccount" value="{!bac.Salesforce_Account__r.Id}" /><apex:param name="Addressvalue" value="CountryAddress" />
+                                                                                                
+                                                                                            </apex:commandlink>
+                                                                                        </apex:facet>
+                                                                                    </apex:actionStatus>
+                                                                                    <apex:outputText rendered="{!if(AND((lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.breadwinner_qbo__Country__c)),(!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Country__c.Updateable || (isReadOnlyMode))),'true','false')}">
+                                                                                        <span   class="small_arrow1" title="{!If(isReadOnlyMode,'You are using Breadwinner in QuickBooks Online Read Only mode','You do not have permission to update Country on QuickBooks Online Company')}"  style="color:#d9d9d9;" >&#10140;</span>  
+                                                                                    </apex:outputText>
+                                                                                    </div>
+                                                                                </td>                
+                                                                                <td style="background-color:{!if((bac.Salesforce_Account__r.BillingCountry!=null),if(
+                                                                                           bac.Country__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                           if(lower(bac.Salesforce_Account__r.BillingCountry)!=lower(bac.Country__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                           if(bac.Country__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                                    <div style="white-space:normal;word-break:break-word;">{!bac.Salesforce_Account__r.BillingCountry}
+                                                                                        <span style="white-space:normal;visibility:hidden;">{!if(len(bac.Salesforce_Account__r.BillingCountry) < len(bac.Country__c),RIGHT(bac.Country__c,len(bac.Country__c)-len(bac.Salesforce_Account__r.BillingCountry)),'')}</span>
+                                                                                    </div>
+                                                                                </td>
+                                                                                <td style="width:5%">&nbsp;</td>
+                                                                            </tr>
+                                                                            <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                        </table>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                            <tr>
+                                                                <td colspan="2" class="slds-box" style="border-top:0px;">
+                                                                    <div class="slds-m-top_small slds-m-right_large slds-float_right">
+                                                                        Salesforce Account &nbsp;<img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/sf_logo_30px.png')}"/> 
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        </table>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr><td><br/></td></tr>
+                                        </apex:repeat>
+                                </table>
+                            </div>
+                        </apex:outputpanel>
+                        <!----------- ONE QUICKBOOKS ONLINE COMPANY SECTION END-------------->
+                        <!------------- 2 or More QUICKBOOKS ONLINE COMPANY SECTION START-------->
+                        <apex:outputpanel rendered="{!if((SelectedCustomer=='2 or More QBO Customers'),'true','false')}">
+                            <apex:outputpanel layout="block"  styleclass="slds-m-bottom_small slds-m-horizontal_x-large"  rendered="{!if((AccountswithmultipleQBOCompaniesList.size>0),false,true)}" >
+                                <div class="infoM6" style="border-radius: 4px">There are no records with differences found</div>
+                            </apex:outputpanel>
+                            <apex:repeat value="{!AccountswithmultipleQBOCompaniesList}" var="a">
+                                <div class="slds-m-horizontal_x-large">
+                                    <table>
+                                        <tr style="width:100%;border:1px solid gray" class="slds-box color-border-inverse ">
+                                            <td style="width:45%;vertical-align: top">
+                                                <apex:repeat value="{!a.Qbo_Companies__r}" var="c">
+                                                    <table class="slds-table  slds-box slds-no-row-hover slds-m-left_x-large slds-m-top_large " style="width:100%">
+                                                        <tr>
+                                                            <td><div class="slds-text-heading_medium slds-m-top_large  slds-m-left_x-large">
+                                                                <div style="white-space:normal;word-break:break-word;">{!c.Display_Name__c}</div>
+                                                                </div></td>
+                                                        </tr> 
+                                                        <tr>
+                                                            <td>
+                                                                <table class="slds-table  slds-border_top slds-theme_shade slds-no-row-hover slds-m-left_x-large  " style="width:85%">
+                                                                    <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.Display_Name__c),ISBLANK(a.Name)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td  style="background-color:{!if((a.Name!=null),if(
+                                                                                    c.Display_Name__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                    if(lower(a.Name)!=lower(c.Display_Name__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                    if(c.Display_Name__c!=null,'rgba(255, 228, 128, 0.33)',''))};width:89%" >
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.Display_Name__c}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.Street_Address__c),ISBLANK(a.BillingStreet)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td  style="background-color:{!if((a.BillingStreet!=null),if(
+                                                                                    c.Street_Address__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                    if(lower(a.BillingStreet)!=lower(c.Street_Address__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                    if(c.Street_Address__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.Street_Address__c}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.City__c),ISBLANK(a.BillingCity)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td class="slds-truncate" style="background-color:{!if((a.BillingCity!=null),if(
+                                                                                                         c.City__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                         if(lower(a.BillingCity)!=lower(c.City__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                         if(c.City__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.City__c}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.Region__c),ISBLANK(a.BillingState)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td class="slds-truncate" style="background-color:{!if((a.BillingState!=null),if(
+                                                                                                         c.Region__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                         if(lower(a.BillingState)!=lower(c.Region__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                         if(c.Region__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.Region__c}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.Postal_Code__c),ISBLANK(a.BillingPostalCode)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td class="slds-truncate" style="background-color:{!if((a.BillingPostalCode!=null),if(
+                                                                                                         c.Postal_Code__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                         if(lower(a.BillingPostalCode)!=lower(c.Postal_Code__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                         if(c.Postal_Code__c!=null,'rgba(255, 228, 128, 0.33)',''))};">                
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.Postal_Code__c}</div></td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(and(ISBLANK(c.Country__c),ISBLANK(a.BillingCountry)), 'none', 'table-row')};">
+                                                                        <td style="width:2%">&nbsp;</td>
+                                                                        <td class="slds-truncate" style="background-color:{!if((a.BillingCountry!=null),if(
+                                                                                                         c.Country__c==null,'rgba(255, 228, 128, 0.33)',
+                                                                                                         if(lower(a.BillingCountry)!=lower(c.Country__c),'rgba(255, 0, 0, 0.19)','')),
+                                                                                                         if(c.Country__c!=null,'rgba(255, 228, 128, 0.33)',''))};">
+                                                                            <div style="white-space:normal;word-break:break-word;">{!c.Country__c}</div>
+                                                                        </td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                </table>
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td>
+                                                                <div class="slds-m-top_small slds-m-left_small">
+                                                                    <img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/qbo_logo_30px.png')}"/> &nbsp; QuickBooks Online&nbsp;<span>{!If(IsBlank(c.Type__C)||Isnull(c.Type__c)||(c.Type__C=='Customer'),'Customer',c.Type__c)}</span>
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </apex:repeat>
+                                                <br/>
+                                                <br/>
+                                            </td>
+                                            <td style="width:10%"></td>
+                                            <td style="width:45%">
+                                                <div class="slds-m-right_x-large">
+                                                    <table class="slds-table  slds-box slds-no-row-hover" style="width:100%;">
+                                                        <tr>
+                                                            <td style="width:12%"></td>
+                                                            <td><div class="slds-text-align_right  slds-text-heading_medium slds-m-top_large  slds-m-right_x-large"><div style="white-space:normal;word-break:break-word;">{!a.Name}</div></div></td>
+                                                        </tr>  
+                                                        <tr><td  colspan="2" style="vertical-align: top;">
+                                                            <div class="slds-m-right_x-large">
+                                                                <table class="slds-table slds-float_right slds-border_top slds-theme_shade slds-no-row-hover " style="width:88%" >
+                                                                    <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                    <tr style="display: {!IF(ISBLANK(a.Name), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.Name}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(ISBLANK(a.BillingStreet), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.BillingStreet}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(ISBLANK(a.BillingCity), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.BillingCity}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(ISBLANK(a.BillingState), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.BillingState}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(ISBLANK(a.BillingPostalCode), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.BillingPostalCode}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr> 
+                                                                    <tr style="display: {!IF(ISBLANK(a.BillingCountry), 'none', 'table-row')};">
+                                                                        <td style="width:4%"></td>
+                                                                        <td><div style="white-space:normal;word-break:break-word;">{!a.BillingCountry}</div></td>
+                                                                        <td style="width:5%">&nbsp;</td>
+                                                                    </tr>
+                                                                    <tr><td colspan="3" style="padding:0.3rem;"/></tr>
+                                                                </table>
+                                                            </div>   
+                                                            </td>
+                                                        </tr>
+                                                        <tr>
+                                                            <td colspan="2"> <div class="slds-m-top_small slds-m-right_large slds-float_right">
+                                                                Salesforce Account &nbsp;<img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/sf_logo_30px.png')}"/> 
+                                                                </div>
+                                                            </td>
+                                                        </tr>
+                                                    </table>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </div>
+                                <br/><br/>
+                            </apex:repeat>
+                        </apex:outputpanel>
+                        <!------------- 2 or More QUICKBOOKS ONLINE COMPANY SECTION END-------->
+                         <apex:outputpanel id="Pagination" rendered="{!If(AND(OR(AND((SelectedCustomer=='2 or More QBO Customers'),(AccountswithmultipleQBOCompaniesList.size>0)),AND((SelectedCustomer!='2 or More QBO Customers'),(DisplayList.size>0))),(IsAccountSyncCompleted), AND(isAllowedToAccessBAC,isAllowedToAccessSFAccount), (isFieldsAccessible)),true,false)}" >
+                            <div class="slds-grid">
+                                <div class="slds-align_absolute-center" >
+                                    <apex:commandButton action="{!Previous}" value="Previous" styleClass="slds-button slds-button_brand slds-m-top_medium"  status="assign-action-status"  rerender="panel" disabled="{!If((Counter==0),true,false)}" oncomplete="message()" />
+                                    <apex:commandButton action="{!next}" value="Next" styleClass="slds-button slds-button_brand slds-m-top_medium" status="assign-action-status"  rerender="panel" disabled="{!If((Limitsize>=totalSize),true,false)}" oncomplete="message()" />
+                                </div>
+                            </div>
+                        </apex:outputpanel>  
+                       
+                    </apex:outputPanel>
+                </div>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>

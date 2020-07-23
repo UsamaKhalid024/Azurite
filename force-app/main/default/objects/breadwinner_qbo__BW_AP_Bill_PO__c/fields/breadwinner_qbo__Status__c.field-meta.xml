@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>breadwinner_qbo__Status__c</fullName>
+    <deprecated>false</deprecated>
+    <externalId>false</externalId>
+    <formula>IF( 
+ISBLANK( breadwinner_qbo__Internal_Status__c ), 
+CASE( 
+breadwinner_qbo__Type__c, 
+&#39;Purchase Order&#39;, breadwinner_qbo__Purchase_Order_Status__c, 
+&#39;Bill&#39;, IF( breadwinner_qbo__Balance_Due__c&gt; 0, 
+IF(breadwinner_qbo__Due_Date__c&lt;TODAY() ,&#39;Overdue&#39;,&#39;Open/Partial&#39;), 
+&#39;Paid&#39; 
+),
+&#39;Vendor Credit&#39;, IF(breadwinner_qbo__Balance_Due__c &gt; 0, &#39;Unapplied&#39;, &#39;Closed&#39;),
+&#39;Invalid&#39; 
+), 
+breadwinner_qbo__Internal_Status__c 
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Status</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

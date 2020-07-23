@@ -1,0 +1,392 @@
+<apex:page sidebar="false" standardController="breadwinner_qbo__Breadwinner_Account_Connection__c" extensions="breadwinner_qbo.BAC_Pages_Extension" action="{!isEditBAC}" title="Editing {!bacName}">
+    <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+    <apex:slds />
+    <script>
+
+    if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+        document.getElementsByTagName("title")[0].innerHTML="Editing {!bacName}";
+    }
+    
+    var j$ = jQuery.noConflict();
+    
+    function HideStyleSheet() {
+        j$("link.user[href$='elements.css']").each(function() {
+            j$(this).removeAttr("href");
+        });
+    }
+    
+    function message()
+    {
+        j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+        j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css({"font-weight":"500","line-height":"1.4","word-spacing":"1px"});
+        j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+        j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+        
+        j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+        j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+        j$("table.messageTable td").css({"color" : "white"});
+        j$("div[class*='warning'] table.messageTable td").css( "color", "black" );
+        
+    }
+    j$(function() {
+        HideStyleSheet();
+        message();
+    });
+    </script>
+    
+    <style>
+        
+        .msgIcon {
+        display: none;
+        }
+        
+        .message {
+        margin-left: 0px !important;
+        margin-right: 0px !important;
+        }
+        
+        .message .messageText h4 {
+        font-weight: inherit;
+        display: initial;
+        }
+        .select-editable {
+        position:relative;
+        border:solid  #d8dde6 1px;
+        background-color:white;
+        width:100%;
+        line-height: 1.875rem;
+        min-height: calc(1.875rem + (1px * 2));
+        display: inline-block;
+        border-radius: .25rem;
+        padding: 0 1rem 0 .75rem;
+        transition: border .1s linear,background-color .1s linear;
+        }
+        .divfocus {
+        outline: 0;
+        border-color: #1589ee;
+        background-color: #fff;
+        box-shadow: 0 0 3px #0070D2;
+        }
+        .select-editable select {
+        position:absolute;
+        top: 0.25rem;
+        left:0px;
+        border:none;
+        width:100%;
+        margin:0;
+        padding: 4px 1rem 0 .75rem;
+        background-color: white;
+        }
+        .select-editable input {
+        position:absolute;
+        top: 0.25rem;
+        left:0px;
+        width:92%;
+        padding: 4px 1rem 0 .75rem;
+        border:none;
+        }
+        .select-editable select:focus, .select-editable input:focus {
+        outline:none;
+        }
+    </style>
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <body>
+            <apex:form >
+                <div class="slds-scope {!IF(OR($User.UIThemeDisplayed == 'Theme4d',$User.UIThemeDisplayed == 'Theme4t'),'slds-p-around_x-small','')}" >
+                    <apex:outputPanel rendered="{!NOT(initialized)}">
+                        <apex:pageMessage summary="WARNING" detail="This page is not initialized properly."  strength="3" severity="WARNING"/>
+                    </apex:outputPanel>                                             
+                    <apex:outputPanel rendered="{!AND(initialized,NOT(AND(isAllowedToAccessBAC,isAllowedToUpdateBAC)))}">
+                        <apex:pageMessage summary="Insufficient Access" severity="WARNING" strength="3">
+                            Your current Salesforce Permissions do not allow you to update this QuickBooks Online Company. If you need to update this QuickBooks Online Company, Please contact Salesforce Administrator to give you the "Breadwinner Standard User" permission set or a minimum of Edit permission for QuickBooks Online Companies on your profile. <a target="{!IF(OR($User.UIThemeDisplayed = 'Theme4d',$User.UIThemeDisplayed = 'Theme4t'),'','_blank')}" href="{!breadwinnerSupportPortalURL}/support/solutions/articles/44001664706" style="color: black">Instructions to assign permission set by Salesforce Administrator</a>.
+                        </apex:pageMessage>
+                    </apex:outputPanel>
+                    <apex:outputPanel id="accountPanel" rendered="{!AND(initialized,isAllowedToAccessBAC,isAllowedToUpdateBAC)}">
+                        <apex:actionFunction reRender="displaynameid" name="DisplayName"/>
+                        <script type="text/javascript">
+                        var j$ = jQuery.noConflict();
+                        HideStyleSheet(); message();
+                        function changeTheContact(firstname, lastname, email, phone, mobile) {
+                            j$('input[id$=confirstname]').val(firstname);
+                            j$('input[id$=conlastname]').val(lastname);
+                            j$('input[id$=email]').val(email);
+                            j$('input[id$=conPhoneNumber]').val(phone);
+                            j$('input[id$=conMobileNumber]').val(mobile);
+                            DisplayName();
+                        }
+                        </script>
+                        
+                        <!-- ----------------------------------------------------Page Header Start----------------------------------------------------------- -->
+                        <div class="slds-page-header slds-m-bottom_medium" role="banner">
+                            <div class="slds-media slds-media--center">
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-user">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#account')}"></use>
+                                    </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-text-title--caps slds-line-height--reset">Editing</p> <h1 class="slds-page-header__title slds-m-right--small slds-align-middle slds-truncate" title="{!bacName}">{!bacName}</h1>
+                                </div>
+                            </div>
+                        </div>
+                        <apex:pageMessage summary="<b>Your trial/subscription has expired</b>" escape="false"  detail="You must have a valid subscription to Breadwinner to edit this QuickBooks Online Company. Please visit the Billing section of Breadwinner tab for more info."  severity="Warning" strength="3"  rendered="{!bwSubscriptionStatus=='expired'}"/>                      
+                        <apex:pageMessage summary="This QuickBooks Online Customer was chosen not to be associated with any Salesfore Account either while doing Account Match or in QuickBooks Online Company Configuration."  severity="INFO"  rendered="{!AND(NoAssociatedSFAccount, ISBLANK(accId))}"/>
+                        <apex:pageMessage summary="This QuickBooks Online Customer is not matched with any Salesforce Account yet, if you want to match this, please go to Setup in Breadwinner tab and Start the Account Match."  severity="INFO"  rendered="{!AND(!NoAssociatedSFAccount, ISBLANK(accId))}"/>
+                        <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="3"/>
+                        <apex:pageMessage summary="You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way." severity="Info" rendered="{!AND(isReadOnlyMode,bwSubscriptionStatus!='expired')}"/>
+                        <apex:pageMessage summary="Warning" detail="This Customer is Inactive at QuickBooks Online. So you can not Edit this Customer."  severity="Warning" strength="3" rendered="{!NOT(bacStatus)}"/> 
+                        <apex:pageMessages rendered="{!OR((ISBLANK(exceptionMessageOnCustomerCreation)),AND((ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),OR((dupBAC.breadwinner_qbo__Salesforce_Account__c != bac.breadwinner_qbo__Salesforce_Account__c ),(dupBAC.breadwinner_qbo__Salesforce_Account__c = bac.breadwinner_qbo__Salesforce_Account__c ))))}"></apex:pageMessages>   
+                        <apex:outputPanel rendered="{!OR(NOT(ISBLANK(exceptionMessageOnCustomerCreation)),AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),OR((dupBAC.breadwinner_qbo__Salesforce_Account__c != bac.breadwinner_qbo__Salesforce_Account__c ),(dupBAC.breadwinner_qbo__Salesforce_Account__c = bac.breadwinner_qbo__Salesforce_Account__c ))))}">
+                            <div class="errorM3" style='display:{!IF(isAtQBO,"block","none")};border-radius: 4px'>
+                                A QuickBooks Online {!bac.Type__c} "{!bac.breadwinner_qbo__Display_Name__c}" already exists in QuickBooks Online but not yet synced into Salesforce.
+                            </div>
+                            <apex:pageMessage summary="Error" detail="{!exceptionMessageOnCustomerCreation}" rendered="{!AND(NOT(ISBLANK(exceptionMessageOnCustomerCreation)),ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c),NOT(isAtQBO))}" severity="ERROR" strength="3"/>
+                            <div class="errorM3" style='display:{!IF(AND(NOT(ISBLANK(dupBAC.Salesforce_Account__c)),OR(dupBAC.Salesforce_Account__c !=bac.Salesforce_Account__c,(dupBAC.Salesforce_Account__c =bac.Salesforce_Account__c )),NOT(isAtQBO)),"block","none")};border-radius: 4px'>
+                                <apex:outputPanel rendered="{!AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),(dupBAC.breadwinner_qbo__Salesforce_Account__c != bac.breadwinner_qbo__Salesforce_Account__c ))}" style="text-align:left">
+                                    <div >Error:<br/>
+                                        <div class='slds-m-left_large'>
+                                            A QuickBooks Online {!bac.Type__c} "{!bac.breadwinner_qbo__Display_Name__c}" already exists and is related to the Salesforce Account:
+                                            <a href="/{!dupBAC.Salesforce_Account__c}" target="_blank">{!dupBAC.Salesforce_Account__r.Name}</a>. <br/> 
+                                            You may wish to create a new QuickBooks Online Company by giving it a different name.
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>   
+                                <apex:outputPanel rendered="{!AND(NOT(ISBLANK(dupBAC.breadwinner_qbo__Salesforce_Account__c)),(dupBAC.breadwinner_qbo__Salesforce_Account__c == bac.breadwinner_qbo__Salesforce_Account__c ))}" style="text-align:left">
+                                    <div >Error:<br/>
+                                        <div class='slds-m-left_large'>
+                                            A QuickBooks Online {!bac.Type__c} "{!bac.breadwinner_qbo__Display_Name__c}" already exists and is related to the current Salesforce Account 
+                                            <a href="/{!oldAccount.Id}" target="_blank">{!oldAccount.Name}</a>.<br/> 
+                                            You may wish to create a new QuickBooks Online Company by giving it a different name.
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>   
+                            </div>
+                        </apex:outputPanel>
+                        <!-- Page Header END  -->
+                        <div class="slds-grid slds-wrap">
+                            <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-3 slds-large-size_1-of-3">
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(AND(isMultiOrgEnabled,$ObjectType.Breadwinner_Account_Connection__c.fields.QBO_Org_Name__c.accessible),'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.QBO_Org_Name__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputText value="{!bac.breadwinner_qbo__QBO_Org_Name__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__QBO_Org_Name__c.accessible}" styleClass="slds-input"  disabled="true"/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Given_Name__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Given_Name__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Given_Name__c}" styleClass="slds-input" id="confirstname" >
+                                                <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                            </apex:inputtext>
+                                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Family_Name__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Family_Name__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Family_Name__c}" styleClass="slds-input" id="conlastname" >
+                                                <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                            </apex:inputtext>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Company_Name__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Company_Name__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Company_Name__c}" styleClass="slds-input" id="companyName" >
+                                                <apex:actionSupport event="onchange" reRender="displaynameid" />
+                                            </apex:inputtext>
+                                        </div>
+                                    </div>
+                                </div>
+                                <!---         <div class="slds-col--padded slds-size--1-of-1 slds-medium-size--1-of-1 slds-large-size--1-of-1 slds-m-top--small">
+<div class="slds-form-element">
+<span class="slds-form-element__label">
+<abbr class="slds-required" title="required">*</abbr> {!$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.label}
+</span>
+<div class="slds-form-element__control">                               
+<apex:inputtext value="{!bac.breadwinner_qbo__Display_Name__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.updateable}" styleClass="slds-input" /> 
+</div>
+</div>
+</div>   ---->
+                                
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">
+                                            <abbr class="slds-required" title="required">*</abbr> {!$ObjectType.Breadwinner_Account_Connection__c.fields.Display_Name__c.label}
+                                        </span>
+                                        <div class="slds-form-element__control">
+                                            <apex:outputPanel id="displaynameid" styleClass="select-editable">
+                                                <select onchange="this.nextElementSibling.value=this.value" onfocus="j$(this).parent().addClass('divfocus')" onblur="j$(this).parent().removeClass('divfocus')">
+                                                    <option style="display:{!IF(AND(bac.Company_Name__c!=null,bac.Company_Name__c == bac.Display_Name__c),'','none')}" selected ="{!IF(bac.Company_Name__c == bac.Display_Name__c,'selected','')}"> {!bac.breadwinner_qbo__Display_Name__c} </option>
+                                                    <option style="display:{!IF(AND(bac.Company_Name__c!=null,bac.Company_Name__c != bac.Display_Name__c,OR(bac.Company_Name__c== bac.Given_Name__c,bac.Company_Name__c == bac.Family_Name__c,TRUE)),'','none')}"> {!bac.breadwinner_qbo__Company_Name__c} </option>                                                    
+                                                    <option style="display:{!IF(AND(bac.Given_Name__c != null, bac.Family_Name__c == null,bac.Company_Name__c!= bac.Given_Name__c),'','none')}" > {!bac.breadwinner_qbo__Given_Name__c} </option>
+                                                    <option style="display:{!IF(AND(bac.Given_Name__c == null, bac.Family_Name__c!= null,bac.Company_Name__c != bac.Family_Name__c ),'','none')}"> {!bac.breadwinner_qbo__Family_Name__c} </option>   
+                                                    <option style="display:{!IF(AND(bac.Given_Name__c != null, bac.Family_Name__c!= null ),'','none')}"> {!bac.breadwinner_qbo__Given_Name__c} {!bac.breadwinner_qbo__Family_Name__c}</option>
+                                                    <option style="display:{!IF(AND(bac.Given_Name__c != null, bac.Family_Name__c!= null ),'','none')}"> {!bac.breadwinner_qbo__Family_Name__c}, {!bac.breadwinner_qbo__Given_Name__c} </option>
+                                                </select>
+                                                <apex:inputtext html-autocomplete="off" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Display_Name__c.updateable}" value="{!bac.breadwinner_qbo__Display_Name__c}" onfocus="j$(this).parent().addClass('divfocus')" onblur="j$(this).parent().removeClass('divfocus')" />                      
+                                            </apex:outputPanel>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Street_Address__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputTextarea value="{!bac.breadwinner_qbo__Street_Address__c}" cols="22" rows="3" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Street_Address__c.updateable}" styleClass="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.City__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.City__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__City__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__City__c.updateable}" styleClass="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Region__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Region__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Region__c.updateable}" styleClass="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Postal_Code__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Postal_Code__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Postal_Code__c.updateable}" styleClass="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Country__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Country__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Country__c.updateable}" styleClass="slds-input" />
+                                        </div>
+                                    </div>
+                                </div>                               
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Email__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Email__c.label}</span>
+                                        <div class="slds-form-element__control">
+                                            <apex:inputtext value="{!bac.breadwinner_qbo__Email__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Email__c.updateable}" styleClass="slds-input" id="conemail" />
+                                        </div>
+                                    </div>
+                                </div>
+                                <apex:outputPanel rendered="{!IF($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.updateable, true, false)}">
+                                    <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Phone_Number__c.label}</span>
+                                            <div class="slds-form-element__control">
+                                                <apex:inputField value="{!bac.breadwinner_qbo__Phone_Number__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Phone_Number__c.updateable}" styleClass="slds-input" id="conPhoneNumber" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:outputPanel rendered="{!IF($ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Mobile_Number__c.updateable, true, false)}">
+                                    <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small">
+                                        <div class="slds-form-element">
+                                            <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Account_Connection__c.fields.Mobile_Number__c.label}</span>
+                                            <div class="slds-form-element__control">
+                                                <apex:inputField value="{!bac.breadwinner_qbo__Mobile_Number__c}" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Mobile_Number__c.updateable}" styleClass="slds-input" id="conMobileNumber" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Default_Payment_Method_Ref__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">Preferred Payment Method</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <apex:selectList value="{!bac.breadwinner_qbo__Default_Payment_Method_Ref__c}" size="1" styleClass="slds-select">
+                                                    <apex:selectOption value="{!null}" />
+                                                    <apex:selectOptions value="{!paymentMethodList}" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF($ObjectType.Breadwinner_Account_Connection__c.fields.Default_Terms_Ref__c.updateable,'','none')}">
+                                    <div class="slds-form-element">
+                                        <span class="slds-form-element__label">Terms</span>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <apex:selectList value="{!bac.breadwinner_qbo__Default_Terms_Ref__c}" size="1" styleClass="slds-select">
+                                                    <apex:selectOption value="{!null}" />
+                                                    <apex:selectOptions value="{!termsList}" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1 slds-m-top_small" style="display:{!IF(AND(isMultiCurrencyEnabled,$ObjectType.Breadwinner_Account_Connection__c.fields.Currency__c.updateable),'','none')}">
+                                    <apex:outputPanel rendered="{!AND(isMultiCurrencyEnabled,$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.fields.breadwinner_qbo__Currency__c.updateable)}">
+                                        <div class="slds-form-element">
+                                            <span class="slds-form-element__label">
+                                                <abbr class="slds-required" title="required">*</abbr> Default Currency
+                                            </span>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!bac.breadwinner_qbo__Currency__c}" size="1" styleClass="slds-select" disabled="true">
+                                                        <apex:selectOption value="{!null}"/>
+                                                        <apex:selectOptions value="{!multiCurrencylist}"/>
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                            
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                            </div>
+                            <div class="slds-col_padded slds-size_1-of-1 slds-medium-size_2-of-3 slds-large-size_2-of-3 slds-m-top_large" style="visibility:{!IF(ISBLANK(accId),'hidden','visible')}" >
+                                <p>
+                                    <b>You can populate the fields First Name, Last Name, Email, Phone, and Mobile on the QuickBooks Online Customer from one of the Salesforce Contacts below.</b>
+                                </p>
+                                <font color="red">
+                                    <apex:outputText rendered="{!contactWrapperList.size==0}">No Salesforce Contacts exist for this Salesforce Account</apex:outputText>
+                                </font>
+                                <div class="slds-m-top_medium">
+                                    
+                                    <apex:repeat value="{!contactWrapperList}" var="con">
+                                        <div class="slds-form-element__control slds-m-top_small">
+                                            <label class="slds-radio">
+                                                <input type="radio" name="SalesforceContact" id="{!con.ContactId}" value="{!con.ContactId}" onchange="changeTheContact('{!con.firstname}','{!con.lastname}', '{!con.Email}', '{!con.Phone}', '{!con.Mobile}');" />
+                                                <span class="slds-radio_faux"></span>
+                                                <span class="slds-form-element__label" for="{!con.ContactId}">{!con.textToDisplay}</span>
+                                            </label>
+                                        </div>
+                                    </apex:repeat>
+                                </div>
+                                <script>
+                                document.getElementById('{!selectedContactWrapperRecord.ContactId}').checked = true;
+                                </script>
+                            </div>
+                        </div>
+                        <div  style="text-align:center;" class="slds-m-bottom_large">
+                            <apex:commandButton value="Save" disabled="{!OR(bwSubscriptionStatus=='expired',isReadOnlyMode,If(AND(initialized,bacStatus,NOT(isOAuthIssue),EditBAC),false,true))}" onclick="updateQBOAccount(); this.disabled=true; this.value='Updating...'; return false;" rendered="{!$ObjectType.breadwinner_qbo__Breadwinner_Account_Connection__c.updateable}" styleClass="slds-button slds-button_brand slds-m-top_medium" />
+                            <apex:commandButton value="Cancel" action="{!cancel}" styleClass="slds-button slds-button_neutral slds-m-top_medium" />
+                            
+                            <apex:actionFunction name="updateQBOAccount"   action="{!updateQBOAccount}" oncomplete="redirectToViewPage();" />
+                            <apex:actionFunction name="redirectToViewPage" action="{!redirectToViewPage}" />
+                            <apex:outputPanel layout="block" styleclass="slds-text-heading_small slds-m-top_small" style="font-weight: bold;font-style: italic;" rendered="{!isReadOnlyMode}">You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way.</apex:outputPanel>
+                        </div>
+                        <div style="display:{!IF(ISBLANK(accId),'none','block')}"><center>Changing details will not alter the associated Salesforce Account, nor will it break the association between the QuickBooks Online Company and Salesforce Account.</center></div>
+                    </apex:outputPanel>
+                    
+                </div> 
+            </apex:form>            
+        </body>
+    </html>
+    
+</apex:page>

@@ -1,0 +1,51 @@
+<apex:page StandardController="Event"  extensions="zoom_app.ZoomMeetingStartCtrl"   cache="false" lightningStylesheets="true"> 
+    <script>
+        $(document).ready(function() {
+            fnMakeItZoomMeeting();
+        });
+        function showOverlay() {
+            var o = document.getElementById('overlay');
+            var o=JSENCODE(o.toString());
+            o.style.display = 'block';
+        }
+        function fnMakeItZoomMeeting() {
+        var rr = Boolean('{!JSENCODE(IF(runonce, "false","true"))}');
+        var noError = {!NOT(isError)}; 
+            showOverlay();
+            if(rr && noError){
+            makeItZoomMeeting();
+            }
+        }
+    /*
+        closeFocusedTab : function(component, event, helper) {
+        var workspaceAPI = component.find("workspace");
+        workspaceAPI.getFocusedTabInfo().then(function(response) {
+            var focusedTabId = response.tabId;
+            workspaceAPI.closeTab({tabId: focusedTabId});
+        })
+        .catch(function(error) {
+            console.log(error);
+        });
+        }    */
+    </script>
+    <apex:composition template="zoom_app__zoomheader">
+        <apex:define name="body">
+            <div id="overlay" class="overlay"
+                style="text-align: center; padding-top: 190px; font-size: 32px; font-weight: bold;">Starting
+                the Zoom Meeting.....</div>
+            <apex:form id="mainForm">
+                <apex:actionFunction action="{!makeItZoomMeeting}" name="makeItZoomMeeting" reRender="mainForm" />
+                <apex:outputpanel rendered="{!isError}"> 
+                    <div class="ex" align="center">
+                        <apex:outputpanel styleclass="textMessage">
+                            <apex:outputText value="{!errorMessage}"/>
+                        </apex:outputpanel>
+                        <br />
+                        <apex:commandButton styleClass="myCustomBtn" value="Close" action="{!redirectDetailPage}" oncomplete="" />
+                    </div>
+                   <!-- <apex:detail subject="{!Event.Id}" relatedlist="false" /> -->
+                </apex:outputpanel>
+            </apex:form>
+        </apex:define>
+    </apex:composition> 
+</apex:page>

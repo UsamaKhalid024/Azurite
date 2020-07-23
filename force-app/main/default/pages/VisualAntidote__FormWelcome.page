@@ -1,0 +1,34 @@
+<apex:page docType="html-5.0" title="Formstack" action="{!initialOAuthCall}" controller="VisualAntidote.FFAuthUpdateController" sidebar="false" tabStyle="FastForms__tab">
+    <head>
+		<meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+        <meta content="utf-8" http-equiv="encoding" />
+        <apex:outputText id="checkAuth" rendered="{!IF(ISBLANK(initialOAuthEndpoint),false,true)}">
+            <script>
+            if({!IsClassic}){
+                if("{!JSENCODE(initialOAuthEndpoint)}" != ""){
+                    window.location.replace("{!JSENCODE(initialOAuthEndpoint)}");    
+                }
+            }
+            </script>
+        </apex:outputText>
+        <script type="text/javascript">
+        // Following logic is to fix redirect issue reported in JIRA FF-3760
+        try{
+            var currentSFTheme = '{!JSENCODE($User.UITheme)}';
+            if(currentSFTheme=='Theme4d'){
+                //If user is using Lightning Experience, let's redirect them to FormMenu
+                console.log('FORM_DEBUG Redirecting to Form Dashboard');
+                window.location.replace('/apex/{!Namespace}FormMenu');
+            }
+        }catch(err){
+            console.log('FORM_ERROR Redirect issue. Please contact support.');
+        }
+        </script>
+        
+    </head>
+    <div class="welcome">
+        <center>
+            <h1>Welcome to Formstack!</h1>
+        </center>
+    </div>
+</apex:page>

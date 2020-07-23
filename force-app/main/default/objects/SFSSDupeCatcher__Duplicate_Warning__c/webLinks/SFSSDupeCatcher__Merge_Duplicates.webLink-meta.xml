@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Merge_Duplicates</fullName>
+    <availability>online</availability>
+    <description>This button can be used to merge the duplicates contained by a warning into a single record</description>
+    <displayType>button</displayType>
+    <encodingKey>UTF-8</encodingKey>
+    <linkType>url</linkType>
+    <masterLabel>Merge or Convert Duplicates</masterLabel>
+    <openType>replace</openType>
+    <protected>false</protected>
+    <url>/apex/SFSSDupeCatcher__MergeConvertDuplicatesRedirect?id={!SFSSDupeCatcher__Duplicate_Warning__c.Id}&amp;filtertype={!SFSSDupeCatcher__Duplicate_Warning__c.SFSSDupeCatcher__Scenario_Type__c}</url>
+</WebLink>

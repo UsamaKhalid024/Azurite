@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__All</fullName>
+    <columns>NAME</columns>
+    <columns>VisualAntidote__Submission_Date__c</columns>
+    <columns>VisualAntidote__Objects_XML__c</columns>
+    <columns>VisualAntidote__Status__c</columns>
+    <columns>VisualAntidote__E_Sign__c</columns>
+    <columns>VisualAntidote__Form__c</columns>
+    <columns>VisualAntidote__User_Content_ID__c</columns>
+    <columns>VisualAntidote__Objects__c</columns>
+    <columns>VisualAntidote__Primary_Object__c</columns>
+    <filterScope>Everything</filterScope>
+    <label>All</label>
+</ListView>

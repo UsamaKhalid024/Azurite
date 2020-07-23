@@ -1,0 +1,309 @@
+<apex:page controller="breadwinner_qbo.TransactionSyncSetupController" showheader="false" sidebar="false" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO,'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script> 
+            
+            <script type="text/javascript">
+                var j$ = jQuery.noConflict();
+                var overflowtxt='';
+           
+            function HideStyleSheet(){
+                j$("link.user[href$='elements.css']").each(function(){
+                    j$(this).attr("href", "#");
+                });
+            }
+            j$("body").click(function(event) {
+                if (event.target.id != "dropdown") 
+               {
+                 if(overflowtxt=='')
+                    {
+                     j$("li.slds-is-open").removeClass("Highlight");
+                    }
+                   j$("li.slds-is-open").removeClass("slds-is-open");
+              
+                
+            }});
+            
+            function message()
+            {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} );
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "justify-content":"left"} ) ;               
+                
+                j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );             
+            }
+            
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            j$(function(){
+                addallfuncs();
+            });
+         
+           function selectTab(elmnt,orgidValue,idvalue,text) {
+              if({!isMultiOrg&&(listAppConfig!=NULL)&&(listAppConfig.SIZE>1)})
+              {           
+            if(confirm('Make sure you save the changes that you have done . Click on ok if you save changes otherwise, click on cancel.'))
+            {
+                
+                // slds-active
+                if(text=='overflow')
+                {
+                j$(elmnt).parents("div.slds-dropdown").parent("li").siblings(".slds-active").removeClass("slds-active");
+                j$(elmnt).parents("div.slds-dropdown").find("li").addClass("slds-active");
+                 overflowtxt=text;
+                }
+                else
+                {
+                 j$(elmnt).parent("li").siblings(".slds-active").removeClass("slds-active");
+                j$(elmnt).parent("li").addClass("slds-active");      
+                j$("#dropdown").find("li").removeClass("overflowactive");
+                j$("#dropdown").removeClass("Highlight");
+                overflowtxt='';
+                }
+                    j$(elmnt).parent("li.slds-dropdown__item").siblings("li.overflowactive").removeClass("overflowactive");
+                        j$(elmnt).parent("li.slds-dropdown__item").addClass("overflowactive");   
+                // tabindex
+                j$(elmnt).parent("li").siblings().children("a").attr("tabindex", -1);
+                j$(elmnt).attr("tabindex", 0);
+            
+                // aria-selected
+                j$(elmnt).parent("li").siblings().children("a").attr("aria-selected", false);
+                j$(elmnt).attr("aria-selected", true);
+            
+                // hiding previouly selected tab (slds-show/slds-hide)
+                j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").addClass("slds-hide");
+                j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").removeClass("slds-show");
+                // displaying newly selected tab (slds-show/slds-hide)
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").addClass("slds-show");
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").removeClass("slds-hide");
+                changeValue(orgidValue,idvalue);
+            }
+            }
+            }
+        
+            function selectTaboverflow(elmnt)
+            {
+            j$(elmnt).addClass("slds-dropdown-trigger slds-is-open Highlight");
+            }
+            </script>
+            <style>
+                .message {
+                    background-color: inherit;
+                    border-style: none;
+                    padding:initial;                   
+                    margin-left: 0px !important;
+                    margin-right: 0px !important;                
+                }
+                .msgIcon{
+                    display:none;
+                }                
+                .message .messageText h4 {
+                    font-weight: inherit;
+                    display: initial;
+                }
+                .Highlight
+                {
+                background-color:gainsboro;
+                }
+                .overflowactive
+                {
+                    border-bottom: 2px solid #0070D2;
+                } 
+                .slds-scope .slds-tabs_default__link:focus
+                {
+                 border-bottom-width: 0px;
+                 border-color: grey ;
+                 color:#54698d;
+                }                
+            </style>
+        </head>
+        <body>
+        
+            <apex:form >
+                <div class="slds-scope {!IF(OR($User.UIThemeDisplayed == 'Theme4d',$User.UIThemeDisplayed == 'Theme4t'),'slds-p-around_x-small','')}">
+                    
+                    <!--apex:outputPanel rendered="false">
+                    <apex:pageMessages ></apex:pageMessages>
+                    <apex:actionStatus id="statusid" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus> 
+                        
+                    <apex:outputPanel rendered="{!IF(listAppConfig==NULL,false,true)}">
+                        <div class="slds-page-header" role="banner" >
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-opportunity">
+                                        <use xlink:href="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/SLDS/assets/icons/standard-sprite/svg/symbols.svg#custom')}"></use>
+                                    </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-page-header__title slds-truncate" title="Chargent - Breadwinner for QuickBooks Online Settings (BETA)">Chargent - Breadwinner for QuickBooks Online Settings (BETA)</p>
+                                    <p class="slds-text-body_small">Breadwinner • QuickBooks Online  • Chargent</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <apex:outputPanel layout="block" styleClass="slds-notify slds-notify_alert slds-theme_alert-texture" html-role="alert" rendered="{!IF(listAppConfig==NULL,false,true)}">
+                            <h2>This is a Beta feature and is still being developed. If you choose to use this, please test in Quickbooks Online Sandbox or Development org first before you use this in Live.</h2>
+                        </apex:outputPanel>
+                        
+                        <div class="slds-tabs_default  slds-m-top_medium " style='display:{!IF((listAppConfig==NULL),"none","block")}'>
+                            <ul class="{!IF(isMultiOrg,"slds-tabs_default__nav","NoClass")}" style='width:auto;' role="tablist">
+                                <apex:variable value="{!1}" var="i" >
+                                    <apex:repeat value="{!listAppConfig}" var="a" >                           
+                                        <li class="{!IF(isMultiOrg,"slds-tabs_default__item slds-text-heading_label slds-truncate" ,"slds-section-title_divider Highlight")}{!IF(i==1,"slds-active","NoClass")}" title="{!IF(isMultiOrg,a.Connecting_App_Name__c,"Chargent Settings")}" role="presentation" style='display:{!IF((i<=3),"block","none")}'> 
+                                            <a class="{!IF(isMultiOrg,"slds-tabs_default__link","NoClass")}" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-1" id="tab-default-1__item"  onclick="selectTab(this,{!a.QBO_Org_ID__c},'{!$Component.RadioButtonValue}',null);">
+                                                {!IF(isMultiOrg,a.Connecting_App_Name__c,"Chargent Settings")} 
+                                            </a>
+                                        </li> 
+                                        <apex:variable value="{!i+1}" var="i"/>
+                                    </apex:repeat>
+                                </apex:variable>  
+                                
+                                
+                                <li class="slds-dropdown-trigger_click slds-tabs_default__item slds-tabs__item_overflow slds-text-title_caps"  
+                                    title="Other Orgs" role="presentation"  onclick="selectTaboverflow(this,null,null);"   style='display:{!IF((listAppConfig!=NULL)&&(listAppConfig.SIZE>3),"block","none")}' id='dropdown' >
+                                    <a class="slds-tabs_default__link" href="javascript:void(0);" aria-haspopup="true" id='dropdown'>
+                                        <span  id='dropdown'>More
+                                            <span class="slds-assistive-text">tabs</span>
+                                        </span>
+                                        <svg id="dropdown" aria-hidden="true" class="slds-button__icon slds-button__icon_x-small">
+                                            <use xlink:href="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/SLDS/assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                        </svg>
+                                    </a>
+                                    <!--script>
+                                    function connectWithQBO(id)
+                                    {
+                                        var e = document.getElementById(id);               
+                                        if(e.style.display== 'none')
+                                            e.style.display= 'block';
+                                        else
+                                            e.style.display= 'none';
+                                    }
+                                    </script>
+                                    <div class="slds-dropdown slds-dropdown_right" id='droping'  >
+                                        
+                                        <ul class="slds-dropdown__list slds-dropdown_length-with-icon-2" role="menu" style='border:red;'>                                     
+                                            <apex:variable value="{!1}" var="i">
+                                                <apex:repeat value="{!listAppConfig}" var="a"> 
+                                                    <li class="slds-dropdown__item" role="presentation" title="{!a.Connecting_App_Name__c}"  id='dropdownitem' style='display:{!IF(i>3,"block","none")}' >
+                                                        <a class="slds-tabs_default__link " href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-1" id="tab-default-1__item"   onclick="selectTab(this,{!a.QBO_Org_ID__c},'{!$Component.RadioButtonValue}','overflow');">
+                                                            <div> {!a.Connecting_App_Name__c}  </div>
+                                                        </a>
+                                                    </li>
+                                                    <apex:variable value="{!i+1}" var="i"/>
+                                                    
+                                                </apex:repeat>
+                                            </apex:variable>
+                                            
+                                            
+                                        </ul>                                                                     
+                                    </div>
+                                </li>                            
+                                <apex:inputhidden value="{!qboOrgId}" id="RadioButtonValue" /> 
+                                <!--script>
+                                function changeValue(input, textid) {
+                                    alert(input+'txt'+textid);
+                                    document.getElementById(textid).value = input;
+                                }
+                                </script> 
+                                <apex:actionFunction name="changeValue" action="{!initializeCustomSettings}" reRender="RadioButtonValue,SettingsSection,buttons" status="status" >
+                                    <apex:param name="orgID" value="{!qboOrgId}" assignTo="{!qboOrgId}"/>
+                                </apex:actionFunction>
+                                <apex:actionStatus id="status">  
+                                    <apex:facet name="start">
+                                        <div class="slds-spinner_container">
+                                            <div class="slds-spinner_brand slds-spinner slds-spinner_small" aria-hidden="false" role="alert">
+                                                <div class="slds-spinner__dot-a"></div>
+                                                <div class="slds-spinner__dot-b"></div>
+                                            </div>
+                                        </div>
+                                    </apex:facet>
+                                </apex:actionStatus>
+                            </ul> 
+                            
+                            <div id="tab-default-1" class="slds-m-left_small slds-tabs_default__content slds-show " role="tabpanel" aria-labelledby="tab-default-1__item" >
+                                <apex:outputPanel layout="block"  id="SettingsSection">                  
+                                    <apex:outputPanel layout="block" styleClass="slds-m-top_medium" rendered="{!OR(isInSaveMode == True,is_Chargnet_sync == False)}">
+                                        <label class="slds-checkbox">
+                                            <span class="slds-form-element__label">
+                                                Sync Chargent with Quickbooks Online  
+                                            </span>
+                                            <apex:inputCheckbox value="{!is_Chargnet_sync}"  />
+                                            <span class="slds-checkbox_faux"></span>
+                                            <div class="slds-text-body_small slds-m-left_medium slds-m-top_small">By default, Breadwinner does not sync Chargent trascations with QuickBooks Online. You can sync them by ticking the checkbox above</div>
+                                        </label>                            
+                                    </apex:outputPanel>                      
+                                    <apex:outputPanel layout="block" styleClass="slds-form-element slds-m-top_medium" rendered="{!AND(isInEditMode == True,is_Chargnet_sync == True)}">
+                                        <label class="slds-form-element__label" >Sync Chargent with QuickBooks Online</label>
+                                        <span class="slds-form-element__control">
+                                            <apex:outputText value="{!is_Chargnet_sync }" > </apex:outputText>
+                                        </span>                           
+                                    </apex:outputPanel>                    
+                                </apex:outputPanel>
+                                <apex:outputPanel id="buttons">
+                                    <div class="slds-m-top_medium" style="text-align:center;">
+                                        <apex:commandButton value="Save" status="statusid" styleClass="slds-button slds-button_brand" action="{!saveSettings}" rendered="{!OR(isInSaveMode == True,is_Chargnet_sync == False)}" reRender="SettingsSection,buttons" />
+                                        <apex:commandButton value="Edit" styleClass="slds-button slds-button_brand"  status="statusid" action="{!editMode}"  reRender="SettingsSection,buttons" rendered="{!AND(isInEditMode == True,is_Chargnet_sync == True)}"  />         
+                                        <apex:commandButton value="Cancel" status="statusid" styleClass="slds-button slds-button_neutral" reRender="SettingsSection,buttons" /> 
+                                    </div>
+                                    <apex:commandLink value="Sync Now" rendered="{!is_Chargnet_sync}" status="statusid" action="{!testMe}" reRender="wholeform"/>
+                                    
+                                </apex:outputPanel> 
+                                
+                            </div>
+                        </div>
+                    </apex:outputPanel>  
+                    </apex:outputPanel-->
+                    
+                    <apex:outputPanel layout="block"  rendered="{!IF(listAppConfig==NULL,false,true)}">
+                        <div class="slds-page-header" role="banner" >
+                            <div class="slds-media">
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-opportunity">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#custom')}"></use>
+                                    </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-page-header__title slds-truncate" title="Chargent - Breadwinner for QuickBooks Online Settings (BETA)">Chargent - Breadwinner for QuickBooks Online Settings (BETA)</p>
+                                    <p class="slds-text-body_small">Breadwinner • QuickBooks Online  • Chargent</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_small slds-m-top_small" html-role="alert" >
+                            <div class="infoM3" style="border-radius: 4px">This is a Beta feature and is still being developed.</div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" styleClass="slds-m-top_large slds-m-horizontal_large" style="color: #54698d;" rendered="{!IF(listAppConfig==NULL,false,true)}">
+                            <p>
+                                When creating an Invoice via Breadwinner from an Opportunity, Breadwinner will identify any recent Chargent Transactions on that Opportunity and create a corresponding Payment in QuickBooks at the same time as Breadwinner create the Invoice in QuickBooks. 
+                            </p>
+                            <p Class="slds-m-top_medium">
+                                Additionally, Breadwinner will apply that new Payment to the new Invoice in QuickBooks Online. This will work fine even if the Payment is for less or more than the Opportunity/Invoice.
+                            </p>
+                            
+                        </apex:outputPanel>
+                    </apex:outputPanel> 
+                </div>
+            </apex:form>
+            
+        </body>
+    </html>
+</apex:page>

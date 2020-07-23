@@ -1,0 +1,20 @@
+<apex:page standardController="breadwinner_qbo__Breadwinner_Account_Connection__c" sidebar="false" title="New QuickBooks Online Company">
+    <apex:slds />
+    <script>
+    if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+        document.getElementsByTagName("title")[0].innerHTML="New QuickBooks Online Company";
+    }
+    </script>
+    <div class="slds-scope">
+        <div class="slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small" style='color:white;font-weight:500;line-height:1.4;word-spacing:1px;border-radius:4px;justify-content:left' role="alert">
+            <div>
+                <div>
+                    It is not possible to create or clone QuickBooks Online Companies.
+                </div>
+                <div>
+                    You can create New QuickBooks Online Companies while creating New Invoices. 
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:page>

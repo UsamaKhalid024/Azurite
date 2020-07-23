@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<WebLink xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>AVSFQB__Update_Invoice_from_QBOE</fullName>
+    <availability>online</availability>
+    <description>Get Invoice updates from QBO to Salesforce</description>
+    <displayType>button</displayType>
+    <linkType>javascript</linkType>
+    <masterLabel>QBO Invoices &gt;&gt; SF Opportunity</masterLabel>
+    <openType>onClickJavaScript</openType>
+    <protected>false</protected>
+    <url>var URL=&quot;/apex/AVSFQB__UpdateInvoiceFromQBO?id={!Opportunity.Id}&quot;; 
+window.open(URL,&quot;DBSync&quot;,&quot;menubar=0,resizable=0,width=650,height=300&quot;);</url>
+</WebLink>

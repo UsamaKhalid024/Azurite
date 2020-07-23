@@ -1,0 +1,3 @@
+<apex:page standardController="VisualAntidote__Previous_Form__c" applyBodyTag="true" applyHtmlTag="true"  extensions="VisualAntidote.FormPublishPreviewController" showHeader="false">
+ <!-- DEPRECATED-->
+</apex:page>

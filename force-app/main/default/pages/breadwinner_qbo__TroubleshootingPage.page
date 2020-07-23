@@ -1,0 +1,459 @@
+<apex:page controller="breadwinner_qbo.TroubleshootingController" showHeader="false" sidebar="false" tabStyle="Breadwinner__tab" action="{!initializePage}">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <apex:slds />
+        <head>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}" ></script>
+            
+            <script type="text/javascript">
+                var j$ = jQuery.noConflict();
+            var overflowtxt='';
+            var displaytxt='none';
+            
+            function HideStyleSheet(){
+                j$("link.user[href$='elements.css']").each(function(){
+                    j$(this).attr("href", "#");
+                });
+            }
+            j$("body").click(function(event) {
+                if (event.target.id != "dropdown") {
+                    {
+                        if(overflowtxt=='')
+                        {
+                            j$("li.slds-is-open").removeClass("Highlight");
+                        }
+                        j$("li.slds-is-open").removeClass("slds-is-open");                
+                    }}});
+            function message()
+            {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-Content":"left"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "Justify-Content":"left"} );
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "Justify-Content":"left"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px", "Justify-Content":"left"} ) ;               
+                
+                j$("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );             
+            }
+            j$(function(){
+                HideStyleSheet();
+                message(); 
+            });
+            </script>
+            <script>
+            
+            function TroubleshootselectTab(elmnt,orgidValue,text) {                            
+                
+                // slds-active
+                if(text=='overflow')
+                {
+                    j$(elmnt).parents("div.slds-dropdown").parent("li").siblings(".slds-active").removeClass("slds-active");
+                    j$(elmnt).parents("div.slds-dropdown").find("li").addClass("slds-active");
+                    overflowtxt=text;
+                }
+                else
+                { 
+                    j$(elmnt).parent("li").siblings(".slds-active").removeClass("slds-active");
+                    j$(elmnt).parent("li").addClass("slds-active");      
+                    j$("#dropdown").find("li").removeClass("overflowactive");
+                    j$("#dropdown").removeClass("Highlight");
+                    overflowtxt='';
+                }
+                ///alert($(elmnt).parent("li.slds-dropdown__item").length);
+                j$(elmnt).parent("li.slds-dropdown__item").siblings("li.overflowactive").removeClass("overflowactive");
+                j$(elmnt).parent("li.slds-dropdown__item").addClass("overflowactive");
+                // tabindex
+                j$(elmnt).parent("li").siblings().children("a").attr("tabindex", -1);
+                j$(elmnt).attr("tabindex", 0);
+                
+                // aria-selected
+                j$(elmnt).parent("li").siblings().children("a").attr("aria-selected", false);
+                j$(elmnt).attr("aria-selected", true);
+                var appConfigListSize = {!(listAppConfig.size)};
+                // hiding previouly selected tab (slds-show/slds-hide)
+                if(appConfigListSize>0){
+                    j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").addClass("slds-hide");
+                    j$(elmnt).closest(".slds-tabs_default").children("div[role='tabpanel'].slds-show").removeClass("slds-show");
+                }
+                // displaying newly selected tab (slds-show/slds-hide)
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").addClass("slds-show");
+                j$(elmnt).closest(".slds-tabs_default").children("div[aria-labelledby='"+elmnt.id+"']").removeClass("slds-hide");
+                
+                changeValue(orgidValue);
+            }
+            function selectTaboverflow(elmnt)
+            {
+                j$(elmnt).addClass("slds-dropdown-trigger slds-is-open Highlight");
+                
+            } 
+            
+            function showHideSectionContent(sectionId,imageIds){
+                var sectiondiv=document.getElementById(sectionId);
+                var imageId=document.getElementById(imageIds);
+                if(j$(sectiondiv).hasClass("slds-is-open")){
+                    j$(sectiondiv).removeClass("slds-is-open");
+                    j$("#"+imageIds).attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}");
+                    j$("#DeleteRecDivIdImage").css({"margin-bottom":"3px", "margin-right":"4px", "width":"14px"});
+                }
+                else{
+                    j$(sectiondiv).addClass("slds-is-open");
+                    j$("#"+imageIds).attr("src","{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionOpen.png')}");
+                    j$("#"+imageIds).css({"margin-bottom":"0px", "margin-right":"3px", "width":"15px"});
+                }
+            }
+           
+            </script> 
+            <apex:outputPanel id="JobsSuccessmessagePanel">
+                <script> 
+                function showJobsSuccessmessage(){
+                    if('{!jobsSuccessMessage}')
+                        add_popup_text('{!jobsSuccessMessage}');
+                    else
+                        add_popup_text('ERROR: Failed to restart job'); 
+                }
+                </script> 
+            </apex:outputPanel>
+            <style>
+                .slds-scope .slds-notify_alert {
+                    padding: 0.5rem;
+                    text-align: left;
+                }
+                .message {
+                    background-color: inherit;
+                    border-style: none;
+                    padding:initial;
+                    margin-left: 0px !important;
+                    margin-right: 0px !important;
+                }
+                .msgIcon{
+                    display:none;
+                }                
+                .overflowactive
+                {
+                    border-bottom: 2px solid #0070D2;
+                } 
+                .slds-scope .slds-tabs_default__link:focus
+                {
+                    border-bottom-width: 0px;
+                    border-color: grey ;
+                    color:#54698d;
+                }
+                .Highlight
+                {
+                    background-color:gainsboro;
+                }
+                .slds-scope table {
+                    width: initial;
+                }
+                .slds-scope .slds-section__title-action:active, 
+                .slds-scope .slds-section__title-action:focus, 
+                .slds-scope .slds-section__title-action:hover{
+                    background: initial;
+                }
+                .slds-scope .slds-section-title_divider .slds-button:focus{
+                    box-shadow: initial;
+                }
+                .slds-scope .slds-spinner_container{
+                    position: fixed;
+                    z-index: 9999;
+                }
+                .slds-scope .slds-section__title-action {
+                    display: block;
+                }
+                .slds-scope .slds-modal__container{
+                    width: 35%;
+                }
+            </style>
+        </head>
+        
+        <body>
+            <apex:form >
+                <div class="slds-scope">
+                    
+                    <apex:actionStatus id="assign-action-status">  
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>
+
+                    <!-- -----------------------------Troubleshooting Tab header start ---------------------------->
+                    <div class="slds-page-header slds-m-bottom_x-small" role="banner">
+                        <div class="slds-media slds-media_center">
+                            <div class="slds-media__figure">
+                                <svg aria-hidden="true" class="slds-icon slds-icon-standard-opportunity">
+                                    <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/standard-sprite/svg/symbols.svg#custom')}"></use>
+                                </svg>
+                            </div>
+                            <div class="slds-media__body">
+                                <p class="slds-page-header__title slds-truncate" title="Troubleshooting">Troubleshooting</p>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- -----------------------------Troubleshooting Tab header END ---------------------------->
+                                    
+                    <div class="slds-m-horizontal_small">
+                        <apex:pageMessages id="pgmsg" escape="false"></apex:pageMessages>  
+                    </div>  
+
+                    <!-- SLDS Popup Start -->
+                    <div >
+                        <div id="dyn_popup" class="slds-modal slds-modal_small" aria-hidden="false" role="dialog" >
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="slds-text-heading_medium">Troubleshooting</h2>
+                                </div>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <p>
+                                        Dynamic popup text goes here.
+                                    </p>
+                                    <div align="right" style="margin-top: 1rem;">
+                                        <apex:outputPanel id="popup_op">
+                                            <apex:commandLink id="okaybutton" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="OK" onclick="cancelDisc();" reRender="nothing" rendered="{!NOT(OR(is_delete_invoices,is_delete_salesreceipts,is_delete_billspos,areCustomers,is_delete_vendors))}" />
+
+                                            <apex:commandLink id="del_inv" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="Delete Invoices" rendered="{!is_delete_invoices}" reRender="deletesectionid,DeleteRecDivId" action="{!deleteAllInvoices}" oncomplete="cancelDisc();" status="assign-action-status"/>
+
+                                            <apex:commandLink id="del_bac" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="Delete Customers" rendered="{!areCustomers}" reRender="deletesectionid,DeleteRecDivId" action="{!deleteAllBACs}" oncomplete="cancelDisc();" status="assign-action-status"/>
+
+                                            <apex:commandLink id="del_sr" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="Delete Sales Receipts" rendered="{!is_delete_salesreceipts}" reRender="deletesectionid,DeleteRecDivId" action="{!deleteAllSalesReceipts}" oncomplete="cancelDisc();" status="assign-action-status"/>
+
+                                            <apex:commandLink id="del_billpo" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="Delete Bills and POs" rendered="{!is_delete_billspos}" reRender="deletesectionid,DeleteRecDivId" action="{!deleteAllBillsPOs}" oncomplete="cancelDisc();" status="assign-action-status"/>
+
+                                            <apex:commandLink id="del_vendor" styleClass="btns slds-button slds-button_brand slds-m-left_small" value="Delete Vendors" rendered="{!is_delete_vendors}" reRender="deletesectionid,DeleteRecDivId" action="{!deleteAllBACs}" oncomplete="cancelDisc();" status="assign-action-status"/>
+
+                                            <apex:commandLink id="cancelbutton" styleClass="btns slds-button slds-button_neutral slds-m-left_small" value="Cancel" rendered="{!OR(is_delete_invoices,is_delete_salesreceipts,is_delete_billspos,areCustomers,is_delete_vendors)}" onclick="cancelDisc();" reRender="nothing"  />
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-backdrop" id="backdrop"></div>
+                    </div>
+
+                    <Script>
+                        function cancelDisc(){
+                            j$('#backdrop').removeClass('slds-backdrop--open');
+                            j$('#dyn_popup').removeClass('slds-fade-in-open');
+                        }
+
+                        function showDiscModal(){
+                            j$('#backdrop').addClass('slds-backdrop--open');
+                            j$('#dyn_popup').addClass('slds-fade-in-open');
+                        }
+
+                        function add_popup_text(popup_msg){
+                            j$("#dyn_popup p").text(popup_msg);
+                            showDiscModal();
+                        }  
+                    </Script>
+                    <!-- Slds Popup End -->
+                    
+                    <div class="slds-tabs_default  slds-m-top_small">
+                        <ul class="slds-tabs_default__nav" role="tablist">
+                            <li class="slds-tabs_default__item slds-text-heading_label slds-active" title="Overview" role="presentation">
+                                <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="0" aria-selected="true" aria-controls="tab-default-1" id="tab-default-1__item" onclick="TroubleshootselectTab(this,null,null);">
+                                    Overview
+                                </a>
+                            </li>
+                            
+                            <apex:variable value="{!2}" var="i" rendered="{!IF((listAppConfig!=NULL),true,false)}">
+                                <apex:repeat value="{!listAppConfig}" var="a">
+                                    <li class="slds-tabs_default__item slds-text-heading_label slds-truncate" title="{!IF((listAppConfig.size==1 && isMultiOrg==false),'Advanced',''+a.Connecting_App_Name)}" role="presentation" style='display:{!if(i<=3,"block","none")}'>
+                                        <a class="slds-tabs_default__link" href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item"  onclick="TroubleshootselectTab(this,'{!a.QBO_Org_ID}',null);">
+                                            {!IF((listAppConfig.size==1 && isMultiOrg==false),'Advanced',''+a.Connecting_App_Name)}
+                                        </a>
+                                    </li>
+                                    <apex:variable value="{!i+1}" var="i"/>
+                                </apex:repeat>
+                            </apex:variable>  
+                            <li class="slds-dropdown-trigger_click slds-tabs_default__item slds-tabs__item_overflow slds-text-title_caps" 
+                                title="Other Orgs" role="presentation"  style='display:{!if((listAppConfig!=null&&(listAppConfig.size>2)),"block","none")}' onclick="selectTaboverflow(this,null,null);"   id='dropdown'>
+                                <a class="slds-tabs_default__link" href="javascript:void(0);" aria-haspopup="true" id='dropdown'>
+                                    <span  id='dropdown'>More
+                                        <span class="slds-assistive-text">tabs</span>
+                                    </span>
+                                    <svg id="dropdown" aria-hidden="true" class="slds-button__icon slds-button__icon_x-small">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#down')}"></use>
+                                    </svg>
+                                </a>
+                                <div class="slds-dropdown slds-dropdown_right" id='droping'  >                                                               
+                                    <ul class="slds-dropdown__list slds-dropdown_length-with-icon-2" role="menu">
+                                        
+                                        <apex:variable value="{!2}" var="i">
+                                            <apex:repeat value="{!listAppConfig}" var="a"> 
+                                                <li class="slds-dropdown__item" role="presentation" title="{!a.Connecting_App_Name}" >
+                                                    <a class="slds-tabs_default__link " href="javascript:void(0);" role="tab" tabindex="-1" aria-selected="false" aria-controls="tab-default-2" id="tab-default-2__item" style='display:{!if(i>3,"block","none")}'   onclick="TroubleshootselectTab(this,'{!a.QBO_Org_ID}','overflow');" >
+                                                        <div>{!a.Connecting_App_Name} </div> 
+                                                    </a>
+                                                </li>
+                                                <apex:variable value="{!i+1}" var="i"/>
+                                                
+                                            </apex:repeat>
+                                        </apex:variable>
+                                        
+                                        
+                                    </ul>                                   
+                                </div>
+                            </li>
+                            
+                            <apex:actionFunction name="changeValue" action="{!initializeCounting}" reRender="pgmsg,SettingsSection,popup_op" status="assign-action-status" oncomplete="HideStyleSheet();message();">
+                                <apex:param name="orgID" value="" assignTo="{!orgIdVAlue}"/>
+                            </apex:actionFunction>
+                        </ul>
+                        <div id="tab-default-1" class="slds-m-horizontal_small slds-show" role="tabpanel" aria-labelledby="tab-default-1__item">
+                            <h3 class="slds-section-title_divider slds-m-top_medium slds-m-bottom_medium">Breadwinner Info</h3>
+                            <div class="slds-m-left_large">
+                                <table border="0" cellpadding="0" >
+                                    <tr>
+                                        <td style="text-align: right;padding: 5px;">Salesforce Edition:</td> 
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!o.OrganizationType}"> </apex:outputtext></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;padding: 5px;">Salesforce Org Type:</td> 
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!if(o.IsSandbox==true, 'Sandbox', 'Production')}{!if(o.TrialExpirationDate!= null,' - Trial','')}"></apex:outputtext></td>
+                                    </tr>
+                                    <tr>
+                                        <td style="text-align: right;padding: 5px;">Salesforce Org Id:</td> 
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!o.Id}"></apex:outputtext></td>
+                                    </tr> 
+                                    <tr> 
+                                        <td style="text-align: right;padding: 5px;">Breadwinner Plan Code:</td>
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!planCode}"></apex:outputtext></td>
+                                    </tr>
+                                    <tr> 
+                                        <td style="text-align: right;padding: 5px;">Breadwinner Plan Name:</td>
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!planName}"></apex:outputtext></td>
+                                    </tr>
+                                    <tr>      
+                                        <td style="text-align: right;padding: 5px;">Breadwinner Version:</td>      
+                                        <td style="text-align: left;padding: 5px;"><apex:outputtext value="{!breadwinnerVersion}"></apex:outputtext></td>      
+                                    </tr>
+                                </table>
+                            </div>
+                            <apex:outputPanel layout="block" rendered="{!AND(isAdmin, listAppConfig!=NULL, listAppConfig.size>0)}">
+                                <h3 class="slds-section-title_divider slds-m-bottom_small slds-m-top_medium">Scheduled Jobs Status</h3>
+                                <div class="slds-m-horizontal_medium">
+                                    Scheduled jobs are running under
+                                    <apex:outputPanel rendered="{!AND(isScheduledJobsRunbyActiveUser,isScheduledJobsRunbyAdmin)}">
+                                        <b><i>Active User</i></b>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel rendered="{!OR(NOT(isScheduledJobsRunbyActiveUser),NOT(isScheduledJobsRunbyAdmin))}" style="color:red;">
+                                        <b><i>{!IF(NOT(isScheduledJobsRunbyActiveUser),'an Inactive User',IF(NOT(isScheduledJobsRunbyAdmin),'Non Administrator','an Inactive User or Non Administrator'))}</i></b>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel >
+                                        <apex:commandLink action="{!restartScheduledJobs}" status="assign-action-status" styleClass="slds-m-left_medium slds-button {!IF(OR(NOT(isScheduledJobsRunbyActiveUser),NOT(isScheduledJobsRunbyAdmin)),'slds-button_destructive','slds-button_brand')}" oncomplete="add_popup_text('Succesfully restarted Scheduled Jobs to run under you.');">Restart Scheduled Jobs under my Admin User</apex:commandLink>
+                                    </apex:outputPanel>
+                                </div>
+                                <h3 class="slds-section-title_divider slds-m-bottom_small slds-m-top_medium">Restart and Update</h3>
+                                <div class="slds-m-horizontal_medium">
+                                    <div>
+                                        
+                                    
+                                    <apex:commandButton action="{!restartHistoricalTotalSync}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small slds-m-left_xx-small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Background QuickBooks Online Customer Match"/>
+                                    <apex:commandButton action="{!restartHistoricalInvoiceSync}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Historical Invoice Sync"/>
+                                    <apex:commandButton action="{!restartHourlySync}" rendered="{!areBillsPOsEnabled}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Hourly Sync Schedule"/>
+                                    </div>
+                                    <apex:outputPanel layout="block">
+                                        <apex:commandButton action="{!restartHourlySync}" rendered="{!NOT(areBillsPOsEnabled)}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small slds-m-left_xx-small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Hourly Sync Schedule"/>
+                                        <apex:commandButton action="{!restartHistoricalTotalVendorSync}" rendered="{!areBillsPOsEnabled}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small  slds-m-left_xx-small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Background QuickBooks Online Vendor Match"/>
+                                        <apex:commandButton action="{!restartHistoricalBillPOSync}" rendered="{!areBillsPOsEnabled}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small slds-m-right_small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Restart Historical {!displayTextforBillPO} Sync"/>
+                                        <apex:commandButton action="{!updateAccountAndOpportunityRollups}" reRender="pgmsg,JobsSuccessmessagePanel" status="assign-action-status" styleClass="slds-button slds-button_brand slds-m-top_x-small" oncomplete="HideStyleSheet();message();showJobsSuccessmessage();" value="Update Account and Opportunity Rollups"/>
+                                     </apex:outputPanel>
+                                    
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <apex:commandLink style="{text-align: left;float: left;}"   styleClass="slds-m-top_medium" action="{!showEditSettingSection}" rendered="{!AND(isAdmin,listAppConfig!=null,listAppConfig.size>0)}" rerender="SettingSectionPanel,pgmsg" oncomplete="HideStyleSheet();message();">.</apex:commandLink>
+                            <apex:outputPanel id="SettingSectionPanel" layout="block" styleClass="{!IF((listAppConfig.size==0),'','slds-m-top_medium')}">
+                                <apex:outputPanel layout="block" styleClass="slds-box slds-float_left" rendered="{!isEditSettingSection}">
+                                    <label class="slds-checkbox">
+                                        <apex:inputField value="{!bwsettings.breadwinner_qbo__Disable_Opportunity_Rollups__c}"/> 
+                                        <span class="slds-checkbox_faux"></span>
+                                        <span class="slds-form-element__label">{!$ObjectType.Breadwinner_Settings__c.Fields.Disable_Opportunity_Rollups__c.Label}</span>
+                                    </label>
+                                    
+                                    <br/><apex:commandButton value="Save" styleclass="slds-button slds-button_brand slds-m-top_small" action="{!saveSettingSection}" reRender="SettingSectionPanel,pgmsg" oncomplete="HideStyleSheet();message();" />                                
+                                    <apex:commandButton value="Cancel" styleclass="slds-button slds-button_neutral slds-m-top_small" action="{!cancelSettingSection}" reRender="SettingSectionPanel,pgmsg" oncomplete="HideStyleSheet();message();"/>   
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </div>
+                        <div id="tab-default-2" class="slds-m-top_small slds-m-horizontal_small {!IF((listAppConfig.size==0),'slds-show','slds-hide')}" role="tabpanel" aria-labelledby="tab-default-2__item"  >
+                            <apex:pageMessage rendered="{!AND(NOT(isAdmin),listAppConfig.size>0)}" severity="WARNING" strength="2" summary="WARNING:" escape="false" detail="Administrators only can access this tab."/>   
+                            <apex:outputPanel layout="block" id="opt" rendered="{!IF(isAdmin&&(listAppConfig!=null),true,false)}">
+                                <apex:outputPanel layout="block" id="SettingsSection">
+                                    <div class="{!IF((listAppConfig.size==0),'','slds-m-top_medium')}" >
+                                        <div class="slds-section" id="DeleteRecDivId" >
+                                            <h3 class="slds-section-title_divider" style="padding: 0.19rem;">
+                                                <button class="slds-button slds-section__title-action"  type="button" onclick="showHideSectionContent('DeleteRecDivId','DeleteRecDivIdImage');" style="letter-spacing: .0625rem;text-transform: initial;">
+                                                    <img id="DeleteRecDivIdImage" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/SectionClose.png')}" style="margin-bottom: 3px;margin-right: 4px;" />
+                                                    <span style="color: #54698d;    text-transform: uppercase;">Delete Records</span></button>
+                                            </h3>
+                                            <div class="slds-section__content">
+                                                <apex:outputPanel layout="block" id="deletesectionid" styleclass="slds-m-horizontal_small">
+                                                    <div class="slds-text-title_caps slds-m-top_small" style="color:red;" >Don&apos;t use the delete functionality unless specifically asked by Breadwinner Support.</div>
+
+                                                    <div class="slds-text-title slds-m-top_small" > Click delete to remove all QuickBooks Online Customers or {!IF((areBillsPOsEnabled),'Vendors, Invoices or Bills & Purchase Order','Invoice ')} records from Salesforce.com. (no data in QuickBooks Online will be affected)
+                                                    <br/><br/>
+                                                    Due to Salesforce limitations, Breadwinner may not delete all of your Invoice or QuickBooks Online Company records at once, if you have more than 10000 records, please continue deleting records until all records are deleted.</div>
+                                                    <apex:commandButton reRender="deletesectionid,pgmsg,popup_op" oncomplete="add_popup_text(' Are you sure to delete ALL ({!noOfInvoices}) Invoices from Salesforce?'); HideStyleSheet();message();" value="Delete All Invoices ({!noOfInvoices}) from Salesforce" styleClass="slds-button slds-button_brand slds-m-top_small slds-m-left_xx-small slds-m-right_large" disabled="{!If(noOfInvoices > 0,false,true)}">
+                                                        <apex:param assignTo="{!is_delete_invoices}" value="true" name="assign_del_inv" />
+                                                        <apex:param assignTo="{!is_delete_salesreceipts}" value="false" name="assign_del_sr" />
+                                                        <apex:param name="customerParam" value="false" assignTo="{!areCustomers}"/>
+                                                        <apex:param assignTo="{!is_delete_billspos}" value="false" name="assign_del_billpo" />
+                                                        <apex:param assignTo="{!is_delete_vendors}" value="false" name="assign_del_vendor" />
+                                                    </apex:commandButton>
+                                                    <apex:commandButton reRender="deletesectionid,pgmsg,popup_op" oncomplete="add_popup_text(' Are you sure to delete ALL ({!noOfSalesReceipts}) Sales Receipts from Salesforce?'); HideStyleSheet();message();" value="Delete All Sales Receipts ({!noOfSalesReceipts}) from Salesforce" styleClass="slds-button slds-button_brand slds-m-top_small slds-m-left_xx-small slds-m-right_large" rendered="{!AND(noOfSalesReceipts>0,NOT(areSalesReceiptsEnabled))}">
+                                                        <apex:param assignTo="{!is_delete_invoices}" value="false" name="assign_del_inv1" />
+                                                        <apex:param assignTo="{!is_delete_salesreceipts}" value="true" name="assign_del_sr1" />
+                                                        <apex:param name="customerParam1" value="false" assignTo="{!areCustomers}"/>
+                                                        <apex:param assignTo="{!is_delete_billspos}" value="false" name="assign_del_billpo1" />
+                                                        <apex:param assignTo="{!is_delete_vendors}" value="false" name="assign_del_vendor1" />
+                                                    </apex:commandButton>
+                                                    <apex:commandButton reRender="deletesectionid,pgmsg,popup_op" oncomplete="add_popup_text(' Are you sure to delete ALL ({!noOfBACs}) QuickBooks Online Customers from Salesforce?'); HideStyleSheet();message();" value="Delete All QuickBooks Online Customers ({!noOfBACs}) from Salesforce" styleClass="slds-button slds-button_brand slds-m-top_small slds-m-left_xx-small slds-m-right_large" disabled="{!If(noOfBACs > 0,false,true)}">
+                                                        <apex:param assignTo="{!is_delete_invoices}" value="false" name="assign_del_inv2" />
+                                                        <apex:param assignTo="{!is_delete_salesreceipts}" value="false" name="assign_del_sr2" />
+                                                        <apex:param name="customerParam2" value="true" assignTo="{!areCustomers}"/>
+                                                        <apex:param assignTo="{!is_delete_billspos}" value="false" name="assign_del_billpo2" />
+                                                        <apex:param assignTo="{!is_delete_vendors}" value="false" name="assign_del_vendor2" />
+                                                    </apex:commandButton>
+                                                    
+                                                    <apex:outputPanel layout="block" rendered="{!OR(areBillsPOsEnabled,AND(listAppConfig.size==0,isBusinessorHigher,OR(noOfBillsPOs>0,noofVendors>0)))}">
+                                                        <apex:commandButton reRender="deletesectionid,pgmsg,popup_op" oncomplete="add_popup_text(' Are you sure to delete ALL ({!noOfBillsPOs}) {!displayTextforBillPO} from Salesforce?'); HideStyleSheet();message();" value="Delete All {!displayTextforBillPO} ({!noOfBillsPOs}) from Salesforce" styleClass="slds-button slds-button_brand slds-m-top_small slds-m-left_xx-small slds-m-right_large" disabled="{!If(noOfBillsPOs > 0,false,true)}">
+                                                            <apex:param assignTo="{!is_delete_invoices}" value="false" name="assign_del_inv3" />
+                                                            <apex:param assignTo="{!is_delete_salesreceipts}" value="false" name="assign_del_sr3" />
+                                                            <apex:param name="customerParam3" value="false" assignTo="{!areCustomers}"/>
+                                                            <apex:param assignTo="{!is_delete_billspos}" value="true" name="assign_del_billpo3" />
+                                                            <apex:param assignTo="{!is_delete_vendors}" value="false" name="assign_del_vendor3" />
+                                                        </apex:commandButton>
+                                                        <apex:commandButton reRender="deletesectionid,pgmsg,popup_op" oncomplete="add_popup_text(' Are you sure to delete ALL ({!noofVendors}) QuickBooks Online Vendors from Salesforce?'); HideStyleSheet();message();" value="Delete All QuickBooks Online Vendors ({!noofVendors}) from Salesforce" styleClass="slds-button slds-button_brand slds-m-top_small slds-m-left_xx-small slds-m-right_large" disabled="{!If(noofVendors > 0,false,true)}">
+                                                            <apex:param assignTo="{!is_delete_invoices}" value="false" name="assign_del_inv4" />
+                                                            <apex:param assignTo="{!is_delete_salesreceipts}" value="false" name="assign_del_sr4" />
+                                                            <apex:param name="customerParam4" value="false" assignTo="{!areCustomers}"/>
+                                                            <apex:param assignTo="{!is_delete_billspos}" value="false" name="assign_del_billpo4" />
+                                                            <apex:param assignTo="{!is_delete_vendors}" value="true" name="assign_del_vendor4" />
+                                                        </apex:commandButton>
+                                                    </apex:outputPanel>
+                                                    
+                                                 </apex:outputPanel>
+                                            </div>
+                                        </div>
+                                        
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        </div>                          
+                        
+                    </div>
+                    
+                </div>
+            </apex:form>
+            
+        </body>
+    </html>
+</apex:page>

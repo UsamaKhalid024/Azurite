@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>SFSSDupeCatcher__Web_Lead_Sources__c</fullName>
+    <deprecated>false</deprecated>
+    <description>The Lead Sources generated from the web.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>A list of Web based Lead Sources to that should generate Alerts instead of being blocked.  One Lead source on each line.</inlineHelpText>
+    <label>Web Lead Sources</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>TextArea</type>
+</CustomField>

@@ -1,0 +1,24 @@
+<apex:page showHeader="false" sidebar="false" docType="html-5.0" applyHtmlTag="false"   applyBodyTag="false" standardStylesheets="false" controller="VisualAntidote.HostedFastFormController">
+    <body class="ff-form">
+        <link rel="stylesheet" href="{!URLFOR($Resource.ffcommon,'styles/open-sans-fonts.min.css')}"/>
+        <input type="hidden"  id="isHostedForm"  value="True"  />
+        <apex:outputPanel rendered="{!IF(ISBLANK(ErrorCode) ||  (ISNULL(ErrorCode)),false,true)}"   >
+            
+            <div style="width:100%; margin:30px auto;min-width:500px;max-width:800px; font-family:'Open Sans',sans-serif;color: #455560;">
+                <div style="padding: 20px 30px;"><img src="{!URLFOR($Resource.ffcommon,'images/Formstack_For_Salesforce_256x29.png')}" alt="Formstack for Salesforce" width="40%"/></div>
+                <div style="padding: 30px;font-size:22px;">
+                    Something went wrong<br/>
+                    <apex:outputText rendered="{!IF(ISBLANK(ErrorCode),false,true)}" escape="false" value="{!ErrorCode}" ></apex:outputText>
+                </div>
+            </div>
+        </apex:outputPanel>
+        
+        <apex:outputPanel layout="block" styleClass="ff-form" rendered="{!IF(ISBLANK(EmbedCode) ||  (ISNULL(EmbedCode)),false,true)}"   >
+            <div class="ff-header">
+                <div class="ff-logo"></div>
+            </div>
+            <script type="text/javascript" data-resourcelink="{!$Resource.ffengine+'/styles/images/lookupicon.png'}" id="jsFastForms" src="{!IF(isFormNative,$Resource.NativeEngineJS,'')}{!EmbedCode}"></script>
+            
+        </apex:outputPanel>        
+    </body>
+</apex:page>

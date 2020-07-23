@@ -1,0 +1,2064 @@
+<apex:page controller="VisualAntidote.CKEditorMenuController" id="pg" sidebar="false" docType="html-5.0" title="Formstack"  tabStyle="FastForms__tab" action="{!validateUserLicense}" >
+    <apex:remoteObjects jsNamespace="ffpublish">
+        <apex:remoteObjectModel name="VisualAntidote__Previous_Form__c" jsShorthand="FormPrefillOptions" fields="Id,VisualAntidote__Prefill_Object_Info__c,VisualAntidote__Dynamic_Prefill_Enabled__c">  
+        </apex:remoteObjectModel>    
+    </apex:remoteObjects> <apex:remoteObjects jsNamespace="ffAlertTemplateEmailNS2">
+    <apex:remoteObjectModel name="VisualAntidote__Alert_Template__c" jsShorthand="ffAlertTemplateEmailObject" fields="Id,VisualAntidote__Category__c,VisualAntidote__Subject__c,VisualAntidote__Body__c,VisualAntidote__Name__c">  
+    </apex:remoteObjectModel> 
+    </apex:remoteObjects>
+    <head>
+    <!-- base.resource includes: JS Files [select2.min.js,jquery-ui.min.js,jquery-migrate.min.js,jquery-ui-timepicker-addon.min.js,bootstrap.min.js,secure-filters.min.js,html-encoder.min.js,common-helper.min.js] CSS files [select2.min.css,select2-custom.min.css,jquery-ui.min.css,jquery-ui-theme-smoothness.min.css,jquery-ui-timepicker-addon.min.css,app_main.min.css] -->
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__Base,'base.min.js')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__Base,'style/base.min.css')}" />
+    <!-- base.resource -->
+    <script>
+        /*Intercom Snippet*/
+        window.intercomSettings = {
+            app_id: "uh2s363g",
+            user_id: "{!$Organization.Id}",
+            name: "{!$User.FirstName} {!$User.LastName}", // Full name
+            email: "{!$User.Email}", // Email address   
+            custom_launcher_selector: "#Intercom",
+            hide_default_launcher :true
+        };  
+        
+        </script>
+        <script>
+        var fsIntercom = "{!URLFOR($Resource.ffcommon)}";
+        (function(){var w=window;var ic=w.Intercom;if(typeof ic==="function"){ic('reattach_activator');ic('update',intercomSettings);}else{var d=document;var i=function(){i.c(arguments)};i.q=[];i.c=function(args){i.q.push(args)};w.Intercom=i;function l(){var s=d.createElement('script');s.type='text/javascript';s.async=true;s.src=fsIntercom + '/scripts/shim.intercom.min.js';var x=d.getElementsByTagName('script')[0];x.parentNode.insertBefore(s,x);}if(w.attachEvent){w.attachEvent('onload',l);}else{w.addEventListener('load',l,false);}}})()
+        /*End Intercom Snippet*/
+        </script>
+        <script>
+        
+        console.log("Has user accepted EULA? {!hasAcceptedEula}");
+        </script>
+    </head>
+    
+    
+    
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
+    <meta content="utf-8" http-equiv="encoding" />
+    
+    <script src="{!URLFOR($Resource.Clipboard,'ZeroClipboard.js')}"></script>
+    
+    <link rel="stylesheet" type="text/css" href="{!URLFOR($Resource.ffcommon,'styles/open-sans-fonts.min.css')}" />
+    
+    <script src="{!URLFOR($Resource.downloadifyjs)}"></script>
+    <script src="{!URLFOR($Resource.swfobjectjs)}"></script>
+    
+    <link rel="stylesheet" href="{!URLFOR($Resource.ffcommon,'styles/ffcommon.min.css')}" />
+    <script src="{!URLFOR($Resource.alertHelperJS)}"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.foundation,'css/foundation.css')}" />     
+    <script src="{!URLFOR($Resource.foundation,'js/foundation.min.js')}"></script>
+    <script src="{!URLFOR($Resource.foundation,'js/foundation/foundation.joyride.js')}"></script>
+    
+    <script src="{!URLFOR($Resource.FFCKEditor,'ckeditor.js')}"></script>
+    <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__jszip, '/jszip.js')}"/>
+        <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__jszip, '/jszip-load.js')}"/>
+            <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__jszip, '/jszip-deflate.js')}"/>
+                <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__jszip, '/jszip-inflate.js')}"/>
+                    <script src="{!URLFOR($Resource.FastPrefillHelperJS)}"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.fs_assets,'pages/formMenu.min.css')}" />
+    <apex:outputPanel id="trialExpiryCompPanel">
+        <c:TrialExpiryComponent id="trialExpCp"  ffFreemium="{!isFreemium}"/>
+    </apex:outputPanel>
+    
+<script>
+    
+    var REMOTE_ACTIONS = [];
+    REMOTE_ACTIONS["validateForm"] = "{!URLENCODE($RemoteAction.CKEditorMenuController.validateForm)}";
+
+    window.formsPackageTier='{!packageTier}';
+    var SFPrefixForLinks='';
+    var ffcommonUrl="{!URLFOR($Resource.VisualAntidote__ffcommon)}";
+    if(ffcommonUrl.toLowerCase().indexOf('visualantidote__')>0){
+        SFPrefixForLinks='VisualAntidote__';
+    }
+    
+    <apex:outputText rendered="{!IF(packageTier == 'NativeCloud',true,false)}">
+    var isForceComSiteSetup={!$Setup.VisualAntidote__FastFormsTokenInfo__c.VisualAntidote__Is_Native_Setup_Done__c};
+    if(!isForceComSiteSetup){
+        console.log('[FORM] redirecting to NativeCloudWizard page')
+        ffNavigateToUrl( '/apex/NativeCloudWizard',SFPrefixForLinks);
+    }
+    </apex:outputText>
+    var formSearchText='';
+    var formRecIDs=[];
+    var orderByField='LastModifiedDate';
+    var orderByDirection='DESC';
+    var pageSize=10;
+    
+    var currentPage = 1;
+    var FFCKEditorurlroot="{!URLFOR($Resource.VisualAntidote__FFCKEditor)}";
+    var clip;
+    $( document ).ready(function() {
+        $('.form-sort-filter').select2();
+        
+        /*autocomplete for search box*/
+        $("#inputTxtFormNames").autocomplete({   
+            minLength: 3, 
+            appendTo:'#suggestionList',
+            source: function(request, response){   
+                
+                getFormNameListJS(response ,request.term);   
+            },focus: function( event, ui ) {
+                $('#inputTxtFormNames').val( ui.item.value);
+                return false;
+            },
+            select: function( event, ui ) {
+                $('#inputTxtFormNames').val( ui.item.value); 
+                return false;
+            },
+        });
+        
+        /*autocomplete initialization ends */
+        $(document).foundation();
+        
+        $( document ).foundation({ joyride : {         
+            tip_location : 'top',
+            tip_animation : 'fade',
+            tip_animation_fade_speed: 500,          
+            modal:false,
+            expose: false,
+            next_button: true,
+            prev_button: false,
+            cookie_monster: true,
+            cookie_name: 'fastforms-joyride',
+            cookie_domain: false,
+            cookie_expires: 365,
+            post_ride_callback: function() {
+                $(document).foundation('joyride', 'destroy');
+            }     
+        }
+                                 });
+        
+        
+        
+        
+        
+        <apex:outputText rendered="{!IF(showPopup,true, false)}">
+            var popupHTML=$('<div/>');
+        var validationDiv=$('<div/>').addClass('popup-validation').hide();
+        var dialogBody =$('<div/>');
+        var dialogMainWrapper = $('<center/>').addClass('dialog-center');
+        var dialogFont = $('<div/>').addClass('introDialogFont');
+        var dialogTitle = $('<div/>').addClass('primary');      
+        var dialogDescription = $('<div/>').addClass('secondary');
+        var dialogFormControls = $('<div />',{'class':'form-intro-popup', id:'introFormPopup'} );
+        $inputDescription1=$('<textarea />',{'class':'form-textarea popup-req placeholder', id:'txtbxOnboardingHowDidYouHear', maxlength: '255', onclick:"if (this.value.indexOf('For example') == 0) {this.value = '';$(this).removeClass('placeholder');}"} );
+        $inputDescription1.html('For example: Google search for \'form builders\', AppExchange search for \'surveys\', etc.');
+        
+        $inputDescription2=$('<textarea />',{'class':'form-textarea popup-req', id:'txtbxOnboardingWhyFastForms', maxlength: '255'} );
+        
+        $(validationDiv).html('We would really appreciate your insight! Please fill out the questions above before proceeding.');
+        $(popupHTML).append($('<div/>').addClass('popup-row').append("<div style='height:10px'>&nbsp;</div><b>Just a couple of quick questions for you before you get started. <br />1) How did you hear about Formstack?<br/><br/></b><div style='height:10px'>&nbsp;</div>").append($inputDescription1));
+        $(popupHTML).append($('<div/>').addClass('popup-row').append("<b>2) What compelled you to install Formstack?<br/><br/></b><div style='height:10px'>&nbsp;</div>").append($inputDescription2));
+        
+        $(popupHTML).append($(validationDiv));
+        
+        $(dialogTitle).html('<b>Hello {!$User.FirstName}!</b>');
+        $(dialogDescription).html('<p>Thank you for installing Formstack.<br />We hope you have an awesome experience building forms and surveys :)</p>');
+        $(dialogFormControls).append($(popupHTML));
+        //$(dialogDescription).append($(dialogFormControls));
+        $(dialogFont).append($(dialogTitle));
+        $(dialogFont).append($(dialogDescription));
+        
+        $(dialogMainWrapper).append($(dialogFont));
+        $(dialogMainWrapper).append($(dialogFormControls));
+        $(dialogBody).html($(dialogMainWrapper));
+        
+        $("#dialog-confirm").html($(dialogBody));
+        $.ui.dialog.prototype._focusTabbable = function(){};        
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "Welcome to Formstack",
+            height: "auto",
+            width: 650,            
+            buttons: {
+                "Get Started":{
+                    click: function () {
+                        if(IntroFormValid($('#introFormPopup')))
+                        {
+                            $('#introFormPopup').find('.popup-validation').hide();   
+                            sendInfoToIntercom('update', {"lead_source": $('#txtbxOnboardingHowDidYouHear').val()});
+                            sendInfoToIntercom('update', {"why_fast_forms": $('#txtbxOnboardingWhyFastForms').val()});
+                            $(this).dialog('close');
+                            $(document).foundation('joyride', 'start');
+                            doSetPopupDismissed();
+                        }
+                        else
+                        {
+                            $('#introFormPopup').find('.popup-validation').show();
+                        }
+                    },
+                    text: 'Get Started',
+                    'class': 'vabuttonLarge'
+                }
+            }
+        });
+        var buttonPane = $("#dialog-confirm").parent().find('.ui-dialog-buttonpane');
+        $(buttonPane).attr('style', 'margin: 0px !important; padding-top:20px;').addClass('form-intro-popup-buttonpane');
+        ;
+        </apex:outputText>
+        
+        <apex:outputText rendered="{!IF(hasAcceptedEula && !isEULASet,true, false)}">
+            console.log(' Update EULA');
+        updateAcceptEula();
+        </apex:outputText>
+
+        <apex:outputText rendered="{!hasAcceptedEula == false}">
+            var dialogBody =$('<div/>');
+        var dialogMainWrapper = $('<center/>').addClass('dialog-center');
+        var dialogFont = $('<div/>').addClass('dialogFont');
+        var dialogTitle = $('<div/>').addClass('primary');
+        var dialogDescription = $('<div/>').addClass('secondary');
+        var dialogFormControls = $('<div />',{'class':'form-trial-popup', id:'trialFormPopup'} );
+        $inputEULA=$('<textarea />',{'class':'form-textarea popup-req', id:'txtbxEULA'} );
+        /// Please add new EULA once we have it.
+        $inputEULA.val("");
+        var trialPopupHTML=$('<div/>');
+        $(trialPopupHTML).append($inputEULA);
+        
+        
+        $(dialogTitle).html('Heads up, {!$User.FirstName}!<br />Our terms and conditions have changed.');
+        $(dialogDescription).html('<p>Please review and accept our revised terms and conditions below before continuing:</p> ');
+        $(dialogFormControls).append($(trialPopupHTML));
+        $(dialogDescription).append($(dialogFormControls));
+        $(dialogFont).append($(dialogTitle));
+        $(dialogFont).append($(dialogDescription));
+        
+        $(dialogMainWrapper).append($(dialogFont));
+        $(dialogBody).html($(dialogMainWrapper));
+        
+        /* $("#dialog-confirm").html("<center><div class='dialogFont'><div class='primary'>Welcome to Formstack!</div><br /><div class='secondary'><p>Please fil out the information below to start your <strong>FREE 30-Day Trial</strong> of Formstack Enterprise Edition:</p> </div></div></center>");        */
+        // Define the Dialog and its properties.
+        $("#dialog-confirm").html($(dialogBody));
+        $.ui.dialog.prototype._focusTabbable = function(){};
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "",
+            height: "auto",
+            width: 862,
+            buttons: {
+                "I agree":{
+                    click: function () {
+                        AcceptEula();
+                        
+                        sendInfoToIntercom('trackEvent', 'eula_accepted');                
+                        $(this).dialog('close');
+                        $(document).foundation('joyride', 'start');                    
+                    },
+                    text: 'I agree',
+                    'class': 'vabutton1'
+                },
+                "I do not agree":{
+                    click: function () {
+                        window.history.back();
+                    },
+                    text: 'I do not agree',
+                    'class': 'vabutton2'
+                }
+                
+                
+            }
+        });
+        
+        
+        
+        
+        </apex:outputText>
+        
+        
+        
+        setTimeout(function() {
+            sendInfoToIntercom('update', {"package_tier": "{!packageTier}", "license_status": "{!if(daysLeftToExpiry > -1,'Trial','Active')}", "days_left": "{!daysLeftToExpiry}"});
+        }, 1000);
+        
+        
+        
+        
+        
+        <apex:outputText rendered="{!showPopup == false}">
+            $(document).foundation('joyride', 'start');
+        
+        </apex:outputText>
+        
+           
+       $( '#createNewForm,#createNewCommunityForm'  ).click(function () {
+     
+            if ( ($(".createnewformblock" ).css( "display" )=="none" && $(this).attr('id')=="createNewForm") || 
+                (($(this).attr('id')=="createNewForm") && 
+                  $( ".light-form-box" ).css( "display" )=="block" && 
+                  $( ".createnewformblock" ).css( "display" )=="inline" )) 
+            {
+                $( ".createnewformblock" ).show();
+                $('.newForm').show();
+                showDiv();
+                goToNextTourStop();
+                onFormTypeChange(0);
+                $('.newBtn').addClass('btnSaved');
+                
+            } else if ( ($( ".createnewformblock" ).css( "display" )=="none" && $(this).attr('id')=="createNewCommunityForm") || 
+                ($(this).attr('id')=="createNewCommunityForm" && 
+                  $( ".light-form-box" ).css( "display" )=="none" && 
+                  $( ".createnewformblock" ).css( "display" )=="inline" )) 
+            {
+                $( ".createnewformblock" ).show();
+                $('.newForm').show();
+                showDiv();
+                goToNextTourStop();
+                onFormTypeChange(1);
+                  $('.newBtn').addClass('btnSaved');
+                
+           }
+                else {
+                $( ".createnewformblock" ).hide();
+                $('.newForm').hide();
+                onFormTypeChange(0);
+            }
+                  
+     });
+         
+
+        var clip = new ZeroClipboard( 
+            $('.code'), {
+                moviePath: "{!URLFOR($Resource.VisualAntidote__Clipboard,'ZeroClipboard.swf')}"
+            });
+        
+        if(getUrlVars() == 'form'){
+            showDiv();
+        }
+        
+        callToRemoteGetFormIDs();
+        <apex:outputText rendered="{!if(isFreemium ,true,false)}">
+            resetDashboardFreemiumNotificationJS(true);
+        </apex:outputText>
+        
+
+        <apex:outputText rendered="{!if(bpaymentSyncEmail ,true,false)}">
+            jsPaymentSyncEmail();
+        </apex:outputText>
+    });/*Document ready ends*/
+    function resetSubmissionNotificationTags(failedNotificationList){
+        console.log(' reset notification tags');
+        $.each(failedNotificationList,function(idx,ffoption){
+            var failedCount=0;
+            try{
+                failedCount=  parseFloat(ffoption.FFText); 
+            }
+            catch(Err){}
+            var formid=ffoption.FFValue; 
+            if(!isNullOrEmpty(formid) && failedCount>0){
+                var notificationTagElem=$('.form-settings-wrapper .form-submission-wrapper[data-formid="'+formid+'"]').find('.notifications-tag');
+                $(notificationTagElem).addClass('ffscale-css');
+                $(notificationTagElem).html(failedCount+'');
+            }
+        });
+    }
+    function expandSubmissions(elemSource){
+        var expandDiv=false;
+        if(!$(elemSource).hasClass('active')){
+            expandDiv=true;
+        }
+        hideAllSubmissionPanels();
+        hideAllMigratePanels();
+        resetPublishOptionDrawer('');
+        if(expandDiv){
+            $(elemSource).addClass('active');
+            var submissionDetailElem=$(elemSource).parents('.form-information-wrapper-outer').find('.form-submission-wrapper-expanded');
+            $(submissionDetailElem).html('<div class="form-submission-wrapper-inner">Submission views</div>');
+            $(submissionDetailElem).append('<div class="grey-left-border10"></div>');
+            var formId=$(elemSource).attr('data-elemid');
+            remoteGetSubmissionStatusesCountJS(formId,submissionDetailElem);
+            
+        }
+    }
+
+    function expandMigrate(elemSource){
+        var expandDiv=false;
+        if(!$(elemSource).hasClass('active')){
+            expandDiv=true;
+        }
+
+        // hide all panel in page 
+        hideAllSubmissionPanels();
+        resetPublishOptionDrawer('');
+        hideAllMigratePanels();
+        if(expandDiv){
+            $(elemSource).addClass('active');
+            var MigrateDetailPanel = $(elemSource).parents('.form-information-wrapper-outer').find('.form-migrate-wrapper-expanded');
+            $(MigrateDetailPanel).slideDown();
+
+            var migrationDetailPanelWrapper = MigrateDetailPanel[0].querySelector('.form-migrate-wrapper-inner');
+            var formID = migrationDetailPanelWrapper.getAttribute('data-elemid');
+
+            ValidateFormActionJS(migrationDetailPanelWrapper, formID, migrateDetailsPanelActions);
+        }
+    }
+
+    function migrateDetailsPanelActions(elemSource, isValid){
+        // create Action buttons
+
+        var button_box = elemSource.querySelector('.fs-migrateDetails-buttons-box');
+        button_box.innerHTML='';
+        var approvedBy = elemSource.getAttribute('data-approvedBy');
+        var migratedUrl = elemSource.getAttribute('data-url');
+        var formID = elemSource.getAttribute('data-elemid');
+        var isUnPublishedForm = elemSource.getAttribute('data-isUnPublishedForm');
+        var hasHostedID = elemSource.getAttribute('data-hasHostedID');
+
+        // key indicators 
+            // hasHostedID = true incoming form is on update form
+            // hasHostedID = false incoming form is on insert form
+            // approvedBy == '' new incoming form and is not approved
+            // approvedBy != '' last incoming form was approved 
+            // isUnPublishedForm  = 'true' form is unpublished 
+            // isUnPublishedForm  = 'false' form is published 
+
+        if(approvedBy != '' ){
+            // Show migrate button when the form is published and last inccoming form was approved
+
+            var link = document.createElement('a');
+        
+            if(isUnPublishedForm  === 'true'){
+                // disable migration when form have a draft
+                link.setAttribute('class','vabutton3 migrated-button-action migrate-disabled');
+                link.setAttribute('title','The draft form must be published before it can be migrated.');
+            }else{
+                link.setAttribute('class','vabutton3 migrated-button-action');
+                link.setAttribute('href',migratedUrl);
+            }
+            link.innerHTML = 'Migrate Form';
+            button_box.appendChild(link); 
+
+
+        }else if(approvedBy == '' ){
+            // Show Approve and cancel button when there is incoming form and is not approved 
+
+            var btnCancel = document.createElement('a');
+            btnCancel.setAttribute('class','vabutton2 migrated-button-action');
+            btnCancel.setAttribute('href','#');
+            btnCancel.setAttribute('data-elemid', formID);
+            
+            if(hasHostedID == 'true'){
+                // If Migration Process is Update a existent Form, we will do the discard draft process instead of delete the form.
+                btnCancel.addEventListener('click', DiscardMigrationDraft);
+            }else{
+                // if the Form dosn't have a publish draft delete the form 
+                btnCancel.addEventListener('click', deleteMigrationTemplate);
+            }
+            
+            btnCancel.innerHTML = 'Cancel Migration';
+            button_box.appendChild(btnCancel); 
+
+            // hide approval when form is not valid 
+           
+            removeErrorMessageInMigrationPanel();
+
+            if (isValid == false) {
+                var errorMessageContainer  = createErrorMessageInMigrationPanel(true);
+                // create view report container
+                elemSource.insertBefore(errorMessageContainer , elemSource.firstChild);
+
+            }else if(isValid == true){
+                
+                var btnApprove = document.createElement('a');
+                btnApprove.setAttribute('href', '#');
+                btnApprove.setAttribute('class', 'vabutton3 migrated-button-action');
+                btnApprove.setAttribute('data-elemid', formID);
+                btnApprove.addEventListener('click', publishDraft);
+                btnApprove.innerHTML = 'Approve & Publish';
+                button_box.appendChild(btnApprove); 
+            }
+
+
+        }
+    }
+    function DiscardMigrationDraft(){
+        var formId = this.getAttribute('data-elemid');
+        DiscardDraft(formId);
+    }
+    function deleteMigrationTemplate(){
+        var formId = this.getAttribute('data-elemid');
+        deleteId(formId);
+    }
+
+    function removeErrorMessageInMigrationPanel(){
+        if (document.getElementsByClassName('fs-migrateDetails-error-box').length != 0) {
+            var errorMessageContainer = document.getElementsByClassName('fs-migrateDetails-error-box')
+            // Remove Error message 
+            for (let index = 0; index < errorMessageContainer.length; index++) {
+                const element = errorMessageContainer[index];
+                element.parentNode.removeChild(element);
+            }
+            
+        }
+        if (document.getElementsByClassName('fs-migrateDetails-error-withoutButton').length != 0) {
+            var errorMessageContainer = document.getElementsByClassName('fs-migrateDetails-error-withoutButton')
+            // Remove Error message 
+            for (let index = 0; index < errorMessageContainer.length; index++) {
+                const element = errorMessageContainer[index];
+                element.parentNode.removeChild(element);
+            }
+        }
+    }
+
+    function createErrorMessageInMigrationPanel(isMigrationError) {
+            // create a View Report
+
+            var boxcontainer = document.createElement('div');
+            
+            var boxText = document.createElement('span');
+            
+            
+            if(isMigrationError){
+                boxcontainer.classList.add('fs-migrateDetails-error-box');
+                var boxButton = document.createElement('a');
+                boxButton.classList.add('vabutton2');
+                boxButton.setAttribute('href', '#');
+                boxButton.addEventListener('click', formValidationReportOpen);
+                var boxButtonText = document.createElement('span');
+                boxButtonText.classList.add('btn-text');
+                boxButtonText.innerText = 'View Report';
+                boxButton.appendChild(boxButtonText);
+                var boxButtoncontainer = document.createElement('span');
+                boxButtoncontainer.classList.add('fs-migrateDetails-error-action');
+                boxButtoncontainer.appendChild(boxButton);
+                boxcontainer.appendChild(boxButtoncontainer);
+                boxText.classList.add('fs-migrateDetails-error-text');
+                boxText.innerText = 'Migration did not complete successfully. Resolve errors in report by editing form or updating form objects.';
+            }else{
+                // show message when Approve&publish fail
+                boxcontainer.classList.add('fs-migrateDetails-error-withoutButton');
+                boxText.classList.add('fs-migrateDetails-error-text-withoutButton');
+                boxText.innerHTML = 'An error has occurred while trying to publish. Try migrating this form again; or navigate to the form builder by clicking "Edit" and try to re-publish your form to resolve your issue.'+
+                                    ' If the problem persists, contact our Support Team at <a href="mailto:sfappsupport@formstack.com">sfappsupport@formstack.com</a>';
+            }
+         
+            boxcontainer.appendChild(boxText);
+
+            return boxcontainer;
+
+        }
+    function publishDraft(){
+
+        var formId  = this.getAttribute('data-elemid');
+        var elemSource = $(this).parents('.form-information-wrapper-outer').find('.form-migrate-wrapper-inner')[0];
+        var buttonElement = this;
+        buttonElement.classList.add('migrate-disabled');
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.publishDraft)}', formId,
+            function (result, event) {
+                if (event.status) {
+                    if (result != null && result.IsValid == true){
+                         var urltopublishpage = '{!$Site.BaseUrl}/apex/FormPublish?ffid='+ formId;
+                         window.location.replace(urltopublishpage);
+                    }else{
+
+                         elemSource.insertBefore(createErrorMessageInMigrationPanel(false), elemSource.firstChild);
+                    }
+                }else{
+                    console.log('[FORM] [publishDraft] Something went wrong: ' +result.ResultText);
+                }
+            });
+    }
+
+
+    function populateSubmissionStatuses(elemParent,statusNotificationList){
+        var ulHTML='<ul class="fs-statuses"><li class="status-msg-li st-all"><span class="status-msg"></span><span class="status-text"></span></li><li class="status-msg-li st-successful"><span class="status-msg"></span><span class="status-text"></span></li><li class="status-msg-li st-pending"><span class="status-msg"></span><span class="status-text"></span></li> <li class="status-msg-li st-failed"><span class="status-msg"></span><span class="status-text"></span></li></ul>';
+        var divElem=$('<div/>',{'class':'fs-statuses-box'});
+        divElem.html(ulHTML);
+        var all=0;
+        var successfull=0;
+        var failed=0;
+        var declined=0;
+        var pending=0;
+        if(statusNotificationList!=null && statusNotificationList.length>0){
+            $.each(statusNotificationList,function(idx,ffoption){
+                var statusText=ffoption.FFValue;
+                switch(statusText.toLowerCase()){
+                    case 'pending' :
+                        pending= parseFloat(ffoption.FFText); 
+                        break;
+                    case 'successful' :
+                        successfull= parseFloat(ffoption.FFText); 
+                        break;
+                    case 'failed' :
+                        failed= parseFloat(ffoption.FFText); 
+                        break;
+                    case 'declined' :
+                        declined= parseFloat(ffoption.FFText); 
+                        break;
+                    default:
+                        break;
+                }
+                
+            });
+        }
+        all=successfull+pending+declined+failed;
+        
+        divElem.find('li.status-msg-li').each(function(indx,elem){
+            if($(elem).hasClass('st-all')){
+                setStatusMessagesToElem(elem,'Overall: '+all);
+            }
+            else if($(elem).hasClass('st-failed')){
+                setStatusMessagesToElem(elem,'Failed: '+failed);
+            }else if($(elem).hasClass('st-successful')){
+                setStatusMessagesToElem(elem,'Successful: '+successfull);
+            }else if($(elem).hasClass('st-pending')){
+                setStatusMessagesToElem(elem,'Pending: '+pending);
+            }
+            
+        });
+        var formId=safeStringValue($(elemParent).parent().attr('id'),"");
+        if(!isNullOrEmpty(formId)){
+            formId=formId.replace('form-','');
+        }
+        var submissionLink='<a class="vabutton1" target="_blank"  href="' + FF_GetVisualforcePageFullURL('submissiondashboard', SFPrefixForLinks) + '?formid='+formId+'"  ><span class="btn-text">View Submissions</span></a>';
+        var submissionLinkWrapper=$('<div/>',{'class':'submission-link-box'});
+        submissionLinkWrapper.html(submissionLink);
+        $(elemParent).find('.form-submission-wrapper-inner').html(divElem);
+        $(elemParent).find('.form-submission-wrapper-inner').append(submissionLinkWrapper);
+        $(elemParent).slideDown();
+    }
+    function setStatusMessagesToElem(elem,statusmsg){
+        $(elem).find('.status-text').html(statusmsg);
+    }
+    function callDialogClose(thisDialog)
+    {
+        $('#dialog-confirm').dialog('close');
+    }
+    
+    function IntroFormValid(formElement)
+    {
+        var isFormValid=true;
+        $(formElement).find('textarea.form-textarea.popup-req').each(function(i, inputelem) {
+            if($(inputelem).val().indexOf('For example:') == 0)
+            {
+                isFormValid=false;
+                
+                return false;
+            }
+        });
+        return isFormValid;
+    }
+    //Read a pages GET URL variables and return them as an associative array.
+    function getUrlVars()
+    {
+        var vars = [], hash;
+        var hashes = window.location.href.slice(window.location.href.indexOf('?') + 1).split('&');
+        for(var i = 0; i < hashes.length; i++)
+        {
+            hash = hashes[i].split('=');
+            vars.push(hash[0]);
+            vars[hash[0]] = hash[1];
+        }
+        return vars;
+    }
+    
+    
+    var delFormId='';
+    
+    
+    function closePreview(){
+        $("#dialog").dialog("close");
+        $('.button').removeClass('active'); 
+    }
+    function delTemplate(){
+        $('.formName').val('');
+        $('.newForm').hide();
+        $('.tooltips').next().remove();
+        $('.tooltips').next().remove();
+        $('.tooltips').html('');
+        $('.tooltips').html('<div style="margin-top: 5px;display:inline-block;" class="help"></div><span><h6>Your primary object is the main object you want to capture for your form. Once you select a primary object, you can choose other objects related to it.</h6></span>');
+        $('#createNewForm').removeClass('btnSaved');
+        $('#createNewForm').addClass('button');
+        $('#form-'+delFormId).fadeOut('slow');                
+    }
+    
+    function editTemplate(editId){
+        editTemplate(editId);
+    }
+    
+    
+    function trackEditTemplate(editId)
+    {
+        var metadata = {
+            form_name: $('#form-' + editId + ' .form-information h1').eq(0).text()
+        };
+        sendInfoToIntercom('trackEvent', 'clicked-edit-form', metadata);  
+    }     
+    function setFormActive(recId)
+    {
+        var btn =  $('#btnFormActiveDiv' + recId);
+        
+        if ($(btn).hasClass('formActive'))
+        {
+            $(btn).removeClass('formActive');
+            $(btn).addClass('formInactive');
+            $(btn).parent().find('.lblFormActive').text('Form inactive')
+        } else {
+            $(btn).removeClass('formInactive');
+            $(btn).addClass('formActive');
+            $(btn).parent().find('.lblFormActive').text('Form active')
+        }
+        
+    }
+    
+    function editText(e){
+        e.readOnly='';
+        $(e).removeClass('editText');
+        $(e).addClass('editTextfocus');            
+    }
+    function saveEdit(e,upId){
+        saveEditText(upId,$(e).val());
+        e.readOnly=true;            
+        $(e).removeClass('editTextfocus');
+        $(e).addClass('editText');                        
+    }
+    function changeImg(x,con){
+        if(con=='add'){
+            x.src="{!URLFOR($Resource.iconImages,'AddHover.png')}";
+        }
+        if(con=='remove'){
+            x.src="{!URLFOR($Resource.iconImages,'RemoveHover.png')}";
+        }
+        if(con=='Copy'){
+            x.src="{!URLFOR($Resource.alpha,'HelpHover.png')}";
+        }            
+        if(con==undefined){
+            x.src="{!URLFOR($Resource.iconImages,'CloseHover.png')}";
+        }
+    }
+    function rechangeImg(x,con){
+        if(con=='add'){
+            x.src="{!URLFOR($Resource.iconImages,'Add.png')}";
+        }
+        if(con=='remove'){
+            x.src="{!URLFOR($Resource.iconImages,'Remove.png')}";
+        }
+        if(con=='Copy'){
+            x.src="{!URLFOR($Resource.alpha,'HelpActive.png')}";
+        }
+        if(con==undefined){
+            x.src="{!URLFOR($Resource.iconImages,'Close.png')}";
+        }
+    }
+    
+    function hideHelpIcon()
+    {
+        $('.intercomHelpIcon').hide(500);
+    } 
+    var ffid='';
+    
+    function togglePublishOptionsFormID()
+    {
+        if(ffid!='')
+        {
+            return true;
+        }
+        else{
+            false;
+        }
+    }
+    function hideAllSubmissionPanels()
+    {
+        $('.form-outer-container').each(function(index,elem){
+            
+            $(elem).find('.form-submission-wrapper-expanded').slideUp();
+            $(elem).find('.form-submission-wrapper-expanded').html('');
+            $(elem).find('.form-submission-wrapper-expanded').parent().find('.form-submission-wrapper .vabutton2').removeClass('active')
+            
+        });
+    }
+
+    function hideAllMigratePanels()
+    {
+        $('.form-outer-container').each(function(index,elem){
+            
+            $(elem).find('.form-migrate-wrapper-expanded').slideUp();
+            $(elem).find('.form-migrate-wrapper-expanded').parent().find('.btnmigrate').removeClass('active')
+            
+        });
+    }
+
+    function hideAllPublishPanels()
+    { 
+        $('.form-outer-container').each(function(index,elem){
+            // $(elem).find('.form-information-wrapper-outer').removeClass('disable-selection');       
+            $(elem).find('.form-information-wrapper-outer').removeClass('f-selected');       
+            $(elem).find('.publishComponentCSS').slideUp();
+            $(elem).find('.publishComponentCSS').html('');
+            $(elem).find('.publishComponentCSS').parent().find('.vabutton2-noactive.active').removeClass('active');
+            
+        });
+        
+    }
+
+    function resetNavigationlinks(){
+        resetFastFormsHREFLinks('.mainDiv',SFPrefixForLinks);
+        remoteGetFailedSubmissionsCountJS();
+    }
+    function hidePublishPanels(linkelem)
+    {    
+        hideAllSubmissionPanels();
+        hideAllMigratePanels();
+        $(linkelem).parent().toggleClass('active');
+        
+        console.log('linkelem '+linkelem);
+        console.log('linkelem data-eementid '+$(linkelem).attr('data-elemid'));
+        var formid=$(linkelem).attr('data-elemid');
+        $('.form-outer-container').each(function(index,elem){
+            if($(elem).find('.form-information-wrapper-outer').attr('id')!='form-'+formid){
+                // $(elem).find('.form-information-wrapper-outer').removeClass('disable-selection');
+                $(elem).find('.publishComponentCSS').slideUp();
+                $(elem).find('.publishComponentCSS').html('');
+                $(elem).find('.form-settings-wrapper-inner a.active').removeClass('active');
+            }
+            else
+            {
+                $(elem).find('.publishComponentCSS').slideDown();
+                //console.log('Found open'+$(elem).find('.form-information-wrapper-outer').attr('id'));
+                $(elem).find('.form-information-wrapper-outer').removeClass('f-selected'); 
+                //$(elem).find('.form-information-wrapper-outer').addClass('disable-selection');
+                // disableActionBtns();
+            }
+        });
+    }
+
+    function showNotification(elemid, textmsg)
+    {
+        $('#' + elemid).show();
+        $('#' + elemid).find('.msg-text-div').html(textmsg);
+    }
+    function hideNotification(elemid)
+    {
+        $('#' + elemid).find('.msg-text-div').html('');
+        $('#' + elemid).hide();
+    }
+    function hideMessage(elemid)
+    {
+        $(elemid).parent().hide();
+    }
+    
+    
+    function ToggleFormActive(editId)
+    {     
+        
+        doToggleFormActive(editId);
+        
+    }
+    
+    function DiscardDraft(deleteDraftId){
+        $("#dialog-confirm").html("<div class='dialogHeader'><div class='dialogIcon dialogIconAlert'>&nbsp;</div></div><div class='dialogFont'><div class='primary'>Are you sure you want to discard this draft?</div></div>");        
+        // Define the Dialog and its properties.
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "Delete",
+            height: "auto",
+            width: 413,
+            buttons: {
+                "Yes":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(true);
+                        $('.button').removeClass('active');          
+                        $('#'+delId).find('#tabList tr td').find('.button').each(function(){ 
+                            if($(this).text() == 'Delete'){
+                                $(this).addClass('active');
+                            }              
+                        });
+                    },
+                    text: 'Yes',
+                    'class': 'vabutton1'
+                },
+                "No":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(false);
+                    },
+                    text: 'No',
+                    'class': 'vabutton2'
+                }
+            }
+        });
+        $('.ui-dialog :button').blur();
+        function callback(value) {
+            if (value) {
+                doDiscardDraft(deleteDraftId);            
+            } else {
+                return false;
+            }
+        }
+    }     
+    
+    var isFinalStep = false;  
+    function goToNextTourStop()
+    {
+        if ($(".joyride-tip-guide").length > 0 && !isFinalStep)
+            $("#takeTour").foundation('joyride','go_next');
+    }         
+    
+    
+    
+    
+    function duplicateTemplateCall(cloneid)
+    {
+        <apex:outputText rendered="{!IF(isFreemium && noOfForms!=null && (1<noOfForms),true,false)}">
+            upgradeNowMessage('A maximum of two forms can be created in Formstack free edition.','','');
+        console.log(' Is a freemium and form count is greater  then {!noOfForms}');
+        </apex:outputText>
+        <apex:outputText rendered="{!IF(!isFreemium || (isFreemium && (noOfForms<2)),true,false)}">
+            console.log(' Is not freemium or form count is less then  {!noOfForms}');
+        remoteDuplicateTemplateJS(cloneid);
+        </apex:outputText>
+        
+    } 
+    function remoteGetAllFormIDsJS()
+    {
+        resetInlineLoadingBar(true);                        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteGetAllFormIDs)}',formSearchText, orderByField,orderByDirection,          
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) {
+                                                          resetInlineLoadingBar(false);     
+                                                          if(result!=null )
+                                                          {
+                                                              formRecIDs=result;
+                                                              initializePagination(1,pageSize);
+                                                              resetCurrentPageData(1,true);
+                                                              
+                                                          }
+                                                          else
+                                                          {
+                                                              
+                                                          }
+                                                      } else {
+                                                          resetInlineLoadingBar(false);                        
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function deleteId(delId){ 
+        var  delIdArr=[];          
+        $("#dialog-confirm").html("<div class='dialogHeader'><div class='dialogIcon dialogIconAlert'>&nbsp;</div></div><div class='dialogFont'><div class='primary'>Are you sure you want to delete this form?</div></div>");        
+        // Define the Dialog and its properties.
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "Delete",
+            height: "auto",
+            width: 413,
+            buttons: {
+                "Yes":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(true);
+                        
+                    },
+                    text: 'Yes',
+                    'class': 'vabutton1'
+                },
+                "No":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(false);
+                    },
+                    text: 'No',
+                    'class': 'vabutton2'
+                }                    
+            }
+        });
+        $('.ui-dialog :button').blur();
+        function callback(value) {
+            if (value) {
+                // deleteTemplate(delId);               
+                delIdArr.push(delId);
+                if(delIdArr!=null && delIdArr.length>0){
+                    remoteDeleteTemplatesJS(delIdArr); 
+                }
+            } else {
+                return false;
+            }
+        }
+    } 
+    function resetDashboardFreemiumNotificationJS(readonly)
+    {
+        
+        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.resetDashboardFreemiumWarning)}',readonly,
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) { 
+                                                          if(result=='disabled')
+                                                          {
+                                                              $('.freemium-msg-box-outer').fadeOut('fast');
+                                                          }
+                                                          else
+                                                          {
+                                                              $('.freemium-msg-box-outer').fadeIn('slow');
+                                                          }
+                                                      } else {
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function remoteGetFailedSubmissionsCountJS()
+    {
+        
+        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteGetFailedSubmissionsCount)}', 
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) { 
+                                                          console.log('[remoteGetFailedSubmissionsCount] Success-'+result);
+                                                          if(result!=null && result.length>0)
+                                                          {
+                                                              var responseArr= result;
+                                                              resetSubmissionNotificationTags(responseArr);  
+                                                              
+                                                          }
+                                                          else
+                                                          {
+                                                              
+                                                          }
+                                                      } else {
+                                                          console.log('[remoteGetFailedSubmissionsCount] Failed-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function remoteGetSubmissionStatusesCountJS(formId,elemParent)
+    {
+        
+        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteGetSubmissionStatusesCount)}',formId, 
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) { 
+                                                          if(result!=null && result.length>0)
+                                                          {
+                                                              var responseArr= result;
+                                                              populateSubmissionStatuses(elemParent,responseArr);  
+                                                              
+                                                          }
+                                                          else
+                                                          {
+                                                              populateSubmissionStatuses(elemParent,null);  
+                                                          }
+                                                      } else {
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function remoteDuplicateTemplateJS(recId)
+    {
+        
+        $('#duplicateFormProcessing').show();
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteDuplicateTemplate)}',recId,
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) { 
+                                                          if(result.length>0 && result[0].IsValid)
+                                                          {
+                                                              var orgDraftRecId='';
+                                                              var orgPublishedRecId='';
+                                                              var dupDraftRecId='';
+                                                              var dupPublishedRecId='';
+                                                              for(resultIndx=0;resultIndx<result.length;resultIndx++)
+                                                              {
+                                                                  if(!isNullOrEmpty(result[resultIndx].OtherText)){
+                                                                      var recType=result[resultIndx].OtherText;
+                                                                      switch (recType.toLowerCase()) {
+                                                                          case "originaldraft":
+                                                                              orgDraftRecId=result[resultIndx].ResultText;
+                                                                              break;
+                                                                          case "originalpublished":
+                                                                              orgPublishedRecId=result[resultIndx].ResultText;
+                                                                              break;
+                                                                          case "dupdraft":
+                                                                              dupDraftRecId=result[resultIndx].ResultText;
+                                                                              break;
+                                                                          case "duppublished":
+                                                                              dupPublishedRecId=result[resultIndx].ResultText;
+                                                                              break;
+                                                                          default:
+                                                                              break;
+                                                                      }
+                                                                  }
+                                                                  
+                                                              }
+                                                              if(!isNullOrEmpty(orgDraftRecId) && !isNullOrEmpty(orgPublishedRecId) &&
+                                                                 !isNullOrEmpty(dupDraftRecId) && !isNullOrEmpty(dupPublishedRecId)){
+                                                                  remoteUpdatePaymentsForClonedTemplatesJS(orgDraftRecId,orgPublishedRecId,dupDraftRecId,dupPublishedRecId);
+                                                              }
+                                                              else{
+                                                                  console.log(' In else remoteDuplicateTemplateJS ');
+                                                                  hideLoadingBox('#duplicateFormProcessing'); 
+                                                              }
+                                                          }
+                                                          else
+                                                          {
+                                                              console.log(' In else remoteDuplicateTemplateJS result is not valid ');
+                                                              hideLoadingBox('#duplicateFormProcessing'); 
+                                                          }
+                                                      } else {
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function remoteUpdatePaymentsForClonedTemplatesJS(orgDraftRecId,orgPublishedRecId,dupDraftRecId,dupPublishedRecId)
+    {
+        
+        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteUpdatePaymentsForClonedTemplates)}',orgDraftRecId,orgPublishedRecId,dupDraftRecId,dupPublishedRecId,
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) { 
+                                                          if(result!=null && result.IsValid)
+                                                          {
+                                                              
+                                                              var publishedRecId=result.ResultText;
+                                                              
+                                                              if(!isNullOrEmpty(publishedRecId)){
+                                                                  duplicateTemplateComplete(publishedRecId);
+                                                              }
+                                                              else{
+                                                                  console.log('Error in remoteUpdatePaymentsForClonedTemplatesJS-');
+                                                                  hideLoadingBox('#duplicateFormProcessing'); 
+                                                              }
+                                                          }
+                                                          else if(result!=null && !result.IsValid)
+                                                          {
+                                                              console.log('Error in remoteUpdatePaymentsForClonedTemplatesJS result is invalid-'+result.OtherText);
+                                                              hideLoadingBox('#duplicateFormProcessing'); 
+                                                          }
+                                                              else
+                                                              {
+                                                                  console.log('Exception in remoteUpdatePaymentsForClonedTemplatesJS ');
+                                                                  hideLoadingBox('#duplicateFormProcessing'); 
+                                                              }
+                                                      } else {
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function remoteDeleteTemplatesJS(delIdArr)
+    {
+        resetInlineLoadingBar(true);
+        remoteValidateDeleteActionJS(delIdArr);
+    }
+    function remoteDoDeleteTemplatesJS(delIdArr)
+    {
+        resetInlineLoadingBar(true);
+        
+        Visualforce.remoting.Manager.invokeAction('{!URLENCODE($RemoteAction.CKEditorMenuController.remoteDeleteTemplates)}',delIdArr,
+                                                  function(result, event) {
+                                                      
+                                                      if (event.status) {
+                                                          resetInlineLoadingBar(false);                        
+                                                          if(result!=null)
+                                                          {
+                                                              callToRemoteGetFormIDs();
+                                                              console.log('Success in remoteDeleteTemplatesJS-');
+                                                              
+                                                          }
+                                                          else if(result!=null && !result.IsValid)
+                                                          {
+                                                              console.log('Error in remoteDeleteTemplatesJS result is invalid-'+result.OtherText);
+                                                              
+                                                          }
+                                                              else
+                                                              {
+                                                                  console.log('Exception in remoteDeleteTemplatesJS ');
+                                                                  
+                                                              }
+                                                      } else {
+                                                          resetInlineLoadingBar(false);                        
+                                                          console.log(' Fail-'+result);
+                                                      }
+                                                      
+                                                  },
+                                                  { buffer: true, escape: true, timeout: 30000 }
+                                                 );
+    }
+    function hideLoadingBox(elemSource)
+    {
+        $(elemSource).hide(); 
+    }
+    
+    </script> 
+
+    <c:FormValidationReportComponent ></c:FormValidationReportComponent>
+    <div id="FormMenuFFAlertTopMessage">
+        <c:FFAlertTopMessage ></c:FFAlertTopMessage>
+    </div>
+    <div class="mainHeader">
+        <div class="mainHeaderInner">
+
+            <div  class="header-link-panel">
+                <span>
+                    <div class="header-link-help" onclick="var bubbleStyle = $('.bubble-container')[0].style; bubbleStyle.display = bubbleStyle.display == 'none'?'block':'none';"></div>
+                    <div class="bubble-container" style="display: none;">
+                        <p class="bubble-corner"><img src="{! URLFOR($Resource.fs_assets,'images/iconimages/corner.svg')}"></img></p>
+                        <div class="bubble-main">
+                            <a href="https://sfapphelp.formstack.com" target="_blank">Help</a>
+                            <a href="https://sfappideas.formstack.com/" target="_blank">Ideas</a>
+                        </div>
+                    </div>
+                </span>
+                <span>
+                    <apex:outputLink styleClass="admin-settings-panel vfns-link" value="/apex/AdminSettingsPanel" rendered="{!isAdminSettingsPanelAccessible}">Admin Settings</apex:outputLink>
+                </span>
+            </div>
+            <div style="clear: both;"></div>
+
+            <div style="line-height: 22px;margin: auto auto;float: left;margin-top: 8px;display: inline-block; ">
+                <a id="createNewForm" class="vabutton3" onclick="sendInfoToIntercom('trackEvent', 'clicked-create-new-form');" ><span class="btn-icon"></span> <span class="btn-text">Create New Form</span></a>
+                  <span style="width:30px;display:inline-block"></span>
+                <apex:outputPanel rendered="{! showCommunity }">
+                    <a id="createNewCommunityForm" class="vabutton3 btnCommunity" onclick="sendInfoToIntercom('trackEvent', 'clicked-create-new-Community-form');">
+                        <span class="btn-icon"></span> <span class="btn-text">Create Community Form</span></a>
+                </apex:outputPanel>
+            </div>
+            <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),true,false)}">
+                <div class="ff-logo-box" style="{!IF((bApplyNewStyle==false), 'display:block;','display:none;')}">
+                    <div class="ff-logo"><img alt="Formstack NativeCloud" title="Formstack NativeCloud" src="{!URLFOR($Resource.logos,'native-cloud.png')}" /></div>
+                    <div class="ff-logo-title">
+                        <span class="ffsup">Formstack</span>
+                        <h1 style="margin-bottom: 5px;" class="sub-h1">NATIVE</h1><h1 style="clear:left;" class="E-bold">CLOUD</h1>
+                    </div>
+                </div>
+                
+                <div class="fs-style ff-logo-box" style="{!IF((bApplyNewStyle==true), 'display:block;','display:none;')}">
+                    <div class="fs-ff-logo">
+                        <img alt="Formstack NativeCloud" title="Formstack NativeCloud" src="{!URLFOR($Resource.logos,'native-cloud-fs.png')}" height="51" />
+                    </div>
+                </div>
+            </apex:outputPanel>
+            <apex:outputPanel layout="block" style="float: right;line-height:0px;" rendered="{!IF((packageTier=='NativeCloud'),false,true)}">
+                
+                <div class="ff-logo-box" style="{!IF((bApplyNewStyle==false), 'display:block;','display:none;')}">
+                    <div class="ff-logo"><img src="{!URLFOR($Resource.logos,'color_logo_only.png')}" /></div>
+                    <div class="ff-logo-title"> <h1 class="E-bold">FAST</h1><h1 class="sub-h1">FORMS</h1>
+                        <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier=='EnterprisePlus'),true,false)}">Enterprise Plus Edition</apex:outputPanel>
+                        <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier!='EnterprisePlus'),true,false)}">{!packageTier} Edition</apex:outputPanel>						
+                    </div>     
+                </div>
+                
+                <div class="fs-style ff-logo-box" style="{!IF((bApplyNewStyle==true), 'display:block;' ,'display:none;')}" >
+                    <div class="ff-logo">
+                        <img class="fs-logo-img" src="{!URLFOR($Resource.logos,'color_logo_only_fs.png')}"  />
+                    </div>
+                    <div class="ff-logo-title">
+                        <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier=='EnterprisePlus'),true,false)}">Enterprise Plus</apex:outputPanel>
+                        <apex:outputPanel styleClass="ffsub" rendered="{!IF((packageTier!='EnterprisePlus'),true,false)}">{!packageTier}</apex:outputPanel><br />
+                        <span class="ffsub" style="padding-top: 5px;">Edition</span>
+                    </div>     
+                </div>
+            </apex:outputPanel>       
+            
+                     
+        </div>
+        
+        
+    </div>
+    
+    
+    
+    <apex:form id="frm"> 
+        <apex:actionFunction name="remoteGetAllFormsJS" action="{!loadFormList}"  status="status"  rerender="mainrepeaterpanel,noRecordsFoundBox" oncomplete="hideAllPublishPanels();resetNavigationlinks();" >
+            <apex:param name="draftIdList" value="draftIdList" />
+            <apex:param name="orderByFieldName" value="orderByFieldName" />
+            <apex:param name="direction" value="direction" />
+        </apex:actionFunction>
+        <apex:actionFunction immediate="true"  name="AcceptEula" action="{!AcceptEula}" rerender="" ></apex:actionFunction>
+        <apex:actionFunction immediate="true"  name="updateAcceptEula" rerender="" action="{!updateAcceptedEulaFlag}"  ></apex:actionFunction>
+        
+        <apex:outputPanel styleClass="createnewformblock" id="NewFormComponent" style="display:none">
+            <c:NewFormComponentMulti id="pgCp" />
+        </apex:outputPanel>
+        
+        <ol data-joyride="data-joyride" id="takeTour" style="display:none">
+            <li data-id="createNewForm" data-options="next_button: false;tip_location: bottom;">Welcome to Formstack! <br /><br />Click this button to create your first form.<br /></li>             
+            <li data-id="pg:frm:pgCp:cp:formName" data-options="next_button: false;tip_location: bottom;">Let's give our first form a name, something easily identifiable.<br /></li>        
+            <li data-id="s2id_mergeTypeSelect" data-options="next_button: false;tip_location: right;">Next, let's pick an object. This is where you want your form data to be captured in Salesforce. <br /><br />For example, if you are preparing a Contact Us form, you'll want to select Contact here.<br /></li>   
+            <li data-id="hoverRel" data-options="tip_location: right;">We can also pick related objects when we want to store other types of data that are related to our object above. <br /><br />For example, we may want to capture account information and associate that account to our contact. In that case, we can click this button and select Account.<br /><br /><a href="https://sfapphelp.formstack.com/hc/en-us/sections/360002708091-Getting-Started" class="tourAnchor" target="_blank">Read more...</a><br /><br /></li>                 
+            <li data-id="createBtn" data-options="next_button: false;tip_location:bottom;">Once we've given our form a name and selected our objects, it's time to start building! <br /><br />Click here to get started.<br /></li>                           
+        </ol>        
+        <apex:actionFunction name="resetPublishOptionDrawer" action="{!togglePublishOption}"  status="status"   oncomplete="hideAllPublishPanels();" >
+            <apex:param name="currentOpenedId" value="currentOpenedId" />
+        </apex:actionFunction>
+        <apex:actionStatus id="status">
+            <apex:facet name="start">
+                <div id="load-status" > 
+                    <div class="overlay"></div>
+                    <div class="status">
+                        <div class='dialogHeader'><div class='dialogIcon dialogIconWait'>&nbsp;</div></div><div class='dialogFont'><div class="primary">Loading, please wait...<br /><br /><br /></div></div>
+                    </div>
+                </div>
+            </apex:facet>
+        </apex:actionStatus>
+        <div id="duplicateFormProcessing" style="position:fixed;z-index:1000;display:none"> 
+            <div class="overlay"></div>
+            <div class="status">
+                <div class="dialogHeader"><div class="dialogIcon dialogIconWait">&nbsp;</div></div><div class="dialogFont"><div class="primary">Loading, please wait...<br /><br /><br /></div></div>
+            </div>
+        </div>
+        <apex:actionFunction name="doDiscardDraft" action="{!doDiscardDraft}" reRender="mainrepeater" status="status">
+            <apex:param name="deleteDraftId" value="deleteDraftId" />
+        </apex:actionFunction>
+        <apex:actionFunction name="doToggleFormActive" action="{!doToggleFormActive}" reRender="mainrepeater" status="status" oncomplete="setFormActive('{!editId}');" >
+            <apex:param name="eId" value="eId" assignTo="{!editId}" />
+        </apex:actionFunction>
+        <apex:actionFunction name="doSetPopupDismissed" action="{!doSetPopupDismissed}" reRender="none">
+        </apex:actionFunction>
+        <apex:actionFunction name="deleteTemplate" action="{!deleteTemplate}" reRender="mainrepeater" status="status"  >
+            <apex:param name="fId" value="fId" assignTo="{!delId}" />
+        </apex:actionFunction>
+        <apex:actionFunction name="saveEditText" action="{!saveEditText}" reRender="pg">
+            <apex:param assignTo="{!updateId}" name="updateId" value="updateId" />
+            <apex:param assignTo="{!updateName}" name="updateName"
+                        value="updateName" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="duplicateTemplateComplete" action="{!duplicateTemplateComplete}"   reRender="mainrepeater" oncomplete="hideLoadingBox('#duplicateFormProcessing');">
+            
+            <apex:param name="dupPublishedRecId" value="dupPublishedRecId"   />
+            
+        </apex:actionFunction>
+        <apex:actionFunction name="editTemplate" action="{!editTemplate}" status="status" reRender="pg">
+            <apex:param name="eId" value="eId" assignTo="{!editId}" />
+        </apex:actionFunction>
+        <apex:actionFunction name="jsPaymentSyncEmail" action="{!paymentSyncEmail}"  rerender=""/>
+        <div class="ohidden">                
+            <apex:outputPanel layout="block" style="padding-top:25px;display:none" styleClass="freemium-msg-box-outer" rendered="{!IF(isFreemium,true,false)}">
+                <div class="freemium-msg-box"   >
+                    
+                    <div class="msg-text-div"  >Some features have been disabled in Formstack free edition.</div>
+                    <span onclick="closeFreemiumNotification(this,'formmenu');" class="close-icon"></span>
+                </div>
+            </apex:outputPanel> 
+            <!--Search box and sort box header HTML starts -->
+            <div class="ffheader-wrapper-outer ">
+                <div class="ffheader-wrapper p12_0 grey-left-border10">
+                    <div class="ffheader-wrapper-inner ">
+                        
+                        <div class="ff-form-filter"> 
+                            <input id="inputTxtFormNames" type="text"   class="txt-form-name"   />
+                            
+                            <input id="inputTxtFormNamesHidden" type="hidden"    />
+                            <div class="btnFilterForm vabutton3" onclick="filterByFormName(this);return false;">
+                                <span class="btnText">OK</span></div>
+                            <span id="suggestionList"></span>
+                            
+                            
+                        </div>
+                        <div class="ff-sort-box"> 
+                            <span class="sort-title"><h3>Sort order:</h3> </span>
+                            <select class="select-elem form-sort-filter" style="width:290px" onchange="focusInputFilter(this);return false;" tabindex="-1" title=""> 
+                                <option selected="selected" value="LastModifiedDate-DESC">Last Modified</option>   
+                                <option value="LastModifiedDate-ASC">First Modified</option>   
+                                <option value="Name-ASC">Alphabetical A-Z</option>   
+                                <option value="Name-DESC">Alphabetical Z-A</option>   
+                            </select>   </div> 
+                        <div style="clear:both">    </div> </div>  
+                </div>  </div>
+            
+            <!--Search box and sort box header HTML ends -->
+            <div class="ffactions-wrapper-outer ">
+                <div class="action-btn-container">
+                    <div class="btnSelectAll vabutton4" onclick="toggleFormSelections(this);return false;">
+                        <span class="btnIcon"></span><span class="btnText">Select All</span>
+                    </div>
+                    <div class="btnDelete vabutton4 va-disabled" onclick="deleteSelectedForms(this);return false;">
+                        <span class="btnText">Delete</span>
+                    </div>
+                </div>
+                
+                <div class="inline-loading-wrapper" style="clear:both">
+                    <div class="inline-loading" style="display: none;"></div>
+                </div>
+            </div>
+            <div class="mainDiv">
+                <apex:outputPanel id="refresh"></apex:outputPanel>
+                <apex:outputPanel id="msgpanel" styleClass="ohidden">
+                    
+                    <apex:pageMessages escape="false" />
+                </apex:outputPanel>
+                <apex:outputPanel id="noRecordsFoundBox"  layout="block">
+                    <center>
+                        <apex:outputPanel styleClass="no-record-found"  layout="block" rendered="{!IF(listFormObjects==null || listFormObjects.size==0,true,false)}" >
+                            No record found
+                        </apex:outputPanel></center>
+                </apex:outputPanel>
+                <apex:outputPanel id="mainrepeaterpanel"  layout="block">
+                    <apex:repeat id="mainrepeater" value="{!listFormObjects}" var="formObj">
+                        <apex:outputPanel layout="block" styleClass="form-outer-container" id="itemFormWrapper">
+                            <apex:variable var="isUnPublishedForm" value="{!formObj.SFForm.VisualAntidote__Draft_Status__c == 'Unpublished'}" />
+                            <apex:variable var="formApprovedBy" value="{!formObj.migrationDetails.VisualAntidote__ApprovedBy__c}" />
+                            <apex:variable var="isFormMigration" value="{!formObj.migrationDetails != null}" />
+                            <apex:variable var="hasHostedID" value="{!formObj.SFForm.VisualAntidote__Hosted_Form_ID__c != ''}" />
+
+                            <div    class="form-information-wrapper-outer " id="form-{!formObj.SFForm.id}">
+                                <div class="form-information-wrapper grey-left-border10" style="display:table"> 
+                                    <div class="form-item-row">
+                                        <div class="form-selection tb-cell" onclick="toggleFormSelection(this,true);"></div>
+                                        <div class="form-information-inner tb-cell"> 
+                                            <div class="form-information ">   
+                                                
+                                                <h1  id="formTitle" class="ff-form-title"  >{!formObj.SFForm.Name}</h1>
+                                                <apex:outputText rendered="{!IF(isFreemium && formObj.HasPremiumFeatures,true,false)}">
+                                                    <span  class="premium-features-help blue-tooltip"  ><span class='tooltip-source-text'>?</span><span class="blue-tooltip-text -ml115 -mt80">This form has some premium features which are not available in Fast Froms free edition.</span></span>
+                                                </apex:outputText>
+                                                
+                                                <div class="ObjectName" style="margin-top:-1%;">
+                                                    
+                                                    <h4  >
+                                                        
+                                                        <span style="display:block">
+                                                            <i>Primary Object:</i>&nbsp;&nbsp;
+                                                            <apex:outputText rendered="{!if(formObj.IsValid,true,false)}">
+                                                                <span data-object="{!formObj.SFForm.Object_Name__c}" class="{!formObj.SFForm.Object_Name__c}" id="priName" style="margin-bottom: 4px;display: inline-block;">{!if(formObj.IsValid,primaryObjectLabelMap[formObj.SFForm.Object_Name__c],'')}</span> 
+                                                            </apex:outputText>
+                                                            <apex:outputText rendered="{!if(formObj.IsValid,false,true)}">
+                                                                <span data-object="{!formObj.SFForm.Object_Name__c}" class="{!formObj.SFForm.Object_Name__c}" id="priName" style="margin-bottom: 4px;display: inline-block;">
+                                                                    <span class="ff-warning">{!if(formObj.IsValid,'',formObj.SFForm.Object_Name__c)}</span></span> 
+                                                            </apex:outputText>
+                                                        </span>  
+                                                        <apex:variable var="childCount" value="{!0}" /> 
+                                                        
+                                                        <apex:repeat value="{!preFormMap[formObj.SFForm.id] }" var="sepObj">
+                                                            <apex:variable var="childCount" value="{!IF(sepObj.FFTitle=='detail||repeat' || sepObj.FFTitle=='detail',childCount+1,childCount)}"/>
+                                                            <span class="secName-wrap object-{!IF(sepObj.FFTitle=='detail||repeat'  || sepObj.FFTitle=='detail','detail',sepObj.FFTitle)} relobj-{!IF(sepObj.FFTitle=='detail||repeat' || sepObj.FFTitle=='detail',childCount,'')}{!IF(sepObj.FFTitle=='detail||repeat',' is-repeat','')}" >
+                                                                <img src="{!URLFOR($Resource.ffcommon,'iconimages/TreeEditorSingle.png')}"></img> 
+                                                            <span class="secName" id="{!sepObj.FFText}">{!sepObj.FFText}<apex:outputText rendered="{!IF(sepObj.FFTitle=='detail||repeat' || sepObj.FFTitle=='detail',true,false)}"><span class="color-span"></span></apex:outputText> </span></span>
+                                                    </apex:repeat>
+                                                    
+                                                </h4>
+                                            </div>
+                                            <div class="other-information" >
+                                                <div class="formActiveDiv" >
+                                                    <div id="btnFormActiveDiv{!formObj.SFForm.id}" class="btnFormActive {!IF(formObj.SFForm.Active__c == true,'formActive','formInactive')}" onclick="ToggleFormActive('{!formObj.SFForm.id}');">
+                                                        <div class="formActiveSwitch">
+                                                            &nbsp;
+                                                        </div>
+                                                    </div>
+                                                    <h5><div class="lblFormActive">Form {!IF(formObj.SFForm.Active__c == true,'active','inactive')}</div></h5>
+                                                </div>
+                                                
+                                                <apex:outputText styleClass="modified-date" value="Last modified on: {0,date,dd/MM/yyyy}"> <apex:param value="{!formObj.SFForm.LastModifiedDate}" /> </apex:outputText>
+                                                
+                                            </div>
+                                            
+                                            <apex:outputPanel id="communityBadgePanel" layout="block"   style="padding-top: 10px;clear: both;" 
+                                                              rendered="{!IF(formObj.SFForm.VisualAntidote__FormType__c!=null && (formObj.SFForm.VisualAntidote__FormType__c=='ClassicLightning' ||formObj.SFForm.VisualAntidote__FormType__c=='NativeLightning'),true,false)}" >
+                                                <span class="community-badge">Community Form</span>
+                                                <span class="community-badge">{!IF(formObj.SFForm.VisualAntidote__Context_Type__c == 'Admin','Formstack Admin','Logged-In User')}</span>
+                                            </apex:outputPanel>
+                                        </div>
+
+                                        <div class="form-editor-title-box">
+                                            <div class="form-actions publish-actions">
+                                                <div class="action-icons-left">
+                                                    <apex:outputPanel id="draft-Panel" layout="block" rendered="{!isFormMigration == false}" >
+                                                        <span  style="float:left;display:{!IF(formObj.SFForm.Draft_Status__c!='' && formObj.SFForm.Draft_Status__c=='Unpublished' ,'inline-block','none')}" class="button-draft draft-event draft-mode draft-status-{!formObj.SFForm.Draft_Status__c} blue-tooltip">
+                                                            <span class="blue-tooltip-text -mt40 -ml40">This form has changes that have not been published yet</span>
+                                                            <span class="draft-text">Draft</span>
+                                                            
+                                                            <a class="delete-icon" href="#"    onClick="DiscardDraft('{!formObj.SFForm.id}')"></a>              
+                                                        </span>
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel id="Migration-draft-Panel" layout="block" rendered="{!isFormMigration}" >
+                                                                <span  style="float:left;display:{!IF(isUnPublishedForm  && formApprovedBy =='','inline-block','none')}" class="migration-draft draft-mode draft-status-{!formObj.SFForm.Draft_Status__c}">
+                                                                    <span class="draft-text">Migration Draft</span>
+                                                                </span>
+
+                                                                <span  style="float:left;display:{!IF(isUnPublishedForm  && formApprovedBy !='' ,'inline-block','none')}" class="button-draft draft-event draft-mode draft-status-{!formObj.SFForm.Draft_Status__c} blue-tooltip">
+                                                                        <span class="blue-tooltip-text -mt40 -ml40">This form has changes that have not been published yet</span>
+                                                                        <span class="draft-text">Draft</span>
+                                                                        
+                                                                        <a class="delete-icon" href="#"    onClick="DiscardDraft('{!formObj.SFForm.id}')"></a>              
+                                                                </span>
+                                                    </apex:outputPanel>
+                                                    <div class="button-draft draft-event draft-saving italic-text blue-tooltip" id="draftSaveState" style="display:none"    >
+                                                        
+                                                        <span class="draft-text">Draft Saving</span>
+                                                    </div>
+                                                    
+                                                </div>
+                                                <div class="action-icons-right">
+                                                    <apex:outputText rendered="{!if(formObj.IsValid,true,false)}">
+                                                        <a class="action-icon edit-icon blue-tooltip vfns-link" href="{!$Site.BaseUrl}/apex/FormEditor?id={!formObj.SFForm.id}" onclick="trackEditTemplate('{!formObj.SFForm.id}');"      ><span class="blue-tooltip-text -ml18">Edit</span></a>
+                                                        <a class="{!if(formApprovedBy !='' || isFormMigration == false,'action-icon','')} duplicate-icon blue-tooltip" href="javascript:void(0);"  onClick="duplicateTemplateCall('{!formObj.SFForm.id}')"     ><span class="blue-tooltip-text -ml30">Duplicate</span></a>
+                                                        <a class="action-icon preview-icon blue-tooltip vfns-link" href="{!$Site.BaseUrl}/apex/FormdraftPreview?id={!formObj.SFForm.id}" target="_blank"      ><span class="blue-tooltip-text -ml25">Preview</span></a>
+                                                        <a class="action-icon delete-icon blue-tooltip" href="#"    onClick="deleteId('{!formObj.SFForm.id}')"><span class="blue-tooltip-text -ml20">Delete</span></a>
+                                                    </apex:outputText>
+                                                    <apex:outputText rendered="{!if(formObj.IsValid,false,true)}">
+                                                        <a class="action-icon edit-icon blue-tooltip"   onclick="trackEditTemplate('{!formObj.SFForm.id}');commonAlertMessage('{!HTMLENCODE(formObj.OtherText)}','');return false;"      ><span class="blue-tooltip-text -ml18">Edit</span></a>
+                                                        <a class="{!if(formApprovedBy !='' || isFormMigration == false,'action-icon','')} duplicate-icon blue-tooltip"    onClick="commonAlertMessage('{!HTMLENCODE(formObj.OtherText)}','');return false;"     ><span class="blue-tooltip-text -ml30">Duplicate</span></a>
+                                                        <a class="action-icon preview-icon blue-tooltip"    onClick="commonAlertMessage('{!HTMLENCODE(formObj.OtherText)}','');return false;"   ><span class="blue-tooltip-text -ml25">Preview</span></a>
+                                                        <a class="action-icon delete-icon blue-tooltip"      onClick="deleteId('{!formObj.SFForm.id}')"><span class="blue-tooltip-text -ml20">Delete</span></a>
+                                                    </apex:outputText>
+                                                    
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div class="form-settings-wrapper">
+                                            <apex:outputPanel styleClass="form-settings-wrapper-inner">
+                                                <apex:outputPanel rendered="{!if(showFormMigration &&  isFormMigration==false,true,false) }">
+                                                    <a class="btnmigrate vabutton3 {! if(isUnPublishedForm,'migrate-disabled','')}" title="{!if(isUnPublishedForm,'The draft form must be published before it can be migrated.','')}" href="{! if(isUnPublishedForm,'#',$Site.BaseUrl&'/apex/FormMigration?FormIdList='&formObj.SFForm.id) }" >
+                                                        Migrate
+                                                    </a>
+                                                </apex:outputPanel>
+                                                <apex:outputPanel rendered="{!if(showFormMigration && isFormMigration ,true,false) }">
+                                                    <a class="vabutton2 btnmigrate" href="#"  onclick="expandMigrate(this);return false;">
+                                                        
+                                                        <span class='btn-text'>Migrate</span>
+                                                        <span class='btn-icon'></span>              
+                                                        </a>
+                                                    </apex:outputPanel>
+                                                <div data-formid="{!formObj.SFForm.id}" class="form-submission-wrapper">
+                                                    <a class="vabutton2" href="#"  onclick="expandSubmissions(this);return false;" data-elemid="{!formObj.SFForm.id}">
+                                                        <span class="btn-text"  >Submissions</span>
+                                                        <span class="btn-icon"></span>
+                                                    </a>
+                                                    <span class="notifications-tag">0</span>
+                                                </div>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel styleClass="form-settings-wrapper-inner">
+                                                <apex:outputText rendered="{!if(formObj.IsValid,true,false)}">
+                                                    <apex:commandLink id="publishlink" html-data-elemid="{!formObj.SFForm.id}" styleClass="vabutton2-noactive" 
+                                                                      action="{!togglePublishOption}"  status="status" rerender="publishcomponent" 
+                                                                      oncomplete="hidePublishPanels(this);">
+                                                        <apex:param name="togglePublishId" value="{!formObj.SFForm.id}"/> 
+                                                        <span data-elemid="{!formObj.SFForm.id}" class='btn-text'>Publish Options</span>
+                                                        <span data-elemid="{!formObj.SFForm.id}" class='btn-icon'></span>              
+                                                    </apex:commandLink>
+                                                </apex:outputText>
+                                                <apex:outputText rendered="{!if(formObj.IsValid,false,true)}">
+                                                    <a class="vabutton2-noactive" href="#"  onclick="commonAlertMessage('{!HTMLENCODE(formObj.OtherText)}','');return false;" data-elemid="{!formObj.SFForm.id}">    <span class="btn-text" data-elemid="{!formObj.SFForm.id}">Publish Options</span><span class="btn-icon" data-elemid="{!formObj.SFForm.id}"></span></a>
+                                                </apex:outputText>
+                                            </apex:outputPanel>
+                                        </div>
+                                        
+                                    </div>
+
+                                </div>
+                                
+                            </div>     
+                            
+                            
+                            <div style="clear:both">  
+                            </div>
+
+                            <!-- Migration component -->
+                            <div class="form-migrate-wrapper-expanded" style="display: none">
+                                <div class="form-migrate-wrapper-inner" data-elemid="{!formObj.SFForm.id}" data-approvedBy="{!formApprovedBy}" data-url="{!$Site.BaseUrl&'/apex/FormMigration?FormIdList='&formObj.SFForm.id}" data-isUnPublishedForm="{!isUnPublishedForm}" data-hasHostedID="{!hasHostedID}">
+                                    <div class="fs-migrateDetails-box">
+                                        <div class = "fs-migrateDetails-record" >
+                                            <p class="migrationDetails-record-header" >{!if(formApprovedBy =='','Incoming Migration','Last Migration')}</p>                                        
+                                                <span>Date: {!formObj.migrationDetails.Date__c}</span>
+                                                <span>Migrated from: {!formObj.migrationDetails.SourceOrgName__c}</span>  
+                                                <div class="font-13px warning-message {!if(formApprovedBy =='','','hidden')}">
+                                                    <span class="icon-attention-triangle--orange"></span>
+                                                    <span>Publish this form to make sure your live form is updated. Your current live form has not been changed.</span>
+                                                </div>
+                                        </div>
+                                    </div>
+                                    <div class="fs-migrateDetails-buttons-box">
+
+                                    </div>
+                                </div>
+                            </div> 
+
+                            <!-- publish component -->
+                            <apex:outPutPanel styleClass="publishComponentCSS" id="publishcomponent" layout="block" style="display:none;"   >
+                                <apex:outputPanel id="draftPublished" rendered="{!IF(formObj.SFForm.Id==currentOpenedId,true,false)}" layout="block" >
+                                    
+                                    <apex:outputPanel styleClass="marginLRauto ohidden text-align-center" rendered="{!IF(!isSelectedFormValid,true,false )}" >
+                                        
+                                        <div class="vff-alert " id="alertActionBox" style="display:{!IF(!isSelectedFormValid ,'inline-block','none')}">
+                                            
+                                            <div class="vff-alert-msg msg-text-div"  style="display:block">Warning: One or more of your form's payment fields are not configured
+                                                
+                                                <a class="vabutton1 vfns-link" href="{!$Site.BaseUrl}/apex/FormEditor?id={!formObj.SFForm.id}" >Go to Form Editor</a>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel styleClass="marginLRauto ohidden text-align-center" rendered="{!IF(formObj.SFForm.VisualAntidote__Hosted_Form_ID__c==''  ,true,false  )}" >
+                                        
+                                        <div class="vff-alert " id="alertActionBox" style="display:{!IF(formObj.SFForm.Hosted_Form_ID__c=='' && isSelectedFormValid  ,'inline-block','none')}">
+                                            
+                                            <div class="vff-alert-msg msg-text-div"   style="display:block">Warning: This form has not been published yet
+                                                <a class="vabutton1 vfns-link" href="{!$Site.BaseUrl}/apex/FormEditor?id={!formObj.SFForm.id}" >Go to Form Editor</a>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel styleClass="marginLRauto ohidden text-align-center" rendered="{!IF(formObj.SFForm.VisualAntidote__Hosted_Form_ID__c!='' && formObj.SFForm.VisualAntidote__Draft_Status__c!=''  && formObj.SFForm.VisualAntidote__Draft_Status__c=='Unpublished'  ,true,false)}" >
+                                        
+                                        <div class="vff-alert " id="alertActionBox" style="display:{!IF(formObj.SFForm.Hosted_Form_ID__c!='' && isSelectedFormValid && formObj.SFForm.Draft_Status__c!='' && formObj.SFForm.Draft_Status__c=='Unpublished' ,'inline-block','none')}">
+                                            
+                                            <div class="vff-alert-msg msg-text-div" onclick="hideMessage(this);" style="display:block">Warning: This form has an unpublished draft
+                                                <a class="vabutton1 vfns-link" href="{!$Site.BaseUrl}/apex/FormEditor?id={!formObj.SFForm.id}" >Go to Form Editor</a>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    
+                                    
+                                    
+                                </apex:outputPanel>
+                                <c:PublishComponent ffrecord="{!formObj.SFForm.id}" ffFreemium="{!isFreemium}"  rendered="{!IF(formObj.SFForm.Id==currentOpenedId && isSelectedFormValid ,true,false)}"   />
+                                
+                                <div class="grey-left-border10"></div>
+                            </apex:outPutPanel>
+                            <div class="form-submission-wrapper-expanded"></div>
+                            
+                        </div>
+                        
+                    </apex:outputPanel>
+                </apex:repeat>
+                
+                
+            </apex:outputPanel>
+            <div class="fscontent-pagination-wrapper" >
+                <div class="ff-pagination-box" ></div>
+            </div>
+        </div>
+    </div>
+    
+    <br />
+    <div id="dialog" class="preview"></div>
+    <div id="dialog-confirm" class="content"></div>
+    
+</apex:form>
+<c:DeskChatComponent ></c:DeskChatComponent>
+
+<script>
+/*New form dashboard methods*/
+function toggleFormSelections(elemSource){
+    if(!$(elemSource).hasClass('va-disabled')){
+        var selectAll=false;
+        if($(elemSource).find('.btnText').text()=='Select All'){
+            selectAll=true;
+        }
+        if(!selectAll){
+            
+        }
+        $('.form-information-wrapper-outer').each(function(indx,rowElem) {
+            $(rowElem).removeClass('f-selected');
+            if(selectAll){
+                $(rowElem).addClass('f-selected');
+            }   
+        });
+        resetSelectAllBtn();
+        resetDeleteBtn();
+    }
+}
+function toggleFormSelection(elemSource,resetLinks){
+    if($(elemSource).parents('.form-information-wrapper-outer').hasClass('f-selected')){
+        $(elemSource).parents('.form-information-wrapper-outer').removeClass('f-selected');
+    }
+    else{
+        $(elemSource).parents('.form-information-wrapper-outer').addClass('f-selected');
+    }
+    if(resetLinks){
+        resetSelectAllBtn();
+        resetDeleteBtn();
+    }
+}
+function resetSelectAllBtn(){
+    if(enableDeselectAll()){
+        $('.action-btn-container .btnSelectAll').find('.btnText').text('Deselect All');
+    }
+    else{
+        $('.action-btn-container .btnSelectAll').find('.btnText').text('Select All');
+    }
+}
+function resetDeleteBtn(){
+    if(isDeleteAllowed()){
+        $('.action-btn-container .btnDelete').removeClass('va-disabled');
+    }
+    else{
+        $('.action-btn-container .btnDelete').addClass('va-disabled');
+    }
+}
+function isSelectionAllEnabled(){
+    
+    var isSelectionAllowed=false;
+    
+    $('.form-information-wrapper').each(function(indx,rowElem) {
+        
+        if(!$(rowElem).find('.form-item-row').parent().parent().hasClass('f-selected')){
+            isSelectionAllowed=true;
+        }   
+    });
+    
+    return isSelectionAllowed;
+}
+function enableDeselectAll(){
+    
+    var allselected=false;
+    if($('.form-information-wrapper-outer').length>0 && $('.form-information-wrapper-outer.f-selected').length==$('.form-information-wrapper-outer').length){
+        allselected=true;
+    }
+    
+    return allselected;
+}
+function isDeleteAllowed(){
+    
+    var isAnySelected=false;
+    $('.form-information-wrapper').each(function(indx,rowElem) {
+        
+        if($(rowElem).find('.form-item-row').parent().parent().hasClass('f-selected')){
+            isAnySelected=true;
+        }
+        
+        
+    });
+    
+    return  isAnySelected;
+}
+
+function initializePagination(curpage,pagesize){
+    var totalRecords=formRecIDs.length;
+    
+    
+    var paginationElemMain=$('.ff-pagination-box');
+    var totalPages=  Math.ceil(totalRecords/pagesize);
+    var ulElem = $('<ul/>',{'class':'ff-pagination ul-nav-item'});
+    console.log('totalPages:'+totalPages);
+    if(totalPages>0){
+        if(totalPages>5){
+            //var ulElem = $('<ul/>',{'class':'ff-pagination ul-nav-item'});
+            var aTag = $('<a/>',{'class':'nav-link first-link' ,'data-page':'1','html':'<','onclick':'navPageClick(this);'});
+            var liElem = $('<li/>',{'class':'first-item'});
+            liElem.append(aTag);
+            ulElem.append(liElem);
+        }
+        for(var indx=1;indx<=totalPages;indx++){
+            var htmltext
+            var aTag = $('<a/>',{'class':'nav-link' ,'data-page':indx,'html':indx,'onclick':'navPageClick(this);'});
+            
+            if(indx==curpage){
+                // aTag = $('<span/>',{'class':'nav-link' ,'html':indx});
+                aTag.addClass('active');
+            }
+            var liElem = $('<li/>',{'class':'nav-item'});
+            liElem.append(aTag);
+            ulElem.append(liElem);
+        }
+        if(totalPages>5){
+            // var ulElem = $('<ul/>',{'class':'ff-pagination ul-nav-item'});
+            var aTag = $('<a/>',{'class':'nav-link last-link' ,'data-page':totalPages,'html':'>','onclick':'navPageClick(this);'});
+            var liElem = $('<li/>',{'class':'last-item'});
+            liElem.append(aTag);
+            ulElem.append(liElem);
+        }
+    }
+    //var navulElem = $('<nav/>' );
+    // navulElem.append(ulElem);
+    paginationElemMain.html(ulElem);
+}
+function navPageClick(elemSource){
+    if($(elemSource).hasClass('active') || $(elemSource).hasClass('disabled')){
+        
+    }else{
+        $(elemSource).parents('.ff-pagination').find('.nav-link').removeClass('active');
+        if($(elemSource).hasClass('first-link')){
+            $(elemSource).parent().next().find('.nav-link').addClass('active');
+        }
+        else if($(elemSource).hasClass('last-link')){
+            $(elemSource).parent().prev().find('.nav-link').addClass('active');
+        }
+            else{
+                $(elemSource).addClass('active');
+            }
+        resetCurrentPageData($(elemSource).attr('data-page'),false);
+        $('html, body').animate({scrollTop: 0}, 500);
+    }
+}
+function resetPaginationLinks(){
+    var totalRecords=formRecIDs.length;
+    var totalPages=  Math.ceil(totalRecords/pageSize);
+    if(currentPage==1){
+        $('.ul-nav-item').find('.first-link').addClass('disabled');
+    }
+    else{
+        $('.ul-nav-item').find('.first-link').removeClass('disabled');
+    }
+    if(currentPage==totalPages){
+        $('.ul-nav-item').find('.last-link').addClass('disabled');
+    }
+    else{
+        $('.ul-nav-item').find('.last-link').removeClass('disabled');
+    }
+    $('.ul-nav-item .nav-item').each(function(indx,navItem){
+        var pageNumber=$(navItem).find('.nav-link').attr('data-page')
+        if(!isNullOrEmpty(pageNumber)){
+            $(navItem).find('.nav-link').text(pageNumber);
+        }
+        
+    });
+    var leastNumToShow=0;
+    var numRangePlus=0;
+    var leastNumRange=3;
+    var maxNumRange=3;
+    var maxNumToShow=4;
+    var maxRecAvailable=parseInt(totalPages);
+    var intPage=parseInt(currentPage);
+    
+    var pageDiff=maxRecAvailable-intPage;
+    
+    if( intPage<4 ){
+        maxNumToShow=6;
+    }
+    else if( intPage>=4 ){
+        maxNumToShow= intPage+maxNumRange;
+        
+    }
+    
+    if(pageDiff<4 ){
+        
+        leastNumToShow=intPage-((leastNumRange+leastNumRange)-pageDiff);
+        
+    }
+    else if( intPage>=4){
+        leastNumToShow=intPage-leastNumRange;
+    }
+    
+    
+    console.log('currentPage '+intPage);
+    console.log('leastNumToShow '+leastNumToShow);
+    console.log('maxNumToShow '+maxNumToShow);
+    $('.ul-nav-item .nav-item').each(function(indx,navItem){
+        var pageNumber=$(navItem).find('.nav-link').attr('data-page')
+        if(pageNumber<leastNumToShow || pageNumber>maxNumToShow){
+            $(navItem).hide();
+        }
+        else{
+            if(pageNumber!==currentPage && (pageNumber==leastNumToShow || pageNumber==maxNumToShow)){
+                $(navItem).find('a').text('...');
+                $(navItem).find('a').addClass('ls2');
+            }
+            else{
+                $(navItem).find('a').text(pageNumber);
+                $(navItem).find('a').removeClass('ls2');
+            }
+            $(navItem).show();
+            
+        }            
+        
+    });
+    
+    var htmlPageInfo='Page '+currentPage+' of '+totalPages;
+    var divPageInfo = $('<div/>',{'class':'ff-page-info','html':htmlPageInfo});
+    $('.ff-pagination-box').find('.ff-page-info').remove();
+    $('.ff-pagination-box').append(divPageInfo);
+    resetSelectAllBtn();
+    resetDeleteBtn();
+}
+function resetCurrentPageData(curpage,initialLoad){
+    
+    
+    currentPage=curpage;
+    resetPaginationLinks();
+    var  startRec = Math.max(curpage - 1, 0)*pageSize;
+    var  endRec = startRec + pageSize;
+    var currentIdObjs=formRecIDs.slice(startRec,endRec);
+    var currentIds=[];
+    $.each(currentIdObjs,function(indx,item){
+        currentIds.push( item.Id );
+    });
+    var csvIds=currentIds.join();
+    remoteGetAllFormsJS(csvIds,orderByField,orderByDirection);
+    
+    
+}
+function filterByFormName(elemSource){
+    formSearchText=$('#inputTxtFormNames').val();
+    callToRemoteGetFormIDs();
+} 
+function focusInputFilter(elemSource){
+    var sortOrder=$(elemSource).val();
+    if(!isNullOrEmpty(sortOrder) && sortOrder.split('-').length>1){
+        orderByDirection=safeStringValue(sortOrder.split('-')[1],'DESC');
+        orderByField=safeStringValue(sortOrder.split('-')[0],'LastModifiedDate');
+    } 
+    callToRemoteGetFormIDs();
+}
+function callToRemoteGetFormIDs(){
+    remoteGetAllFormIDsJS();
+}
+function deleteSelectedForms(elemSource){
+    var delFormNameArr=[];
+    var lstOfForms='<ul style="text-align:left">';
+    $('.form-information-wrapper-outer.f-selected').each(function(indx,rowElem) {
+        var formname= $(rowElem).find('.ff-form-title').text();
+        if(!isNullOrEmpty(formname)){ 
+            delFormNameArr.push(formname);
+            if(indx<5){
+                lstOfForms +='<li>'+formname+'</li>';
+            }
+        }
+    });
+    if(delFormNameArr!=null && delFormNameArr.length>0){
+        
+        if(delFormNameArr.length>5)
+        {
+            var extraFieldsCount= delFormNameArr.length-5;
+            lstOfForms +='<li> and '+extraFieldsCount+' more </li>';
+        }
+        lstOfForms = lstOfForms+'</ul>';
+        $("#dialog-confirm").html("<div class='dialogHeader'><div class='dialogIcon dialogIconAlert'>&nbsp;</div></div><div class='dialogFont'><div class='primary'>Are you sure you want to delete following selected forms?<br/>"+lstOfForms+"</div></div>");        
+        // Define the Dialog and its properties.
+        $("#dialog-confirm").dialog({
+            resizable: false,
+            modal: true,
+            title: "Delete",
+            height: "auto",
+            width: 413,
+            buttons: {
+                "Yes":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(true);
+                        
+                    },
+                    text: 'Yes',
+                    'class': 'vabutton1'
+                },
+                "No":{
+                    click: function () {
+                        $(this).dialog('close');
+                        callback(false);
+                    },
+                    text: 'No',
+                    'class': 'vabutton2'
+                }                    
+            }
+        });
+        $('.ui-dialog :button').blur();
+        function callback(value) {
+            if (value) {
+                var delIdArr=[];
+                $('.form-information-wrapper-outer.f-selected').each(function(indx,rowElem) {
+                    var delId= $(rowElem).attr('id');
+                    if(!isNullOrEmpty(delId)){
+                        delId=delId.replace('form-','');
+                        delIdArr.push(delId);
+                    }
+                });
+                if(delIdArr!=null && delIdArr.length>0){
+                    remoteDeleteTemplatesJS(delIdArr);
+                }              
+            } else {
+                return false;
+            }
+        }
+    }
+}
+function resetInlineLoadingBar(show){
+    if(show){
+        $('.ffactions-wrapper-outer .inline-loading').fadeIn();
+    }
+    else{
+        $('.ffactions-wrapper-outer .inline-loading').fadeOut();
+    }
+}
+
+function getFormNameListJS(response,param){   
+    Visualforce.remoting.Manager.invokeAction(   
+        '{!$RemoteAction.CKEditorMenuController.getFormNameList}',   
+        param,    
+        function(result, event){   
+            if (event.status) {         
+                var objList = [];   
+                for(var i = 0; i < result.length; i++){   
+                    var obj   = result[i];   
+                    obj=unescapeHTMLString(obj);
+                    objList.push(obj);   
+                }   
+                response(objList);   
+            }else {   
+                alert(event.message);   
+            }   
+        },    
+        {escape: true}   
+    );   
+} 
+/*New form dashboard methods block ends*/
+/*Fast prefill methods block starts*/
+function remoteValidateDeleteActionJS(delIdList){   
+    Visualforce.remoting.Manager.invokeAction(   
+        '{!$RemoteAction.CKEditorMenuController.remoteValidateDeleteAction}',   
+        delIdList,    
+        function(result, event){   
+            if (event.status) { 
+                resetInlineLoadingBar(false);   
+                var otherError='';      
+                var formcount = 0;  
+                var ul=$('<ul/>'); 
+                for(var i = 0; i < result.length; i++){   
+                    if(result[i].IsValid && result[i].ResultText=='DELETE_NOT_ALLOWED'){
+                        var liItem=$('<li/>');liItem.html(result[i].OtherText);
+                        ul.append(liItem);
+                        formcount++;
+                    }
+                    if(!result[i].IsValid){
+                        otherError+=result[i].OtherText;
+                    }      
+                }
+                if(formcount>0){
+                    var primaryMsg='This form has auto-generated prefil links enabled. Please go to the form\'s Publish Options and disable auto-generated prefill links before continuing.';
+                    var secondaryMsg='';
+                    var divWrapper=$('<div/>');
+                    
+                    $(divWrapper).html(ul);
+                    if(formcount>1){
+                        primaryMsg='The following forms have auto-generated prefil links enabled. Please go to each form\'s Publish Options and disable auto-generated prefill links before continuing.';
+                    }
+                    commonAlertMessage(primaryMsg,$(divWrapper).html());
+                }else if(!isNullOrEmpty(otherError)){ 
+                    commonAlertMessage('Something went wrong',otherError);
+                }
+                else{
+                    remoteDoDeleteTemplatesJS(delIdList);
+                }   
+                
+            }else {  
+                resetInlineLoadingBar(false);        
+                console.log(''+event.message);   
+            }   
+        },    
+        {escape: true}   
+    );   
+}
+/*Fast prefill methods block ends*/
+
+</script>
+
+</apex:page>

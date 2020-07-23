@@ -1,0 +1,56 @@
+<apex:page applyBodyTag="false" applyHtmlTag="false"  controller="VisualAntidote.SubmissionPreviewController" showHeader="false" standardStylesheets="false" sidebar="false">
+<!-- TODO : try to use engine code to render preview-->
+ <script>
+    var salesforceOrgId = '{!$Organization.Id}';
+    window.executeDefaultFormLoad = false;
+    window.FormBASEURL='';
+    window.CDNResourceRoot='';
+    </script>
+    <script src="{!URLFOR($Resource.VisualAntidote__LightningFormJs + '/formcommon.min.js')}"/>
+    <script>
+        if(typeof $ === 'undefined' && typeof fs !== 'undefined'){
+            window.$=window.jQuery=fs;
+        }
+    </script>
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__Base,'style/base.min.css')}" />
+    <link href="{!$Site.BaseUrl}{!URLFOR($Resource.ffengine,'styles/main.css')}" rel="stylesheet" type="text/css" id="ffmaincss"></link>
+    <script src="{!URLFOR($Resource.SubmissionPreview,'submission-preview-page.js')}"></script>
+    <link rel="stylesheet" href="{!URLFOR($Resource.SubmissionPreview,'submission-preview-page.min.css')}" />
+        
+<input id="submittedData" type="hidden" value="{!SubmittedDataJSON}"/>
+<div  class="ff-form">
+    <div class="ff-header">
+        <div class="ff-logo"></div>
+        </div>
+        <div id="dvFastForms" style="margin-left: 5px;margin-right:5px;">
+            <apex:outputText id="formHtml" value="{!FormHTML}" escape="false"/>
+        </div>
+</div>
+<script>
+var instanceURL = '{!JSENCODE($CurrentPage.URL)}';
+var ffengineResourceBaseURL = '{!URLFOR($Resource.VisualAntidote__ffengine)}';
+if (instanceURL.indexOf('/apex/') > 0) {
+    instanceURL = instanceURL.substring(0, instanceURL.indexOf('/apex/'));
+}
+
+$(document).ready(function() {
+    InitializeRepeatableSections();
+    initializeFormValues();
+    if (!document.getElementById("hasCustomCSS")) {
+        var fileref = document.createElement("link");
+        fileref.setAttribute("rel", "stylesheet");
+        fileref.setAttribute("type", "text/css");
+        fileref.setAttribute("href", ffengineResourceBaseURL+"/styles/hostedform.css");
+        document.getElementsByTagName("head")[0].appendChild(fileref);
+    }
+    LoadCSS(ffengineResourceBaseURL+"/styles/select2.css");
+    initializeCaptcha();
+    InitializeSignature();
+    InitializeBreadcrumbs();
+    resetSelect2ForFormElementsDraft();
+    resetFlexInputForFormElementsDraft();
+    $('.ff-footer-group input[type="button"]').css("pointer-events", "none");
+    
+});
+</script>
+</apex:page>

@@ -1,0 +1,62 @@
+<apex:page applyBodyTag="false" docType="html-5.0" applyHtmlTag="false" showHeader="false" sidebar="false" standardStylesheets="false" 
+            controller="VisualAntidote.EFDoLookupController">
+    <html>
+        <head>
+            <meta name="viewport" content="width=device-width" />
+            <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+            
+            <title>Lookup</title>
+            
+            <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__ffengine,'styles/main.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__ffengine,'styles/load.css')}" />
+            <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__ffengine,'styles/ui.jqgrid.css')}" />
+            <apex:includeScript value="{!URLFOR($Resource.VisualAntidote__ffengine,'search/search.min.js')}" />
+            
+        </head>
+        
+        <script type="text/javascript" language="javascript">
+        var SEARCH_INFO = {};
+        var lookupParams={};
+        lookupParams["lv"] ="{!URLEncode(listId)}";
+        lookupParams["lo"] ="{!URLEncode(lookupObject)}";
+        lookupParams["fid"] ="{!URLEncode(formId)}";
+        lookupParams["cut"] ="{!URLEncode(cut)}";
+        lookupParams["iu"] ="{!URLEncode(iu)}";
+        SEARCH_INFO["lookupParams"] = lookupParams;
+        var siteprefix = '';
+        var instanceURL = '{!JSENCODE(iu)}';
+        var ffEngineUrl = '{!URLFOR($Resource.ffengine)}';
+        var isSearchV2 = {!isSearchEnabled};
+        var siteURL = '{!JSENCODE(urlRestCall)}';
+        SEARCH_INFO["isSearchV2"] = isSearchV2;
+        SEARCH_INFO["isNative"] = true;
+        SEARCH_INFO["searchVersion"] = (isSearchV2) ? 'v2' : 'v1';
+        if(instanceURL!=undefined && instanceURL!=''){
+            // primarily for community urls. We pass this information from community lightning component
+            // TODO: figure out what URL we can use in different scenraios: community preview/live mode. FF-4026
+            //// Ideally it should be using 'iu' which is community specific and has its own permission set (Community_Service). but in that case Community_Service permission set should be assigned to Community Guest user in question. See Custom JS and File Upload implemntation in NC Communities (https://formstack.atlassian.net/wiki/x/B4CVK)
+            // CHANGE REVERTED: back to old code. in QA not working in preview mode with old code.
+            siteprefix=siteURL;
+        }else{
+            siteprefix=siteURL;
+        }
+        var namespaceprefix = '{!JSENCODE(Namespace)}';        
+        if(namespaceprefix != ''){
+            namespaceprefix += '/';
+        }        
+        SEARCH_INFO["sitePrefix"]=siteprefix;
+        SEARCH_INFO["lookupUrl"]='';
+        SEARCH_INFO["namespacePrefix"]=namespaceprefix;
+        jQuery(document).ready(function () {
+            initLookup();
+        });
+        </script>
+        
+        <div id="ffOverlay"></div>
+        <h3>{!pageTitle}</h3>
+        <div class="ff-form-main-lookup" style="width:100%">
+            <table id="list"><tr><td></td></tr></table> 
+            <div id="pager"></div> 
+        </div>
+    </html>
+</apex:page>

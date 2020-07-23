@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>VisualAntidote__FieldConfiguration__c</fullName>
+    <deprecated>false</deprecated>
+    <description>This is the JSON that we will save the Fields Configuration which are extra fields that doesn&#39;t need to be track.</description>
+    <externalId>false</externalId>
+    <label>Field Configuration</label>
+    <length>32768</length>
+    <trackTrending>false</trackTrending>
+    <type>LongTextArea</type>
+    <visibleLines>3</visibleLines>
+</CustomField>

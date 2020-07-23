@@ -1,0 +1,30 @@
+<apex:page showHeader="true" sidebar="false">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge;" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+    <apex:stylesheet value="{!URLFOR($Resource.VisualAntidote__fs_assets, 'pages/permissionError.min.css')}" />
+
+
+    <div class='warning-page'>
+        <div class="warning-FSlogo-box">
+            <div class="ff-logo">
+                <img  alt="Formstack Logo" src="{!URLFOR($Resource.logos,'color_logo_only_fs.png')}"  width=' 159px;'/>
+            </div>
+            <div class="ff-logo-title">
+                <span class="warning-ffsub">FOR SALESFORCE</span>
+            </div>
+        </div>
+        <div class='warning-container'>
+            <div class='form-container-inner'>
+                <div class='warning-box'>
+                    <div class='warning-contant'>
+                        <div class='warning-header'>
+                            <span class='td-warning-icon'></span>
+                            <span class='warning-font'>Formstack Permission Error</span>
+                        </div>
+                        <p>You don't have permission to access this Formstack page. Please, contact your Salesforce Administrator.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</apex:page>

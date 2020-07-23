@@ -1,0 +1,448 @@
+<apex:page standardController="breadwinner_qbo__Invoice__c" id="page" extensions="breadwinner_qbo.Invoice_RecordInfoExtension" sidebar="false" title="Email the {!invoice.breadwinner_qbo__Type__c}" >
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/select2.full.min.js')}" />
+                <link href="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/CSS/select2.min.css')}" rel="stylesheet" type="text/css"/>
+            <script>
+
+            if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                document.getElementsByTagName("title")[0].innerHTML="Email the {!invoice.breadwinner_qbo__Type__c}";
+            }
+                
+            var j$ = jQuery.noConflict();
+            function HideStyleSheet() {
+                j$("link.user[href$='elements.css']").each(function() {
+                    j$(this).removeAttr("href");
+                });               
+                
+            }
+            function message() {
+                j$(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"} );
+                j$(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css({"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"});
+                j$(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left"} ) ;
+                j$(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                
+                j$("div .messageText h4").css( "color", "white" );
+                j$("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                j$("table.messageTable td").css({"color" : "white"});
+                j$("div[class*='warning'] table.messageTable td").css( "color", "black" );
+            }
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            j$(function(){
+                addallfuncs();
+                select2Init();
+                DownloadInvoiceAddAttachment();
+                
+            });
+            function ccShow(){
+                //j$("#ccsection").show();
+                if(j$('span[id$=\"ccsection\"]').css('display') == 'inline')
+                {
+                    j$('textarea[id$=\"CCInput\"]').val("");
+                }
+                j$('span[id$=\"ccsection\"]').toggle();
+            }
+            
+            function bccShow(){
+                if(j$('span[id$=\"bcsection\"]').css('display') == 'inline')
+                {
+                    j$('textarea[id$=\"BCInput\"]').val("");
+                }
+                j$('span[id$=\"bcsection\"]').toggle();
+            }
+            
+            function identifyfield(elementt,helptext,TopMinusParam,LeftMinusParam){
+                if(j$(".bPageHeader").outerHeight(true)==null){
+                    LeftMinusParam=LeftMinusParam-9;
+                    TopMinusParam=TopMinusParam-100;
+                }
+                var x = j$(elementt).offset();
+                //alert("Top position: " + x.top + " Left position: " + x.left+" height: "+$(elementt).height());                
+                var ToSetleft=x.left-LeftMinusParam;
+                j$("#help p").text(helptext);
+                var ToSetheight=x.top-TopMinusParam;
+                var heptextdiv=document.getElementById("help");
+                j$(heptextdiv).css({
+                    top: ToSetheight,
+                    left: ToSetleft,
+                    display:""
+                })
+            }
+            function mouseoutclose() {
+                var heptextdiv = document.getElementById("help");
+                j$(heptextdiv).css({
+                    top: "0px",
+                    left: "0px",
+                    display: "none"
+                });
+            }
+            
+            function select2Init() {
+                j$(".ccSelect,.bccSelect").select2({
+                    tags: true,                    
+                    maximumSelectionLength: 25,                    
+                    createTag: function (params) {                        
+                        var x=params.term;  
+                        var atposition=x.indexOf("@");  
+                        var dotposition=x.lastIndexOf(".");  
+                        if (atposition<1 || dotposition<atposition+2 || dotposition+2>=x.length){  
+                            return null;  
+                        }
+                        return {                                
+                            id: params.term,
+                            text: params.term
+                        }
+                    }
+                });                
+                
+                j$(".ccSelect").on('select2:select', function (e) {
+                    var data = e.params.data;
+                    var ccEmail = data.id;
+                    ccMethod(ccEmail,'adding');
+                });
+                
+                j$(".ccSelect").on('select2:unselect', function (e) {
+                    var data = e.params.data;
+                    var ccEmail = data.id;
+                    ccMethod(ccEmail,'removing');
+                });
+                
+                j$(".bccSelect").on('select2:select', function (e) {
+                    var data = e.params.data;
+                    var bccEmail = data.id;
+                    bccMethod(bccEmail,'adding');
+                });
+                
+                j$(".bccSelect").on('select2:unselect', function (e) {
+                    var data = e.params.data;
+                    var bccEmail = data.id;
+                    bccMethod(bccEmail,'removing');
+                });
+            }
+            </script>
+            
+            <style>
+                
+                .msgIcon {
+                display: none;
+                }                
+                .noSidebarCell, .sidebarCell .fixed{
+                    padding: 0px !important;
+                }
+                .sfdcBody{
+                    padding: 0px !important;
+                }
+                .message{       
+                    margin-left: 0px !important;        
+                    margin-right: 0px !important;       
+                }                
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }                
+                
+                @media (min-width: 48em){
+                .slds-scope .slds-form_horizontal {
+                text-align: right;
+                margin-left: 10%;
+                margin-right: 30%;
+                }}
+                
+                .slds-scope .slds-spinner_brand .slds-spinner__dot-a:after, .slds-scope .slds-spinner_brand .slds-spinner__dot-a:before, .slds-scope .slds-spinner_brand .slds-spinner__dot-b:after, .slds-scope .slds-spinner_brand .slds-spinner__dot-b:before, .slds-scope .slds-spinner_brand.slds-spinner:after, .slds-scope .slds-spinner_brand.slds-spinner:before {
+                }
+                .slds-spinner-displaytext {
+                top: 54%;
+                position: absolute;
+                left: 45%;
+                }
+                .slds-scope .slds-spinner_container{
+                position: fixed;
+                z-index: 9999;
+                }
+                
+                .select2-container--default .select2-selection--multiple {
+                border: solid #d8dde6 1px;
+                padding-bottom: 5px;
+                }
+                .select2-container--default.select2-container--focus .select2-selection--multiple {
+                border: solid #1589ee 1px;
+                box-shadow: 0 0 3px #0070D2;
+                }
+                .select2-dropdown{
+                border: 1px solid #1589ee;
+                border-bottom-left-radius: 0;
+                border-bottom-right-radius: 0;
+                }
+                .select2-results__option {
+                margin-left:0;
+                line-height:7px !important;
+                font-family: "Salesforce Sans",Arial,sans-serif;
+                font-size: .8125rem;
+                color: #3e3e3c;
+                }
+                .select2-container--default .select2-results__option--highlighted[aria-selected]{
+                background-color: #2692FB;
+                }
+                .select2-container--default .select2-selection--multiple .select2-selection__choice {
+                background-color: #fff;
+                color: #16325c;
+                border: 1px solid #d8dde6;
+                border-radius: 3px;
+                }
+                .select2-container--default .select2-selection--multiple .select2-selection__choice__remove {
+                font-weight: 700;
+                font-size: 17px;
+                }
+                .select2-container .select2-search--inline .select2-search__field {
+                margin-top: 6px;
+                line-height: 24px;
+                }
+                .select2-results__message{
+                color: red;
+                font-weight: bold;
+                }
+                .select2-container--default.select2-container--disabled .select2-selection--multiple {
+                background-color: #e0e5ee;
+                border-color: #a8b7c7;
+                cursor: not-allowed;
+                }
+            </style>
+        </head>
+        <body>
+            <apex:form id="theForm">
+                <div class="slds-scope slds-p-around_x-small" >
+                    <!-- --------------------------- fields level help --------------------------- -->
+                    <div id="help"  class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" aria-live="polite" style="display:none;position:absolute;top:0px;left:0px;">
+                        <div class="slds-popover__body slds-text-longform">
+                            <p>Help text will come here dynamically</p>
+                        </div>
+                    </div>
+                    <!-- --------------------------- fields level help --------------------------- -->
+                    <apex:actionStatus id="action-status-id" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" role="alert">
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>      
+                    <apex:actionstatus id="actStatusId">
+                        <apex:facet name="start">
+                            <apex:facet name="start">
+                                <div class="slds-spinner_container">
+                                    <div class="slds-spinner_brand slds-spinner slds-spinner_small" role="alert" style="position: absolute;top:55%;left:43%">
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                    <div class="slds-spinner-displaytext" role="alert"> 
+                                        <P>
+                                            Sending the Mail..... Please Wait....
+                                        </P>
+                                    </div>
+                                </div>
+                            </apex:facet>
+                        </apex:facet>
+                    </apex:actionstatus>
+                    <apex:actionstatus id="actStatusId3">
+                        <apex:facet name="start">
+                            <apex:facet name="start">
+                                <div class="slds-spinner_container">
+                                    <div class="slds-spinner_brand slds-spinner slds-spinner_small" role="alert" >
+                                        <div class="slds-spinner__dot-a"></div>
+                                        <div class="slds-spinner__dot-b"></div>
+                                    </div>
+                                </div>
+                            </apex:facet>
+                        </apex:facet>
+                    </apex:actionstatus>
+                    <div class="slds-page-header" role="banner">
+                        <div class="slds-media">
+                            <div class="slds-media__body">
+                                <p class="slds-page-header__title slds-truncate">Email the {!invoice.breadwinner_qbo__Type__c}</p>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-m-top_small">
+                        <apex:pageMessages id="pgmsg" />
+                        <apex:outputpanel id="pmg"> <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="3" /> </apex:outputpanel>                 
+                    </div>
+                    <apex:actionFunction name="DownloadInvoiceAddAttachment" reRender="pgmsg,attachmentpanel,pmg,sendemail" status="action-status-id" action="{!downloadInvoice}" oncomplete="addallfuncs();" />
+                    <apex:pageMessage summary="This Invoice is not associted with any QuickBooks Online Company." severity="warning" strength="1" rendered="{!bac==null}" /> 
+                    <div id="noContactWithEmailMsg" class="errorM3" style="display:{!IF(AND(bac!=null,if(toContactsList.size >0,false,true),plancode>=35,NOT(NoAssociatedSFAccount)),'','none')};border-radius: 4px" >
+                        There were no Contacts with Email found for the related Account&nbsp;<a href="/{!bac.Salesforce_Account__c}" target="_blank">{!bac.Salesforce_Account__r.name}</a>.
+                    </div>
+                    <apex:pageMessage id="notAssociatedWithSFAccountMsg" summary="This QuickBooks Online Customer is not matched with any Salesforce Account yet, if you want to match this, please go to Setup in Breadwinner tab and Start the Account Match."  severity="WARNING"  rendered="{!AND((NoAssociatedSFAccount),plancode >= 35)}"/>       
+                    
+                    <apex:pageMessage summary="You cannot send a PDF Email via Breadwinner on your current Breadwinner Subscription.
+                                               Please Contact Breadwinner to enquire about upgrading." severity="INFO" strength="1" rendered="{!if(plancode < 35,true,false)}" />
+                    
+                    <apex:outputPanel layout="block" rendered="{!if(toContactsList.size >0,true,false)}">
+                        <apex:pageMessage id="readOnlyModeInfoMsg" summary="You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way." severity="Info" rendered="{!isReadOnlyMode}"/>
+                        <apex:pageMessage summary="Only plain-text email templates are supported. Only merge fields on the Invoice, Salesforce Account, Salesforce Contact, and the Salesforce Opportunity (if the Opportunity lookup is populated on the Invoice) are supported." severity="info" rendered="{!AND(isBusinessOrHigher,toContactsList.size > 0)}" />
+                        <apex:pageMessage summary="It looks like you have or someone has already sent this Invoice to the customer. You can proceed to send it again." severity="INFO" strength="1" rendered="{!invoice.breadwinner_qbo__Email_Status__c=='EmailSent'}" />
+                        
+                        <div class="slds-form_horizontal slds-m-top_medium">
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" >To</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <apex:selectList value="{!contactId}" size="1" disabled="{!if(plancode < 35,true,false)}" styleClass="slds-select" onchange="callsettingValuesFromTemplate();">
+                                            <apex:selectOptions value="{!toContactsList}"></apex:selectOptions>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <apex:outputPanel rendered="{!isBusinessOrHigher}">
+                                    <a onclick="ccShow();">Cc </a>
+                                    <a onclick="bccShow();">Bcc </a> 
+                                </apex:outputPanel>
+                            </div>
+                            <div class="slds-form-element">
+                                <apex:outputPanel id="ccsection" style="display: none;">
+                                    <apex:outputPanel rendered="{!isBusinessOrHigher}">
+                                        <label class="slds-form-element__label" style="vertical-align: top;margin-right: .35rem">Cc</label>
+                                        <div class="slds-form-element__control">
+                                            <apex:outputPanel rendered="{!if(toContactsList.size > 0,true,false)}">
+                                                <select class="form-control slds-select slds-input ccSelect" multiple="multiple" style="width: 100%;" id="ccList">
+                                                    <optgroup label="Contacts">
+                                                        <apex:repeat value="{!allContacts}" var="c">
+                                                            <option value="{!c.Email}">{!c.Name} ({!c.Email})</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                    <optgroup label="Users">
+                                                        <apex:repeat value="{!allUsers}" var="u">
+                                                            <option value="{!u.Email}">{!u.Name} ({!u.Email})</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                    <optgroup label="Others">
+                                                        <apex:repeat value="{!newCcEmailsSet}" var="e" id="newcc">
+                                                            <option value="{!e}">{!e}</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                </select>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!if(toContactsList.size > 0,false,true)}">
+                                                <select class="form-control bccSelect" multiple="multiple" style="width: 100%;" disabled="true"></select>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:actionFunction name="ccMethod" action="{!ccEmailsMethod}" reRender="newcc">
+                                    <apex:param name="ccEmail" assignTo="{!ccEmail}" value=""/>
+                                    <apex:param name="emailType" assignTo="{!emailType}" value=""/>
+                                </apex:actionFunction>
+                            </div>
+                            <div class="slds-form-element">
+                                <apex:outputPanel id="bcsection" style="display: none;">
+                                    <apex:outputPanel rendered="{!isBusinessOrHigher}">
+                                        <label class="slds-form-element__label" style="vertical-align: top;margin-right: .35rem">Bcc</label>
+                                        <div class="slds-form-element__control">
+                                            <apex:outputPanel rendered="{!if(toContactsList.size > 0,true,false)}">
+                                                <select class="form-control slds-input bccSelect" multiple="multiple" style="width: 100%;" id="bccList">
+                                                    <optgroup label="Contacts">
+                                                        <apex:repeat value="{!allContacts}" var="c">
+                                                            <option value="{!c.Email}">{!c.Name} ({!c.Email})</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                    <optgroup label="Users">
+                                                        <apex:repeat value="{!allUsers}" var="u">
+                                                            <option value="{!u.Email}">{!u.Name} ({!u.Email})</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                    <optgroup label="Others">
+                                                        <apex:repeat value="{!newBccEmailsSet}" var="e" id="newbcc">
+                                                            <option value="{!e}">{!e}</option>
+                                                        </apex:repeat>
+                                                    </optgroup>
+                                                </select>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!if(toContactsList.size > 0,false,true)}">
+                                                <select class="form-control bccSelect" multiple="multiple" style="width: 100%;" disabled="true"></select>
+                                            </apex:outputPanel>
+                                        </div>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <apex:actionFunction name="bccMethod" action="{!bccEmailsMethod}" reRender="newbcc" >
+                                    <apex:param name="bccEmail" assignTo="{!bccEmail}" value=""/>
+                                    <apex:param name="emailType" assignTo="{!emailType}" value=""/>
+                                </apex:actionFunction>
+                            </div>
+                            <apex:outputPanel layout="block" styleclass="slds-form-element" rendered="{!isBusinessOrHigher}">
+                                <label class="slds-form-element__label" >From</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <apex:selectList value="{!fromEmailID}" size="1" disabled="{!if(toContactsList.size >0,false,true)}" styleClass="slds-select" > 
+                                            <apex:selectOptions value="{!OrgWideEmailAddresses}"></apex:selectOptions>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                           
+                            <apex:outputPanel layout="block" styleclass="slds-form-element" rendered="{!isBusinessOrHigher}">                                
+                                <label class="slds-form-element__label" >Email Templates</label>
+                                <div class="slds-form-element__control">
+                                    <div class="slds-select_container">
+                                        <apex:selectList id="SelectTemplate" value="{!EmailTemplateSelected}" size="1" styleClass="slds-select" onchange="callsettingValuesFromTemplate();" disabled="{!if(toContactsList.size >0,false,true)}" >
+                                            <apex:selectOptions value="{!EmailTemplates}" ></apex:selectOptions>
+                                        </apex:selectList>
+                                    </div>
+                                </div>
+                                <apex:actionFunction action="{!settingValuesFromTemplate}" name="callsettingValuesFromTemplate" reRender="attachmentpanel,Subject,Body,pm" oncomplete="HideStyleSheet();message();" status="actStatusId3" />
+                            </apex:outputPanel>
+                            
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" >Subject</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputText value="{!emailSubject}" styleClass="slds-input" id="Subject" disabled="{!if(plancode < 35,true,false)}"/>
+                                </div>
+                            </div>
+                            
+                            <div class="slds-form-element">
+                                <label class="slds-form-element__label" >Body</label>
+                                <div class="slds-form-element__control">
+                                    <apex:inputTextarea styleClass="slds-input" richText="false" rows="7" value="{!emailBody}" id="Body" disabled="{!if(plancode < 35,true,false)}"/>
+                                    
+                                </div>
+                            </div>
+                            <apex:outputPanel layout="block" styleClass="slds-form-element" rendered="{!invoice.breadwinner_qbo__Email_Status__c!='EmailSent'}">
+                                <label class="slds-form-element__label" >Mark this {!invoice.Type__c} as sent?
+                                    <apex:outputPanel styleClass="slds-m-left_xxx-small slds-form-element__icon">
+                                        <a href="javascript:void(0);" onmouseover="identifyfield(this,'This will update Invoice Email Status as Email Sent in both QuickBooks Online and Salesforce.','165','26')" onmouseout="mouseoutclose();">
+                                            <img style="margin-left: 2px;margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                    </apex:outputPanel>
+                                </label>
+                                <div class="slds-form-element__control" style="margin-top: 3px;">
+                                    <label class="slds-checkbox">
+                                        <apex:inputCheckbox value="{!isAllowedToUpdateInQBO}" disabled="{!if(plancode < 35,true,false)}"/>
+                                        <span class="slds-checkbox_faux"></span>
+                                    </label>
+                                </div>
+                            </apex:outputPanel>
+                            <apex:outputPanel layout="block" id="attachmentpanel" styleClass="slds-form-element">
+                                <label class="slds-form-element__label" >Attachments</label>
+                                <div class="slds-form-element__control" style="margin-top: 3px;">
+                                    <apex:outputText escape="false" value="{!AttachmentName}"/>
+                                </div>
+                            </apex:outputPanel>
+                        </div>
+                        <div align="center" class="slds-m-top_large">
+                            <apex:commandButton value="Send Email" status="actStatusId" action="{!sendEmail}" styleClass="slds-button slds-button_brand" disabled="{!if(OR(plancode < 35,isOAuthIssue),true,false)}" oncomplete="actionToUpdateInQBO();addallfuncs();" id="sendemail"/>
+                            <apex:commandButton value="Cancel" action="{!cancel}" reRender="pgmsg" styleClass="slds-button slds-button_neutral" id="cancelEmail" status="action-status-id" />
+                            <apex:actionFunction name="actionToUpdateInQBO" reRender="pgmsg" oncomplete="actionToUpdateInSalesforce();addallfuncs();" action="{!UpdateinQBO}"   status="action-status-id" />
+                            <apex:actionFunction name="actionToUpdateInSalesforce" reRender="pgmsg" status="action-status-id" action="{!updateinSF}" oncomplete="addallfuncs();" />
+                            <apex:outputPanel layout="block" styleclass="slds-text-heading_small slds-m-top_small" style="font-weight: bold;font-style: italic;" rendered="{!isReadOnlyMode}">You are using Breadwinner in QuickBooks Online Read Only Mode. While Breadwinner reads data from QuickBooks Online, no changes will be made to QuickBooks Online. QuickBooks Online is in Read-Only mode and will not be altered in any way.</apex:outputPanel>
+                        </div> 
+                    </apex:outputPanel>
+                </div>
+            </apex:form>
+        </body>
+    </html>
+</apex:page>

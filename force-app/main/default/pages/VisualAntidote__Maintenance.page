@@ -1,0 +1,6 @@
+<apex:page controller="VisualAntidote.MaintenanceController" showHeader="true"  sidebar="false">
+  <div class="maintenance-wrapper">
+   <apex:outputText escape="false" value="{!maintenanceMessage}"></apex:outputText>
+  </div>
+  
+</apex:page>

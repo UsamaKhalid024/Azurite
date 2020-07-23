@@ -1,0 +1,233 @@
+<apex:page extensions="ItenraryCtrl" renderAs="pdf" standardController="Itenrary__c"  applyBodyTag="true">
+    
+    <head>
+    </head>
+    <apex:form >
+    <apex:stylesheet value="{!$Resource.ItineraryCSS}"/>
+    <!-- ====== Body Starts From Here ====== -->
+        <table border="0" style="width:100%;">
+            <tbody>
+                <tr>
+                    <td style="vertical-align:bottom;">
+                        <span style="color:#349999; font-size:1.5em; font-weight:bold;">
+                            Azurite Surgery Itinerary
+                        </span>
+                    </td>
+                    <td>
+                        <apex:image style="width:95px;float:right;" value="{!URLFOR($Resource.Azuright_Logo)}"/>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <hr style="background:#349999; border:1px solid #349999;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="Make_heading" style="font-size:1.5em; font-weight:bold;">
+                            {!ConObj.FirstName} {!ConObj.LastName}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="1" id="ajdust-font" style="width:490px;padding:10px 0px 10px 0px !important;">
+                        {!SessProcedure}
+                    </td>
+                    <td id="Contact-Profile">
+                        <!--<apex:outputPanel rendered="{!ConObj.Profile_Picture__c != null}">
+                            <img src = "{!'/azurite/servlet/servlet.FileDownload?file='&ConObj.Profile_Picture__c}" />
+                        </apex:outputPanel>-->
+                        
+                        <apex:outputPanel rendered="{!ConObj.Profile_Picture__c != null && detectuser != 'Azurite Customer Community User'}">
+                            <img style="width:95px;float:right;" src = "{!'/servlet/servlet.FileDownload?file='&ConObj.Profile_Picture__c}" />
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!ConObj.Profile_Picture__c != null && detectuser == 'Azurite Customer Community User'}">
+                            <img style="width:95px;float:right;" src = "{!'/azurite/servlet/servlet.FileDownload?file='&ConObj.Profile_Picture__c}" />
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel rendered="{!ConObj.Profile_Picture__c == null}">
+                            <apex:image style="width:95px;float:right;" value="{!URLFOR($Resource.Deafult_User)}"/>
+                        </apex:outputPanel>
+                    </td>
+                </tr>
+            </tbody>    
+        </table>
+        <table id="Body-Table" border="1" style="width:100%;">
+            <tbody>
+                <tr style="background:#99ffff;">
+                    <td colspan="2" style="color:#336666;font-weight: bold;">
+                        Personal Information
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="width:30%; border-right: none !important; border-top: none !important; ">
+                        <b>Client's Name</b>
+                    </td>
+                    <td id="ajdust-font" style="width:80%; border-top: none !important;">
+                        {!ConObj.FirstName} {!ConObj.LastName}
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important; ">
+                        <b>Email</b>
+                    </td>
+                    <td id="ajdust-font" style="border-top: none !important;">
+                        {!ConObj.Email}
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important; ">
+                        <b>Phone</b>
+                    </td>
+                    <td id="ajdust-font" style="border-top: none !important;">
+                        {!ConObj.Phone}
+                    </td>
+                </tr>
+                <!--<tr>
+                    <td id="ajdust-font" style="border-top: none !important; ">
+                        <span>
+                            <b>
+                                Hospital Balance
+                            </b>
+                        </span>
+                    </td>
+                    <td id="ajdust-font" style="border-top: none !important; border-bottom: none !important; ">
+                        <span>
+                            <apex:outputField value="{!ConObj.Hospital_Balance__c}" />
+                        </span>
+                    </td>
+                </tr>-->
+                <tr>
+                    <td id="ajdust-font" style="border-top: none !important; ">
+                        <span>
+                            <b>
+                                Medical Balance
+                            </b>
+                        </span>
+                    </td>
+                    <td id="ajdust-font" style="border-top: none !important; border-bottom: none !important; ">
+                        <span>
+                            
+                            <apex:outputText value="{0,number,currency}">
+                                    <apex:param value="{!TotalMedBalance}"/>
+                                </apex:outputText> {!MedIsoCode}
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font">
+                        <b>
+                            Surgeon
+                        </b>
+                    </td>
+                    <td id="ajdust-font">
+                        <span>
+                            <apex:outputText >{!SessSurgonNames}</apex:outputText>
+                            <!--<apex:outputField value="{!SessInfo.Doctor__r.FirstName}" /> &nbsp; <apex:outputField value="{!SessInfo.Doctor__r.LastName}" />-->
+                        </span>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important;">
+                        <b>Assigned Personal Assistant</b>
+                    </td>
+                    <td id="ajdust-font" style="border-bottom: none !important; ">
+                        <table id="Inner-table">
+                            <tbody>
+                                <tr>
+                                    <td colspan="2">
+                                    </td>
+                                    <td rowspan="2" id="profile-pic" >
+                                            <apex:outputPanel rendered="{!PersonalAssObj.Profile_Picture__c != null && detectuser != 'Azurite Customer Community User'}">
+                                                    <img src = "{!'/servlet/servlet.FileDownload?file='&PersonalAssObj.Profile_Picture__c}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel rendered="{!detectuser == 'Azurite Customer Community User'}">
+                                                    <apex:outputPanel rendered="{!PersonalAssObj.Profile_Picture__c != null}">
+                                                        <img src = "{!'/azurite/servlet/servlet.FileDownload?file='&PersonalAssObj.Profile_Picture__c}" />
+                                                    </apex:outputPanel>
+                                                    <apex:outputPanel rendered="{!PersonalAssObj.Profile_Picture__c == null}">
+                                                        <apex:image style="width:95px;float:right;" value="{!URLFOR($Resource.Deafult_User)}"/>
+                                                    </apex:outputPanel>
+                                            </apex:outputPanel>
+                                        
+                                            <apex:outputPanel rendered="{!PersonalAssObj.Profile_Picture__c == null && detectuser != 'Azurite Customer Community User'}">
+                                                <apex:image style="width:95px;float:right;" value="{!URLFOR($Resource.Deafult_User)}"/>
+                                            </apex:outputPanel>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td colspan="2">
+                                        <b>{!PersonalAssObj.FirstName} {!PersonalAssObj.LastName}</b><br />
+                                        Phone: {!PersonalAssObj.Phone} <br />
+                                        Email: {!PersonalAssObj.Email}
+                                    </td>
+                                </tr>
+                               
+                            </tbody>
+                        </table>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important;">
+                        <b>Airport Instructions</b>
+                    </td>
+                    <td id="Richtext-area" style="padding: 0px 5px 0px 2px; border-bottom: none !important;">
+                        <apex:outputField value="{!AirportInfo.Airport_Details__c}" />
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important;">
+                        <b>Azurite Arrive</b>
+                    </td>
+                    <td id="ajdust-font" style="border-bottom: none !important;">
+                        
+                        <apex:outputText value="{0, date,d MMMM yyyy hh:mm a}">
+                            <apex:param value="{!arrival}" /> 
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td id="ajdust-font" style="border-right: none !important; border-top: none !important;">
+                        <b>Azurite Depart</b>
+                    </td>
+                    <td id="ajdust-font">
+                        
+                        <apex:outputText value="{0, date,d MMMM yyyy hh:mm a}">
+                            <apex:param value="{!depart}" /> 
+                        </apex:outputText>
+                    </td>
+                </tr>
+            </tbody>    
+        </table>
+        <div id="div1" style="page-break-before: always;"></div> 
+        <table id="Body-Table" border="1" style="width:100%; margin-top:10px !important;page-break-inside:auto;">
+            <tbody>
+                <tr style="background:#99ffff;">
+                    <td colspan="2" style="color:#336666;font-weight: bold;">
+                        Program Itinerary
+                    </td>
+                </tr>
+                <apex:variable var="index" value="{!0}" />
+                <apex:repeat value="{!ItenraryObj.Itenrary_Line_Items__r}" var="LineItems" id="theRepeat"  >
+                    <apex:variable var="index" value="{!index+1}" />
+                    <tr style="{!IF(index != ItiSize , 'page-break-inside:avoid;', '')}">
+                        <td id="Richtext-area" style="vertical-align:top; padding: 0px 5px 0px 2px; width: 158px !important; border-right: none !important;">
+                            <b><apex:outputField value="{!LineItems.Program_Itinerary_Info__c}" /></b>
+                        </td>
+                        <td id="Richtext-area" style="vertical-align:top; padding: 10px 5px 0px 2px;">
+                            <span style="padding-left:9px; font-size:13px;">
+                                <apex:outputText value="{0, date,MMM d,hh:mm a, yyyy}">
+                                    <apex:param value="{!LineItems.Start_Date__c}" /> 
+                                </apex:outputText> - &nbsp; <apex:outputText value="{0, date,MMM d,hh:mm a, yyyy}">
+                                    <apex:param value="{!LineItems.End_Date__c}" /> 
+                                </apex:outputText>
+                            </span>
+                            <apex:outputField value="{!LineItems.Program_Itinerary_Details__c}" />
+                        </td>
+                    </tr>
+                </apex:repeat>
+            </tbody>
+        </table>
+    <!-- ====== End ====== -->
+    </apex:form>
+</apex:page>

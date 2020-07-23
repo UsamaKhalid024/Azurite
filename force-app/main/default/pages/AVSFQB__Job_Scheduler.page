@@ -1,0 +1,86 @@
+<apex:page showHeader="false" sidebar="false" docType="html-5.0" standardStylesheets="false" title="Scheduler" controller="AVSFQB.JobSchedulerController" >
+  
+<html>
+    <head>
+        <META HTTP-EQUIV="Content-type" CONTENT="text/html; charset=UTF-8"/>
+        <apex:stylesheet value="{!$Resource.AVSFQB__bootstrap_min_css}"/>
+        <apex:includeScript value="{!$Resource.AVSFQB__jquery_min_js}"/>
+        <apex:includeScript value="{!$Resource.AVSFQB__bootstrap_min_js}"/>
+
+        <style>
+            .red{
+                color:red;
+            }
+
+            .mt {
+                margin-top: 5px;
+            }
+            
+            .mt-50 {
+                margin-top: 50px;
+            }
+
+            .form-area {
+                padding: 10px 40px 60px;
+                margin: 15px 0px 80px;
+            }
+        </style>
+        
+        <script>
+            j$ = jQuery.noConflict();
+            
+            var jobStatus = '{!jobStatus}';
+            
+            j$(document).ready(function(){ 
+                
+                j$('#saveOrUpdateJob').on('click', saveScheduler);
+                j$('#deleteJob').on('click', deleteScheduler);
+                
+                j$('#saveOrUpdateJob').attr('value', 'Schedule');
+                j$('#deleteJob').hide();
+                
+                if(jobStatus == "running") {
+                    j$('#saveOrUpdateJob').attr('value', 'Update Schedule');
+                    j$('#deleteJob').show();
+                }
+            });
+
+            function saveScheduler() {
+                saveOrUpdateApexScheduler();
+            }
+            
+            function deleteScheduler() {
+                deleteApexScheduler();
+            }
+
+        </script>
+    </head>
+
+    <apex:messages />
+
+    <apex:form styleClass="form-horizontal">
+        <div calss="row">
+            <div class="form-group col-xs-12 mt-50">
+                <label class="col-xs-2 control-label">Interval</label>
+                <div class="col-xs-4">
+                    <apex:selectList size="1" value="{!selectedTimeInterval}" styleClass="form-control">
+                        <apex:selectOptions value="{!timeIntervalList}" />
+                    </apex:selectList>
+                </div>
+
+                <div class="col-xs-6">
+                    <input type="button" id="deleteJob" class="btn btn-danger pull-right" value="Delete Schedule" />
+                    <input type="button" id="saveOrUpdateJob" class="btn btn-primary" value="Schedule" />
+                    
+                    <!-- apex:commandButton styleClass="btn btn-danger pull-right" value="{!selectedTimeInterval}" id="theButton"/>
+                    <apex:commandButton styleClass="btn btn-primary" action="{!saveApexScheduler}" value="Save" id="theButton1"/ -->
+
+                </div>
+            </div>
+        </div>
+
+        <apex:actionFunction name="saveOrUpdateApexScheduler" action="{!saveApexScheduler}"/>
+        <apex:actionFunction name="deleteApexScheduler" action="{!deleteApexScheduler}"/>
+    </apex:form>
+</html>
+</apex:page>

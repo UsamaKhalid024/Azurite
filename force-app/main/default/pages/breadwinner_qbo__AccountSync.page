@@ -1,0 +1,895 @@
+<apex:page controller="breadwinner_qbo.AccountSyncController" sidebar="false" action="{!displayAccountsForSelectedPageNumber}" tabStyle="Breadwinner__tab" title="Breadwinner Account Match">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <style>
+                .accountListPanelTable {
+                font-size: 12px;
+                table-layout: fixed;
+                margin-bottom: 40px;
+                }
+                
+                .lookup {
+                padding: 5px 0 5px 0!important;
+                margin-left: 20px;
+                }
+                
+                .matchFound {
+                background: #f4f6f9;
+                display: block;
+                line-height: 22px;
+                padding: 10px;
+                //margin-left: 20px;
+                }
+                
+                .QBOAccountMatch {
+                background: #f4f6f9;
+                line-height: 22px;
+                //margin-left: 20px;
+                padding: 10px;
+                text-align: left;
+                word-wrap: break-word;
+                }
+                
+                .arrow {
+                font-size: 37px;
+                color: #42B7F4;
+                }
+                
+                .tdCell {
+                background: #fff;
+                border: 1px solid #ddd;
+                box-shadow: 1px 1px 2px -2px #ccc;
+                }
+                
+                .arrowCell {
+                text-align: center;
+                vertical-align: middle!important;
+                }
+                
+                .radioCell {
+                background: #fff;
+                border: 1px solid #ddd;
+                box-shadow: 1px 1px 2px -2px #ccc;
+                }
+                
+                .marginLeftQBOAccount {
+                margin-left: 10px;
+                margin-top: 7px;
+                display: block;
+                font-size: 14px;
+                font-weight: bold;
+                }
+                
+                .marginLeftSFAccount {
+                margin-left: 10px;
+                margin-top: 7px;
+                display: block;
+                }
+                
+                .breakWord {
+                word-wrap: break-word;
+                }            
+                .message {
+                background-color: inherit;
+                border-style: none;
+                padding:initial;
+                margin-left: 0px !important;
+                margin-right: 0px !important;
+                }
+                .msgIcon{
+                display:none;
+                }
+                                
+                .pageTitle {
+                display: block;
+                margin: 30px 0 0;
+                font-size: 16px;
+                }
+                
+                .columnTitle {
+                display: block;
+                margin-bottom: 10px;
+                font-weight: 600;
+                font-size: 24px;
+                }
+                .slds-scope .slds-notify_alert {
+                padding: 0.5rem;
+                text-align: left;
+                width: initial;
+                display: block;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }   
+                .lookupInput .slds-input {
+                width: 50%;
+                }
+                .slds-scope .slds-spinner_container{
+                position: fixed;
+                z-index: 9999;
+                }
+                .slds-scope .slds-radio .slds-form-element__label {
+                display: inherit;
+                }
+                .noSidebarCell, .sidebarCell .fixed{
+                padding: 0px !important;
+                }
+                .sfdcBody{
+                padding: 0px !important;
+                }
+            </style>
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}" type="text/javascript">
+            </script>
+            
+            <script type="text/javascript">
+
+                if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                    document.getElementsByTagName("title")[0].innerHTML="Breadwinner Account Match";
+                }
+                
+                //var j$ = jQuery.noConflict();
+                function HideStyleSheet(){
+                $("link.user[href$='elements.css']").each(function(){
+                    $(this).removeAttr("href");
+                });
+            }
+            function message()
+            {
+                $(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"});
+                $(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                $(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                $(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                $("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                $("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                $("table.messageTable td").css({"color" : "white"});
+                $("div[class*='warning'] table.messageTable td").css( "color", "black" );            
+            }
+            function setLookupPicklist(){
+                //$("select[id$='accountLookup_lkid']").parent().parent().css("margin-left","2.75rem");
+                $("select[id$='accountLookup_lkid']").addClass("slds-select").css("width","50%");
+                $("select[id$='accountLookup_lkid'] option").removeAttr("selected");
+                
+                $('form').keypress(function(event) { 
+                    return event.keyCode != 13;
+                }); 
+            }
+            function redirecttoBWPage(){
+                window.location.href = '{!URLFOR($Page.Breadwinner)}';
+            } 
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+                $(".lookupInput input").addClass("slds-input");
+            }
+            $(function(){
+                addallfuncs();
+                setLookupPicklist();
+            });
+            </script>
+            
+            <apex:outputPanel id="mapInitDefaultActionScript">
+                <script type="text/javascript">
+                var mapQBOAcctIdAndAction=new Object();
+                </script>
+                
+            </apex:outputPanel>
+            <script type="text/javascript">
+            var __sfdcSessionId = '{!GETSESSIONID()}';
+            </script>
+            <script src="../../soap/ajax/34.0/connection.js" type="text/javascript"></script>
+            <script src="../../soap/ajax/34.0/apex.js" type="text/javascript"></script>
+            
+            <script type="text/javascript">
+            function checkErrorMsg(){
+                console.log('$$$$Within CheckErrorMsg Method'+'+++'+$('.errorMsg'));
+                var errorDiv = $('.errorMsg');
+                if(typeof errorDiv != "undefined" && typeof $('.errorMsg')[0] != "undefined"){
+                    console.log('$$$$$Error Meggase==>'+$('.errorMsg')[0].innerHTML);
+                    
+                    var position = $('.errorMsg').position();
+                    window.scroll(position.left,position.top) ;
+                }else{
+                    console.log('Error Not Found everything is OK');
+                    
+                    submitAndNextJS();
+                    finalSubmitANDNext();
+                }
+            }
+            function removeAltAttribute()
+            {          
+                var lookUpIcons = document.getElementsByClassName('lookupIcon');
+                for(var i = 0; i < lookUpIcons.length; i++)
+                {          
+                    lookUpIcons[i].removeAttribute("alt"); 
+                    lookUpIcons[i].removeAttribute("title"); 
+                    lookUpIcons[i].parentNode.removeAttribute("title"); 
+                }
+            }
+            
+            function submitAndNextJS()
+            {       
+                var jsonActions = JSON.stringify(mapQBOAcctIdAndAction);
+                console.log('######'+jsonActions);
+                document.getElementById('{!JSENCODE($Component.formId.jsonOfActionsId)}').value = jsonActions;
+                //console.log('value  : ' + document.getElementById('{!$Component.formId.jsonOfActionsId}').value);
+                //return false;             
+            }
+            
+            function pushToMapQBOAcctIdAndAction(key, value)
+            {
+                mapQBOAcctIdAndAction[key] = value;     
+                UpdateInfo();
+                
+                // check to show/hide data quality error on click
+                if(document.getElementById(key+'-cn').checked)
+                    document.getElementById(key+'-dataQuality').style.display ='block';
+                else
+                    document.getElementById(key+'-dataQuality').style.display ='none';
+                
+            }
+            
+            function checkRadioButtonForManualMatch(manualMatchRadioButtonId)
+            {
+                document.getElementById(manualMatchRadioButtonId).checked = true;
+            }
+            
+            function clearManualMatchOnSelectingOther(key) {
+                var mappingSpanId=key+'-mm-lookup';
+                try{
+                    var mappingSpanEle = document.getElementById(mappingSpanId);
+                    if(mapQBOAcctIdAndAction[key]==='manualMatch' || (mappingSpanEle &&mappingSpanEle.getElementsByClassName("errorMsg").length > 0)){
+                        console.log(mappingSpanEle.getElementsByClassName("lookupInput")[0].children[0].value);
+                        mappingSpanEle.getElementsByClassName("lookupInput")[0].children[0].value = '';
+                        try{
+                            mappingSpanEle.getElementsByClassName("errorMsg")[0].remove();
+                            console.log('mappingSpanId :::'+ mappingSpanId);
+                            console.log(document.getElementById(mappingSpanId).parentElement.id);
+                            var parentId = document.getElementById(mappingSpanId).parentElement.id;
+                            console.log('parentId :::'+ parentId);
+                            var accLKP = parentId.replace("lookupPanel", "accountLookup");
+                            var accLKPLKOLD = parentId.replace("lookupPanel", "accountLookup_lkold");
+                            document.getElementById(accLKP).value = '';
+                            document.getElementById(accLKPLKOLD).value = '';                            
+                        }
+                        catch(Error){
+                            console.log('Exception ::: '+Error);
+                        }
+                    }
+                }
+                catch(Error){
+                    console.log(Error);
+                }
+            }
+            
+            function scrollWin()
+            {
+                window.scrollTo(0,0);
+            }
+            
+            window.onload=removeAltAttribute;
+            </script>
+        </head>
+        <body>
+            
+             <div class="slds-scope slds-p-around_x-small" >                        
+                <apex:form id="formId" rendered="{!AND(initialized,isAdministrator)}">
+                    
+                    <apex:actionStatus id="assign-action-status" layout="block">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_medium" aria-hidden="false" role="alert">
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionStatus>
+                    <div  id="accountSyncText" >
+                        <!-------------------Page Header Start------------------------>
+                        <div id="thePageHeader" class="slds-page-header slds-m-bottom_medium" role="banner">
+                            <div class="slds-media slds-media_center">
+                                <div class="slds-media__figure">
+                                    <svg aria-hidden="true" class="slds-icon slds-icon-standard-user">
+                                        <use xlink:href="{!URLFOR($Asset.SLDS, 'assets/icons/utility-sprite/svg/symbols.svg#rotate')}"></use>
+                                    </svg>
+                                </div>
+                                <div class="slds-media__body">
+                                    <p class="slds-text-heading_label">Breadwinner Account Match</p>
+                                    <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                                </div>
+                            </div>
+                        </div>
+                        <!---------------------------Page Header END---------------------------------->
+                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_medium" >
+                            <apex:pagemessages rendered="{!NOT(OR(noSuccessWithPagingAPI, noRecordsPresentInQBO,isOAuthIssue))}" />
+                            <apex:pageMessage rendered="{!isOAuthIssue}" severity="WARNING" strength="2" summary="<b>There was a problem establishing a connection to QuickBooks Online:</b>" escape="false">
+                                There was a problem establishing a connection with QuickBooks Online Company "{!appC.Connecting_App_Name__c}". If you are a QuickBooks Online Admin please reconnect to QuickBooks Online now, or ask someone who is a Salesforce Admin and QuickBooks Online Admin to click&nbsp; 
+                                <apex:outputLink style="color: black" value="{!bwSetting.breadwinner_qbo__Endpoint_URL_Override__c}/api/qbo/pre_auth/{!$Organization.Id}?app_type={!IF(CONTAINS(appC.breadwinner_qbo__Connecting_App_Name__c, 'Sandbox Company'), 'sandbox', 'production')}&callbackurl={!URLENCODE(URLFOR($Page.breadwinner_qbo__CompleteAuth))}" target="_blank" rendered="{!NOT(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'))}" >Reconnect with QuickBooks Online.</apex:outputLink>
+                                <apex:outputLink style="color: black" value="{!bwSetting.breadwinner_qbo__Endpoint_URL_Override__c}/api/qbo/pre_auth/{!$Organization.Id}?app_type={!IF(CONTAINS(appC.breadwinner_qbo__Connecting_App_Name__c, 'Sandbox Company'), 'sandbox', 'production')}&callbackurl={!URLENCODE(URLFOR($Page.breadwinner_qbo__CompleteAuth))}" rendered="{!(OR($User.UIThemeDisplayed == 'Theme4d', $User.UIThemeDisplayed == 'Theme4t'))}">Reconnect with QuickBooks Online</apex:outputLink>
+                            </apex:pageMessage>
+                        </apex:outputPanel>
+                        <apex:outputPanel id="accountSyncInfoMessages">
+                            <apex:outputPanel layout="block" rendered="{!AND(NOT(isOAuthIssue),NOT(noRecordsPresentInQBO),NOT(noMoreRecordsToProcess),NOT(isImportUnderProcess))}">
+                                <p class="slds-m-around_medium" > 
+                                    Each QuickBooks Online {!IF(isVendor,"Vendor","Customer")} has to be matched with one Salesforce Account. 
+                                    Based on the {!IF(isVendor,"Vendor","Customer")}'s name, company name, parent name, phone, and address, Breadwinner has tried to auto-match some QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s. 
+                                    If Breadwinner has not been able to match it, you can select a Salesforce Account through the lookup box. 
+                                    You can also create a new Account in Salesforce based on the QuickBooks Online {!IF(isVendor,"Vendor","Customer")}. 
+                                </p>
+                                <div class="slds-text-body_small slds-m-top_small slds-m-horizontal_medium" style="font-style: italic;font-weight: bold;display:{!IF(isVendor,'','none')};border-radius: 4px">
+                                    Note: QuickBooks Online Vendors and QuickBooks Online Customers are referenced in generic term as QBO Companies in Breadwinner and are stored under QBO Companies tab.
+                                </div>
+                                
+                                <apex:outputPanel layout="block" rendered="{!isStateAndCountryPicklistsEnabled}" >
+                                    <div class="warningM3 slds-m-horizontal_medium" style="border-radius: 4px">
+                                        <b> Warning - State and Country Picklists are Enabled </b>
+                                        <p>Salesforce's 'State and Country Picklists' are enabled, so Salesforce will prevent you from creating Accounts with a State or Country that is not in it's list of possible States / Countries. </p>  
+                                        <p>If you are only matching QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s to Salesforce Accounts, through Suggested Match or Manual Match, this is not a problem. However, if you are creating new Salesforce Accounts, then Salesforce will prevent your creation if State / Country is not Correct.</p>
+                                        <p>There are two possible solutions:</p>
+                                        <p>1)&nbsp;<apex:outputLink value="/i18n/AddressCleanerOverview.apexp?setupid=AddressCleanerOverview" style="color:#015ba7" target="_blank" >Disable State and Country Picklists </apex:outputLink> in Salesforce Setup. You can re-enable this later, or leave it disabled </p>
+                                        2) For any QuickBooks Online {!IF(isVendor,"Vendor","Customer")} that you wish to create in Salesforce, manually change all of the addresses of your QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s to a &nbsp;<apex:outputLink style="color:#015ba7" value="https://help.salesforce.com/htviewhelpdoc?id=admin_state_country_picklists_overview.htm" target="_blank" >State/ Country that Salesforce accepts</apex:outputLink>. Once they are changed, Restart Background QuickBooks Online Companies Match from Troubleshooting section on Breadwinner tab and refresh this page. This option may be very time consuming, so we recommend option number 1.
+                                    </div>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <!-- <apex:outputPanel style="font-size:14px;" rendered="{!isThereDataQualityIssue}">
+<div class="warningM3 slds-m-horizontal_medium ">
+<b> Warning - Data Quality Issue </b>
+<p>Salesforce Address fields have limited field lengths, and some of your addresses in QuickBooks Online exceed those field lengths.</p>  
+<p>If you are only matching QuickBooks Online Customers to Salesforce Accounts, through Suggested Match or Manual Match, this is not a problem. However, if you are creating Salesforce Accounts, then some of your address fields will be truncated when we create new Accounts in Salesforce.</p>
+<p>You may wish to review which records and fields are over the maximum lengths below. If you wish to change them in QuickBooks Online, you can do so, and then refresh this page.</p>
+<p>Or, accept them as they are, and any Accounts created in this process will have their values truncated to maximum Salesforce field length.</p>
+</div>
+</apex:outputPanel> -->
+                            
+                            <!-- <apex:outputPanel rendered="{!noSuccessWithPagingAPI}" style="font-size:14px;">
+<div class="errorM3 slds-m-horizontal_medium ">
+<p>
+There was an error while receiving Customers from QuickBooks Online. You may contact &nbsp;&nbsp;&nbsp; 
+<apex:outputLink value="{!breadwinnerSupportPortalURL}/customer/portal/emails/new?t=453041" style="color:#015ba7" target="_blank" >support</apex:outputLink>.
+</p>
+
+<p class="slds-m-top_small">
+You may wish to try again, please&nbsp;<apex:outputLink value="{!URLFOR($Page.AccountSync)}?page={!selectedPageNumber}">click here</apex:outputLink>&nbsp;to request QuickBooks Online one more time.
+</p>
+</div>
+<br/>
+<apex:pageMessages ></apex:pageMessages>
+</apex:outputPanel> -->
+                            <apex:outputPanel layout="block" rendered="{!noRecordsPresentInQBO }" style="font-size:14px">
+                                <div class="infoM3 slds-m-horizontal_medium " style="border-radius: 4px">
+                                    <p><b>No QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s</b></p>
+                                    <p style="display:{!IF(isVendor,'inline','none')}">It appears that you have not setup QuickBooks Online with any Vendors.</p>
+                                    <p style="display:{!IF(isVendor,'none','inline')}">It appears that you have not setup QuickBooks Online with any Contact / Customers. This is fine - you can create QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s from Salesforce Accounts.</p>
+                                    <p style="display: {!IF(isVendor,'none','')}">To do so, once Breadwinner is fully setup, click "New Invoice" from the Invoices related list on an Account or Opportunity. That will create a QuickBooks Online Customer associated with the relevant Account.</p>   
+                                </div>
+                                <apex:pageMessages ></apex:pageMessages>                    
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel layout="block" rendered="{!noMoreRecordsToProcess }" style="font-size:14px;">
+                                <div class="infoM3 slds-m-horizontal_medium " style="border-radius: 4px">
+                                    <p><b>All of your QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s are matched</b></p>
+                                    <p>It appears that you have already completed the Account Match to your QuickBooks Online Companies. There are no QuickBooks Online Companies that are not matched/processed.</p>  
+                                </div>
+                                <apex:pageMessages ></apex:pageMessages>                    
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel layout="block" rendered="{!isImportUnderProcess}" style="font-size:14px;">
+                                <div class="infoM3 slds-m-horizontal_medium " style="border-radius: 4px">
+                                    <p><b>QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s import is in progress</b></p>
+                                    <p>
+                                        <apex:outputPanel rendered="{!AND(NOT(isVendor),NOT(appC.breadwinner_qbo__Is_Account_Sync_Completed__c))}">
+                                            It appears that you have just connected Breadwinner with your QuickBooks Online organization.
+                                        </apex:outputPanel>
+                                        <apex:outputPanel rendered="{!AND(isVendor,NOT(appC.breadwinner_qbo__Is_Vendor_Sync_Completed__c))}">
+                                            It appears that you have just Enabled Bill/PO.
+                                        </apex:outputPanel>                         
+                                        A background job to import your QuickBooks Online {!IF(isVendor,"Vendor","Customer")}s is in progress, please try again later.
+                                    </p>
+                                    <p class="slds-text-body_small slds-m-top_medium">If you are seeing this message for more than 10 minutes, there could be something wrong while fetching QuickBooks Online Companies, please&nbsp;<apex:commandLink action="{!restartHistoricalTotalSync}" status="assign-action-status" oncomplete="CustomerMatchpopup();">restart QuickBooks Online Companies Match</apex:commandLink>&nbsp;or contact support.</p>
+                                    
+                                </div>
+                                <apex:pageMessages ></apex:pageMessages>                    
+                            </apex:outputPanel>
+                        </apex:outputPanel>  
+                    </div>
+                    <apex:outputPanel layout="block" id="AccountListPanel">
+                        <div class="slds-m-horizontal_medium" >
+                            <apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(exceptionMessage)), LEN(exceptionMessage)>5)}">
+                                <div class="errorM3" style="border-radius: 4px">
+                                    <p>{!exceptionMessage}</p>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <apex:outputPanel rendered="{!AND(NOT(isOAuthIssue), NOT(isAccountFetchComplete), NOT(noSuccessWithPagingAPI),NOT(noRecordsPresentInQBO),NOT(isImportUnderProcess),NOT(noMoreRecordsToProcess))}" >
+                                <div class="slds-grid slds-wrap ">
+                                    <div class="slds-m-top_large slds-size_1-of-1 slds-medium-size_3-of-7 slds-large-size_6-of-13" style="text-align: center;"> 
+                                        <div class="slds-text-heading_medium">Company Details in QuickBooks Online</div>
+                                    </div>
+                                    <div class="slds-m-top_large slds-size_1-of-1 slds-medium-size_1-of-7 slds-large-size_1-of-13">
+                                        <div style="visibility: hidden;">
+                                            
+                                        </div>
+                                    </div>
+                                    <div class="slds-m-top_large slds-size_1-of-1 slds-medium-size_3-of-7 slds-large-size_6-of-13" style="text-align: center;"> 
+                                        <div class="slds-text-heading_medium">Company Details in Salesforce</div>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            <div class="slds-grid slds-wrap slds-m-top_small">
+                                <table width="100%" style="border-collapse: separate">
+                                    <apex:repeat value="{!QBOAcctIdList}" var="refId">
+                                        <apex:variable var="qboCustomer" value="{!mapQBOAcctIdAndAccount[refId]}"/>
+                                        <apex:variable var="actionByDefault" value="{!mapQBOAcctIdAndDefaultAction[refId]}"/>
+                                        <apex:variable var="sfAccount" value="{!mapQBORefIdAndSfAccount[refId]}"/>
+                                        
+                                        
+                                        <tr>
+                                            <td valign="top" style="border-bottom:0px;" class=" slds-box slds-m-top_large slds-size_1-of-1 slds-medium-size_3-of-7 slds-large-size_6-of-13"> <div >
+                                                <div class="slds-m-horizontal_medium">
+                                                    
+                                                    <ul class="slds-has-dividers_bottom-space">
+                                                        <li class="slds-item"><span class="slds-text-heading_medium">{!qboCustomer.DisplayName}</span> </li>
+                                                    </ul>
+                                                    <apex:outputPanel layout="block">
+                                                        <div class="QBOAccountMatch">
+                                                            <table>
+                                                                <tr><td style="width: 30%"><label class="slds-form-element__label" >Company Name:</label></td><td style="width: 70%" >{!qboCustomer.CompanyName}</td></tr>
+                                                                
+                                                                
+                                                                <tr><td ><label class="slds-form-element__label" >{!IF(isVendor,'Display Name','Qualified Name')}:</label></td><td  >{!IF(isVendor,qboCustomer.DisplayName,qboCustomer.FullyQualifiedName)}</td></tr>
+                                                                
+                                                                <tr><td ><label class="slds-form-element__label" >Phone:</label></td><td  >{!qboCustomer.Phone}</td></tr>
+                                                                
+                                                                <tr><td ><label class="slds-form-element__label" >Website:</label></td><td  >{!qboCustomer.Website}</td></tr>
+                                                                
+                                                                <tr><td ><label class="slds-form-element__label" >Email:</label></td><td  >{!qboCustomer.EmailAddress}</td></tr>
+                                                                
+                                                                <tr><td style="vertical-align: top;"><label class="slds-form-element__label" >Address:</label>
+                                                                    </td>
+                                                                    <td   valign="top">
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(qboCustomer.BillingStreet))}">{!SUBSTITUTE(qboCustomer.BillingStreet,'%%',', ')} </apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(qboCustomer.BillingCity))}">{!qboCustomer.BillingCity} </apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(qboCustomer.BillingState))}">{!qboCustomer.BillingState} </apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(qboCustomer.BillingCountry))}">{!qboCustomer.BillingCountry} </apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(qboCustomer.BillingPostalCode))}">{!qboCustomer.BillingPostalCode} </apex:outputPanel>
+                                                                        
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                            
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    
+                                                </div>
+                                                </div>
+                                            </td>
+                                            <td class="slds-m-top_large slds-size_1-of-1 slds-medium-size_1-of-7 slds-large-size_1-of-13"><div >
+                                                <div class="arrowCell" width="10%">
+                                                    <span class="arrow">&#10140;</span>
+                                                </div>
+                                                </div></td>
+                                            <td valign="top" style="border-bottom:0px;" class="slds-box slds-m-top_large slds-size_1-of-1 slds-medium-size_3-of-7 slds-large-size_6-of-13"><div > 
+                                                <div class="slds-m-horizontal_medium ">
+                                                    <apex:outputPanel layout="block" rendered="{!IF(actionByDefault == 'hardMatch', true, false)}">  
+                                                        <span class="slds-text-heading_label-normal">
+                                                            Previously Matched - No Action Needed                                       
+                                                        </span>
+                                                        <ul class="slds-has-dividers_bottom-space">
+                                                            <li class="slds-item"><span class="slds-text-heading_medium">{!sfAccount.Name}</span></li>
+                                                        </ul>
+                                                        <apex:outputPanel styleClass="matchFound">
+                                                            <table>
+                                                                <tr><td style="width: 30%"><label class="slds-form-element__label" >Company Name:</label></td><td  style="width: 70%"> {!sfAccount.Name}</td></tr>
+                                                                <tr><td ><label class="slds-form-element__label" >Phone:</label></td><td  >{!sfAccount.Phone}</td></tr>
+                                                                
+                                                                <tr><td ><label class="slds-form-element__label" >Website</label></td><td  >{!sfAccount.Website}</td></tr>
+                                                                
+                                                                <tr><td style="vertical-align: top;"><label class="slds-form-element__label" >Address:</label></td>
+                                                                    <td  >
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingStreet))}">{!sfAccount.BillingStreet}</apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingCity))}">{!sfAccount.BillingCity}</apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingState))}">{!sfAccount.BillingState}</apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingCountry))}">{!sfAccount.BillingCountry}</apex:outputPanel>
+                                                                        <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingPostalCode))}">{!sfAccount.BillingPostalCode}</apex:outputPanel>
+                                                                    </td>
+                                                                </tr>
+                                                            </table>
+                                                        </apex:outputPanel>
+                                                        
+                                                    </apex:outputPanel>
+                                                    <!-- Other options -->
+                                                    <apex:outputPanel layout="block" rendered="{!IF(actionByDefault == 'hardMatch', false, true)}">
+                                                        
+                                                        <!------------ Suggested Match ------------------->    
+                                                        <apex:outputPanel rendered="{!IF(actionByDefault == 'suggestedMatch', true, false)}">
+                                                            <div class="slds-m-top_xx-small">
+                                                                <div class="slds-clearfix" style="display: inline-flex">
+                                                                    <div class="slds-float_left" style="margin-top: 3px">
+                                                                        <input type="radio" name="{!refId}" id="{!refId}-sm" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'suggestedMatch');"/>
+                                                                    </div>
+                                                                    <div class="slds-float_left">
+                                                                        <span class="slds-radio">
+                                                                            <span class=" slds-form-element__label slds-m-left_small" >Suggested Match to Existing Salesforce Account</span>
+                                                                        </span>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            <!-- div class="slds-form-element slds-m-top_xx-small">
+<span class="slds-radio">
+<input type="radio" name="{!refId}" id="{!refId}-sm" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'suggestedMatch');"/>
+<label class="slds-radio__label" for="{!refId}-sm" >
+<span class="slds-radio_faux"></span>
+<span class="slds-form-element__label slds-m-left_small" >Suggested Match to Existing Salesforce Account</span>
+</label>
+</span>
+</div -->   
+                                                            <div class="slds-m-left_large">
+                                                                <ul class="slds-has-dividers_bottom-space">
+                                                                    <li class="slds-item"><span class="slds-text-heading_medium">{!sfAccount.Name}</span></li>
+                                                                </ul>
+                                                                <apex:outputPanel styleClass="matchFound">
+                                                                    <table>
+                                                                        <tr><td style="width: 30%"><label class="slds-form-element__label" >Company Name:</label></td><td  style="width: 70%"> {!sfAccount.Name}</td></tr>
+                                                                        <tr><td ><label class="slds-form-element__label" >Phone:</label></td><td  >{!sfAccount.Phone}</td></tr>
+                                                                        
+                                                                        <tr><td ><label class="slds-form-element__label" >Website</label></td><td  >{!sfAccount.Website}</td></tr>
+                                                                        
+                                                                        <tr><td style="vertical-align: top;"><label class="slds-form-element__label" >Address:</label></td>
+                                                                            <td  >
+                                                                                <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingStreet))}">{!sfAccount.BillingStreet}</apex:outputPanel>
+                                                                                <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingCity))}">{!sfAccount.BillingCity}</apex:outputPanel>
+                                                                                <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingState))}">{!sfAccount.BillingState}</apex:outputPanel>
+                                                                                <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingCountry))}">{!sfAccount.BillingCountry}</apex:outputPanel>
+                                                                                <apex:outputPanel layout="block" rendered="{!NOT(ISBLANK(sfAccount.BillingPostalCode))}">{!sfAccount.BillingPostalCode}</apex:outputPanel>
+                                                                            </td>
+                                                                        </tr>
+                                                                    </table>
+                                                                </apex:outputPanel>                                                            
+                                                            </div>
+                                                        </apex:outputPanel>
+                                                        
+                                                        <!-- Create New -->
+                                                        <div class="slds-m-top_xx-small">
+                                                            <div class="slds-clearfix" style="display: inline-flex">
+                                                                <div class="slds-float_left" style="margin-top: 3px"><input type="radio" name="{!refId}" id="{!refId}-cn" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'createNew');"/>
+                                                                </div>
+                                                                <div class="slds-float_left">
+                                                                    <div class="slds-radio">
+                                                                        <div class="slds-form-element__label slds-m-left_small" >Create New Salesforce Account from QuickBooks Online {!IF(isVendor,"Vendor","Customer")}</div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                            
+                                                        </div>
+                                                        <!--div class="slds-form-element slds-m-top_xx-small">
+<span class="slds-radio">
+<input type="radio" name="{!refId}" id="{!refId}-cn" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'createNew');"/>
+<label class="slds-radio__label" for="{!refId}-cn" >
+<span class="slds-radio_faux"></span>
+<span class="slds-form-element__label slds-m-left_small" >Create New Salesforce Account from QuickBooks Online Customer</span>
+</label>
+</span>
+</div-->
+                                                        <apex:outputPanel id="recordTypePanel" rendered="{!areRecordTypesEnabled}">
+                                                            <div class="lookup">
+                                                                <div class="slds-form-element slds-m-left_large">
+                                                                    <label class="slds-form-element__label" >Choose a Record Type</label>
+                                                                    <div class="slds-form-element__control">
+                                                                        <apex:selectList value="{!mapQBORefIdManualMatchLookupSelector[refId].Currency_Code__c}" size="1" styleClass="slds-select" style="width:50%">
+                                                                            <apex:selectOptions value="{!recordTypesAvailable}"/>
+                                                                        </apex:selectList>
+                                                                    </div>
+                                                                </div>
+                                                            </div> 
+                                                        </apex:outputPanel>
+                                                        
+                                                        
+                                                        <!-- Manual Match -->
+                                                        <div class="slds-m-top_xx-small">
+                                                            <div class="slds-clearfix" style="display: inline-flex">
+                                                                <div class="slds-float_left" style="margin-top: 3px">
+                                                                    <input type="radio" name="{!refId}" id="{!refId}-mm" onChange="pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'manualMatch');"/>
+                                                                </div>
+                                                                <div class="slds-float_left"><span class="slds-radio">
+                                                                    <span class="slds-form-element__label slds-m-left_small" >Manual Match to an existing Salesforce Account you select</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- div class="slds-form-element slds-m-top_xx-small">
+<span class="slds-radio">
+<input type="radio" name="{!refId}" id="{!refId}-mm" onChange="pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'manualMatch');"/>
+<label class="slds-radio__label" for="{!refId}-mm" >
+<span class="slds-radio_faux"></span>
+<span class="slds-form-element__label slds-m-left_small" >Manual Match to an existing Salesforce Account you select</span>
+</label>
+</span>
+</div -->
+                                                        <apex:outputPanel id="lookupPanel">
+                                                            <apex:actionRegion >
+                                                                <div class="lookup" id="{!refId}-mm-lookup" style="margin-left: 2.75rem;">
+                                                                    
+                                                                    <apex:inputField value="{!mapQBORefIdManualMatchLookupSelector[refId].Account__c}" id="accountLookup">
+                                                                        <apex:actionSupport event="onchange" oncomplete="setLookupPicklist();addallfuncs();checkRadioButtonForManualMatch('{!JSENCODE(refId)}-mm'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'manualMatch');" reRender="lookupPanel"  />
+                                                                    </apex:inputField>
+                                                                </div>
+                                                                
+                                                            </apex:actionRegion>
+                                                        </apex:outputPanel>
+                                                        <!-- Do Not Import this QuickBooks Online Customer -->
+                                                        <div class="slds-m-top_xx-small">
+                                                            <div class="slds-clearfix" style="display: inline-flex">
+                                                                <div class="slds-float_left" style="margin-top: 3px"><input type="radio" name="{!refId}" id="{!refId}-dn" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'doNotImport');"/>
+                                                                </div>
+                                                                <div class="slds-float_left"><span class="slds-radio">
+                                                                    <span class="slds-form-element__label slds-m-left_small" for="{!refId}-dn">Do Not Sync {!IF(isVendor,IF(AND(appC.Sync_POs__c,appC.Sync_Bills__c),"Bills and POs",IF(appC.Sync_Bills__c,'Bills',IF(appC.Sync_POs__c,'POs','Bills / POs'))),"Invoices")} from this QuickBooks Online {!IF(isVendor,"Vendor","Customer")}</span>
+                                                                    </span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        
+                                                        <!-- div class="slds-form-element slds-m-top_xx-small">
+<span class="slds-radio">
+<input type="radio" name="{!refId}" id="{!refId}-dn" onChange="clearManualMatchOnSelectingOther('{!JSENCODE(refId)}'); pushToMapQBOAcctIdAndAction('{!JSENCODE(refId)}', 'doNotImport');"/>
+<label class="slds-radio__label" for="{!refId}-dn" >
+<span class="slds-radio_faux"></span>
+<span class="slds-form-element__label slds-m-left_small" for="{!refId}-dn">Do Not Import this QuickBooks Online Customer</span>
+</label>
+</span>
+</div -->
+                                                        <apex:outputPanel layout="block" styleClass="slds-m-horizontal_medium slds-notify slds-notify_alert slds-theme_error slds-theme_alert-texture slds-m-bottom_small" rendered="{!qboCustomer.isUnableToCreateAccount}" style="border-radius: 4px">
+                                                            <p>Breadwinner was unable to create this Account </p>
+                                                            <p>{!qboCustomer.errorMessage} </p>
+                                                        </apex:outputPanel>
+                                                        
+                                                    </apex:outputPanel>   
+                                                    
+                                                    <script>                                                            
+                                                    if('{!JSENCODE(actionByDefault)}' == 'createNew')
+                                                    {                                                        
+                                                        mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] =  'createNew';                            
+                                                        document.getElementById('{!JSENCODE(refId)}-cn').checked = true;
+                                                        
+                                                    }
+                                                    else if('{!JSENCODE(actionByDefault)}' == 'suggestedMatch')
+                                                    {                                                        
+                                                        mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] =  'suggestedMatch';                            
+                                                        document.getElementById('{!JSENCODE(refId)}-sm').checked = true;
+                                                        
+                                                    }
+                                                        else if('{!JSENCODE(actionByDefault)}' == 'doNotImport')
+                                                        {                                                        
+                                                            mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] =  'doNotImport';                            
+                                                            document.getElementById('{!JSENCODE(refId)}-dn').checked = true;
+                                                            
+                                                        }
+                                                            else if('{!JSENCODE(actionByDefault)}' == 'hardMatch')
+                                                            {                           
+                                                                mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] = 'hardMatch';                                     
+                                                            } 
+                                                    
+                                                    if('{!JSENCODE(actionByDefault)}' != 'hardMatch' && '{!JSENCODE(qboCustomer.ContactStatus)}' == 'INACTIVE'){
+                                                        mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] =  'doNotImport';                            
+                                                        document.getElementById('{!JSENCODE(refId)}-dn').checked = true;
+                                                    }
+                                                    console.log('{!qboCustomer.isUnableToCreateAccount}');
+                                                    if('{!qboCustomer.isUnableToCreateAccount}' ==='true'){
+                                                        mapQBOAcctIdAndAction['{!JSENCODE(refId)}'] =  'createNew';                            
+                                                        document.getElementById('{!JSENCODE(refId)}-cn').checked = true;
+                                                    }
+                                                    
+                                                    </script> 
+                                                    
+                                                </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="slds-box" style="border-top:0px;">
+                                                <div class="slds-m-top_small">
+                                                    <img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/qbo_logo_30px.png')}"/> &nbsp; QuickBooks Online {!IF(isVendor,"Vendor","Customer")}
+                                                </div>
+                                            </td>
+                                            <td></td>
+                                            <td class="slds-box" style="border-top:0px;">
+                                                <div class="slds-m-top_small">
+                                                    <img src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/sf_logo_30px.png')}"/> &nbsp; Salesforce Account
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td colspan="3">
+                                                <!-- <div class="slds-m-top_medium slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1">
+<apex:outputPanel   layout="block"> -->
+                                                <div class="slds-m-top_medium slds-size_1-of-1 slds-medium-size_1-of-1 slds-large-size_1-of-1">
+                                                    <div id="{!refId}-dataQuality" style="display:none;">
+                                                        <apex:outputPanel styleClass="slds-m-horizontal_medium" layout="block">
+                                                            
+                                                            <apex:outputPanel style="font-size:14px;" rendered="{!AND(isThereDataQualityIssue, OR(AND(NOT(ISBLANK(qboCustomer.BillingStreet)),LEN(qboCustomer.BillingStreet)>255),
+                                                                                                                AND(NOT(ISBLANK(qboCustomer.BillingCity)),LEN(qboCustomer.BillingCity)>40),
+                                                                                                                AND(NOT(ISBLANK(qboCustomer.BillingState)),LEN(qboCustomer.BillingState)>20),
+                                                                                                                AND(NOT(ISBLANK(qboCustomer.BillingPostalCode)),LEN(qboCustomer.BillingPostalCode)>20),
+                                                                                                                AND(NOT(ISBLANK(qboCustomer.BillingCountry)),LEN(qboCustomer.BillingCountry)>40)))}">
+                                                                
+                                                                <div class="warningM3">
+                                                                    <b> Warning - Potential Data Quality Issue </b>
+                                                                    <p>Salesforce Address Fields have field length limitations, and this address exceeds them. If you are Matching this QuickBooks Online Company to a Salesforce Account, either by suggested match or manual match, then this is not an issue. However, if you are creating a Salesforce Account from this QuickBooks Online record, please be aware that one or more values are too long, and when being imported into Salesforce, those fields will be truncated.
+                                                                        <br/>Alternatively, you may edit the record in QuickBooks Online and Restart Background QuickBooks Online Companies Match from Troubleshooting section on Breadwinner tab.</p>
+                                                                    <p>
+                                                                        <apex:outputLabel rendered="{!AND(NOT(ISBLANK(qboCustomer.BillingStreet)),LEN(qboCustomer.BillingStreet)>255)}"> <b>Street:</b> "{!qboCustomer.BillingStreet}" is {!LEN(qboCustomer.BillingStreet)} characters long, but Salesforce Street fields are only 255 characters long.<br/> If you create this record, the Street field will be imported as "{!LEFT(qboCustomer.BillingStreet , 255)}".<br/><br/> </apex:outputLabel>
+                                                                        <apex:outputLabel rendered="{!AND(NOT(ISBLANK(qboCustomer.BillingCity)),LEN(qboCustomer.BillingCity)>40)}" > <b>City: </b>"{!qboCustomer.BillingCity}" is {!LEN(qboCustomer.BillingCity)} characters long, but Salesforce City fields are only 40 characters long.<br/> If you create this record, the City field will be imported as "{!LEFT(qboCustomer.BillingCity, 40)}".<br/> <br/></apex:outputLabel>
+                                                                        <apex:outputLabel rendered="{!AND(NOT(ISBLANK(qboCustomer.BillingState)),LEN(qboCustomer.BillingState)>20)}"> <b>State:</b> "{!qboCustomer.BillingState}" is {!LEN(qboCustomer.BillingState)} characters long, but Salesforce State fields are only 20 characters long.<br/> If you create this record, the State field will be imported as "{!LEFT(qboCustomer.BillingState , 20)}". <br/><br/></apex:outputLabel>
+                                                                        <apex:outputLabel rendered="{!AND(NOT(ISBLANK(qboCustomer.BillingPostalCode)),LEN(qboCustomer.BillingPostalCode)>20)}"> <b>PostalCode:</b> "{!qboCustomer.BillingPostalCode}" is {!LEN(qboCustomer.BillingPostalCode)} characters long, but Salesforce PostalCode fields are only 20 characters long. <br/>If you create this record, the PostalCode field will be imported as "{!LEFT(qboCustomer.BillingPostalCode, 20)}". <br/><br/></apex:outputLabel>
+                                                                        <apex:outputLabel rendered="{!AND(NOT(ISBLANK(qboCustomer.BillingCountry)),LEN(qboCustomer.BillingCountry)>40)}"> <b>Country:</b> "{!qboCustomer.BillingCountry}" is {!LEN(qboCustomer.BillingCountry)} characters long, but Salesforce Country fields are only 20 characters long. <br/>If you create this record, the Country field will be imported as "{!LEFT(qboCustomer.BillingCountry, 40)}". <br/></apex:outputLabel>
+                                                                    </p>
+                                                                </div>
+                                                            </apex:outputPanel>
+                                                        </apex:outputPanel>
+                                                    </div>
+                                                </div>
+                                                
+                                                <script>
+                                                // to show data quality error on load
+                                                if('{!JSENCODE(actionByDefault)}' == 'createNew')
+                                                {                                                        
+                                                    document.getElementById('{!refId}-dataQuality').style.display ='block';
+                                                }
+                                                </script>
+                                            </td>
+                                        </tr>
+                                        
+                                    </apex:repeat>
+                                </table>
+                            </div>
+                        </div>
+                    </apex:outputPanel>
+                    <!-- Adding SLDS Modal for popup box -->
+                    <div >
+                        <div class="slds-modal slds-modal_small" aria-hidden="false" role="dialog" id="showModalAftercompletion">
+                            <div class="slds-modal__container">
+                                <div class="slds-modal__header">
+                                    <h2 class="slds-text-heading_medium">Account match completed successfully</h2>
+                                </div>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <p>
+                                        Dynamic popup text goes here.
+                                    </p>
+                                    <div align="right" style="margin-top: 1rem;">
+                                        <apex:commandLink id="okaybutton" styleClass="btns slds-button slds-button_brand" value="OK" onclick="redirecttoBWPage();" reRender="nothing"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="slds-backdrop" id="backdrop"></div>
+                    </div>                   
+                    <!-- End of Modal -->
+
+                    <apex:outputPanel style="font-size:14px;" rendered="{!NOT(OR(isAccountFetchComplete, NOT(isAdministrator)))}"> 
+                        <div id="info" class="slds-m-top_medium" style="color:red;text-align:center;">
+                            
+                        </div>
+                        <br/>
+                    </apex:outputPanel>
+                    <script type="text/javascript">
+                    function UpdateInfo(){
+                        try {
+                            if(!({!isAccountFetchComplete} || {!noSuccessWithPagingAPI}||{!noRecordsPresentInQBO}||{!isImportUnderProcess}||{!noMoreRecordsToProcess})){
+                                console.log('UpdateInfo');
+                                var newAccounts = 0;
+                                var matchAccounts = 0;
+                                for(key in mapQBOAcctIdAndAction){
+                                    var type = mapQBOAcctIdAndAction[key];
+                                    if(type=='createNew'){
+                                        newAccounts++;
+                                    }else if(type!='hardMatch' && type!='doNotImport'){
+                                        matchAccounts++;
+                                    }
+                                }
+                                var infoMessage = document.getElementById('info');
+                                if(newAccounts>0 || matchAccounts >0){
+                                    if({!isVendor})
+                                        infoMessage.innerHTML  = 'Clicking Next will create '+newAccounts+' new Salesforce '+(newAccounts >1 ? 'Accounts from QuickBooks Online Vendors' : 'Account from QuickBooks Online Vendor') +', and will match '+matchAccounts+(matchAccounts >1 ?  ' QuickBooks Online Vendors to existing Salesforce Accounts' : ' QuickBooks Online Vendor to existing Salesforce Account');
+                                    else
+                                        infoMessage.innerHTML  = 'Clicking Next will create '+newAccounts+' new Salesforce '+(newAccounts >1 ? 'Accounts from QuickBooks Online Customers' : 'Account from QuickBooks Online Customer') +', and will match '+matchAccounts+(matchAccounts >1 ?  ' QuickBooks Online Customers to existing Salesforce Accounts' : ' QuickBooks Online Customer to existing Salesforce Account');
+                                }
+                                else{
+                                    infoMessage.innerHTML  = '';
+                                }
+                            }   
+                        }
+                        catch(err) {
+                            console.log('UpdateInfo Error:'+err.message);
+                        }
+                        
+                    }
+                    
+                    UpdateInfo();
+                    
+                    </script>
+                    <div class="slds-m-top_medium slds-m-bottom_medium" style="text-align:center;">
+                        <apex:commandButton id="theNextButton" value="Next" styleClass="slds-button slds-button_brand" status="assign-action-status" rendered="{!NOT(OR(noMoreRecordsToProcess, isImportUnderProcess))}" reRender="NOTHING" disabled="{!OR(isOAuthIssue, noSuccessWithPagingAPI, isAccountFetchComplete, NOT(isAdministrator))}" onclick="reRenderLookUp();"/>
+                        
+                        <apex:commandButton id="theRefreshButton" value="Refresh" styleClass="slds-button slds-button_brand" rendered="{!isImportUnderProcess}" action="{!refreshThisPage}"/>
+                        
+                        <apex:commandButton id="theBackButton" value="Go Back" styleClass="slds-button slds-button_brand" rendered="{!noMoreRecordsToProcess}" action="{!goBackToBreadwinner}"/>
+                        
+                        <apex:inputHidden id="jsonOfActionsId" value="{!jsonUserSelectedActions}"/>             
+                        <apex:actionFunction name="finalSubmitANDNext" action="{!submitAndNext}" reRender="AccountListPanel,AccountFetchCompleteScript, mapInitDefaultActionScript, pageMessagesId,accountSyncText,accountSyncInfoMessages" status="assign-action-status" oncomplete="accountFetchComplete();addallfuncs();"/>
+                        <apex:actionFunction name="reRenderLookUp" reRender="NOTHING" status="assign-action-status" oncomplete="checkErrorMsg();"/>
+                    </div>
+                </apex:form>
+            </div>
+            
+            <apex:outputPanel id="AccountFetchCompleteScript">
+                
+                <script>   
+                function CustomerMatchpopup(){
+                    $("#showModalAftercompletion h2").text('Restarting QuickBooks Online Companies Match ');
+                    $("#showModalAftercompletion p").text('QuickBooks Online Companies Match has been restarted, please refresh this page after a while.');
+                    $('#backdrop').addClass('slds-backdrop--open');
+                    $('#showModalAftercompletion').addClass('slds-fade-in-open');
+                }
+                function accountFetchComplete()
+                {   
+                    
+                    scrollWin();
+                    if(({!isAccountFetchComplete} || {!noRecordsPresentInQBO} )&& {!NOT(noSuccessWithPagingAPI)})
+                    {
+                        
+                        var elementHeaderText = document.getElementById('accountSyncText');                                
+                        elementHeaderText.style.display = 'none';                
+                        
+                        var elementPageHeader = document.getElementById('thePageHeader');
+                        elementPageHeader.style.display = 'none';
+                        
+                        
+                        var elementNextButton = document.getElementById('{!JSENCODE($Component.formId.theNextButton)}');
+                        elementNextButton.style.display = 'none';
+                        
+                        document.getElementById('info').style.display = 'none';
+                        
+                        var typeofQBOCompany = '';
+                        var isInvoiceorBillPO = '';
+                        if({!isVendor})
+                            typeofQBOCompany = "Vendors";
+                        else
+                            typeofQBOCompany = "Customers";
+                        if({!NOT(isVendor)})
+                            isInvoiceorBillPO = "Invoices";
+                        else{
+                            if({!appC.Sync_POs__c}&&{!appC.Sync_Bills__c})
+                                isInvoiceorBillPO = "Bills and POs";
+                            else{
+                                if({!appC.Sync_POs__c})
+                                    isInvoiceorBillPO = "POs";
+                                if({!appC.Sync_Bills__c})
+                                    isInvoiceorBillPO = "Bills";
+                                
+                            }
+                        }
+                        if(({!isVendor}&&isInvoiceorBillPO!='')||(!{!isVendor})){
+                            // var popup_msg = 'All your QuickBooks Online '+typeofQBOCompany+' have been matched to Salesforce Accounts. \n\nBreadwinner will now import all of your '+isInvoiceorBillPO +' from QuickBooks Online. It imports all '+isInvoiceorBillPO +' already created, and checks every 15 minutes for new or modified '+isInvoiceorBillPO +'.';
+                            var popup_msg = 'Breadwinner has successfully matched all of your QuickBooks Online '+typeofQBOCompany+' with Salesforce Accounts.';
+                            $("#showModalAftercompletion p").text(popup_msg);
+                            $('#backdrop').addClass('slds-backdrop--open');
+                            $('#showModalAftercompletion').addClass('slds-fade-in-open');
+                            // alert('All your QuickBooks Online '+typeofQBOCompany+' have been matched to Salesforce Accounts.\n\nBreadwinner will start bringing in your QuickBooks Online '+isInvoiceorBillPO +' right away. All '+isInvoiceorBillPO+' should be in Salesforce within a few minutes.');
+                        }
+                        
+                        //window.location.href = '{!URLFOR($Page.Breadwinner)}';
+                    }
+                    else{
+                        removeAltAttribute();
+                        UpdateInfo();
+                    }
+                }    
+                </script>
+            </apex:outputPanel>
+            
+        </body>
+    </html>
+</apex:page>

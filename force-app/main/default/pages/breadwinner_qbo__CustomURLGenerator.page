@@ -1,0 +1,512 @@
+<apex:page controller="breadwinner_qbo.CustomURLGeneratorController" sidebar="false" id="page" tabStyle="breadwinner_qbo__Invoice__c" title="Custom {!InvoiceLabel} URL Generation">
+    <html xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+        
+        <head>
+            <apex:slds />
+            <script src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/JS/jquery-1.11.3.js')}"></script>
+            <script type="text/javascript">
+            
+            if(document.getElementsByTagName("title") && document.getElementsByTagName("title")[0]){
+                document.getElementsByTagName("title")[0].innerHTML="Custom {!InvoiceLabel} URL Generation";
+            }    
+                //var j$ = jQuery.noConflict();
+            function HideStyleSheet(){
+                $("link.user[href$='elements.css']").each(function(){
+                    $(this).removeAttr("href");
+                });
+            }
+            function message()
+            {
+                $(".infoM6, .infoM4, .infoM3, .infoM2, .infoS1").addClass("slds-notify slds-notify_alert slds-theme_inverse-text  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px","Justify-content":"left", "width": "-webkit-fill-available"} );
+                $(".errorM6, .errorM4, .errorM3, .errorM2, .errorS1").addClass("slds-notify slds-notify_alert slds-theme_error  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} );
+                $(".warningM6, .warningM4, .warningM3, .warningM2, .warningS1").addClass("slds-notify slds-notify_alert slds-theme_warning  slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;
+                $(".confirmM6, .confirmM4, .confirmM3, .confirmM2, .confirmS1").addClass("slds-notify slds-notify_alert slds-theme_success slds-text-align_left slds-text-heading_small slds-m-bottom_small").css( {"font-weight":"500","line-height":"1.4","word-spacing":"1px"} ) ;               
+                
+                $("div .messageText h4").css( {"color": "white","padding-right" : "2px"});
+                $("div[class*='warning'] div.messageText h4").css( "color", "black" );
+                $("table.messageTable td").css({"color" : "white"});
+                $("div[class*='warning'] table.messageTable td").css( "color", "black" );              
+            }
+            
+            function addallfuncs(){
+                HideStyleSheet();
+                message();
+            }
+            function getLabel(){
+                sendtoController($("[id$=InvoiceType]").find('option:selected').text());
+            }
+            function identifyfield(elementt,helptext,TopMinusParam,LeftMinusParam){
+                
+                var x = $(elementt).offset();
+                var ToSetleft=x.left-LeftMinusParam;                
+                $("#help p").text(helptext);                
+                var ToSetheight=x.top-TopMinusParam;                
+                var heptextdiv=document.getElementById("help");
+                $(heptextdiv).css({
+                    top: ToSetheight + 'px',
+                    left: ToSetleft + 'px',
+                    display:""
+                })
+                
+            }
+            function mouseoutclose(){
+                var heptextdiv=document.getElementById("help");
+                $(heptextdiv).css({top:"0px",left:"0px",display:"none"});
+            }            
+            $(function(){
+                addallfuncs();
+                console.log("script loaded");
+            });
+            </script>
+            <style>
+                
+                .message {
+                background-color: inherit;
+                border-style: none;
+                padding:initial;
+                }
+                .msgIcon{
+                display:none;
+                }
+                .message .messageText h4 {
+                font-weight: inherit;
+                display: initial;
+                }
+                .noSidebarCell, .sidebarCell .fixed{
+                    padding: 0px !important;
+                }
+                .sfdcBody{
+                    padding: 0px !important;
+                }
+                .message{       
+                    margin-left: 0px !important;        
+                    margin-right: 0px !important;       
+                }
+            </style>
+        </head>
+        
+        <body>
+            <apex:form id="theForm">
+                <div class="slds-scope slds-p-around_x-small">
+                    <!-- ----------------------header start ------------------- -->
+                    <div class="slds-page-header" role="banner">
+                        <div class="slds-media">
+                            <div class="slds-media__body">
+                                <apex:outputPanel styleclass="slds-page-header__title slds-truncate" title="Custom {!InvoiceLabel} URL Generation" id="header">Custom {!InvoiceLabel} URL Generation</apex:outputPanel>
+                                <p class="slds-text-body_small">Breadwinner • QuickBooks Online </p>
+                            </div>
+                        </div>
+                    </div>
+                    <apex:actionstatus id="actioin_status">
+                        <apex:facet name="start">
+                            <div class="slds-spinner_container">
+                                <div class="slds-spinner_brand slds-spinner slds-spinner_large" role="alert">
+                                    <span class="slds-assistive-text">Loading</span>
+                                    <div class="slds-spinner__dot-a"></div>
+                                    <div class="slds-spinner__dot-b"></div>
+                                </div>
+                            </div>
+                        </apex:facet>
+                    </apex:actionstatus>                    
+                    <!-- ----------------------header END ------------------- -->
+                    <div class="slds-m-horizontal_large slds-m-top_medium">
+                        <apex:pageMessages id="pm" escape="false"></apex:pageMessages>  
+                    </div>                                      
+                    <div id="help"  class="slds-popover slds-popover_tooltip slds-nubbin_bottom-left" role="tooltip" aria-live="polite" style="display:none;position:absolute;top:0px;left:0px;">
+                        <div class="slds-popover__body slds-text-longform">
+                            <p>Help text will come here dynamically</p>
+                        </div>
+                    </div>                  
+                    <apex:pageMessage rendered="{!isOAuthIssue}" escape="false" detail="{!oAuthExceptionWarningMessage}" summary="There was a problem with the connection to QuickBooks Online:" severity="WARNING" strength="3" />
+                    <div class="slds-m-bottom_large slds-m-around_small">
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(NOT(childRelationshipSection), NOT(fieldMappingSection))}">
+                            <h3 class="slds-section-title_divider">Select Originating Object</h3>
+                            <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                <div class="slds-form-element slds-m-top_small slds-size_1-of-1 slds-medium-size_3-of-6 slds-large-size_6-of-12" style="display:{!IF(isBusinessOrHigher,'','none')}">
+                                    <label class="slds-form-element__label">Choose Invoice / Bill / Purchase Order</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList value="{!Invoicetype}" size="1" styleClass="slds-select" onchange="getLabel();" id="InvoiceType">
+                                                <apex:selectOption itemLabel="Invoice" itemValue="invoice">
+                                                </apex:selectOption>
+                                                <apex:selectOption itemLabel="Bill" itemValue="bill" rendered="{!if(isBusinessOrHigher,true, false)}">
+                                                </apex:selectOption>
+                                                <apex:selectOption itemLabel="Purchase Order" itemValue="purchaseorder" rendered="{!if(isBusinessOrHigher,true, false)}">
+                                                </apex:selectOption>
+                                            </apex:selectList>
+                                        </div>
+                                        
+                                    </div>
+                                </div>
+                                <apex:outputPanel layout="block" styleClass="slds-form-element slds-m-top_medium slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" id="refreshPanel">
+                                    <label class="slds-form-element__label">Select the object from which you want to create {!IF(Invoicetype=='invoice','an','a')} {!InvoiceLabel}</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList id="parentObject" rendered="true" value="{!Parent_Object_Name}" size="1" styleClass="slds-select">
+                                                <apex:selectOption value="{!null}"></apex:selectOption>
+                                                <apex:selectOptions value="{!parentObjectSelectOptionList}" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </apex:outputPanel>
+                                <apex:actionFunction name="sendtoController" reRender="refreshPanel,header,pm" action="{!refreshlabel}" status="actioin_status">
+                                    <apex:param name="name" value="" assignTo="{!InvoiceLabel}"/>
+                                </apex:actionFunction>
+                            </div>
+                            
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(NOT(ISBLANK(Parent_Object_Name)), childRelationshipSection)}">
+                            <h3 class="slds-section-title_divider">Select Line Item Object</h3>
+                            <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                <div class="slds-form-element slds-m-top_medium slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    <label class="slds-form-element__label">Select the object from which you want to fetch {!InvoiceLabel} Line Items</label>
+                                    <div class="slds-form-element__control">
+                                        <div class="slds-select_container">
+                                            <apex:selectList id="childObject" value="{!Child_Relationship_Name}" size="1" styleClass="slds-select">
+                                                <apex:selectOption value="{!null}"></apex:selectOption>
+                                                <apex:selectOptions value="{!childObjectSelectOptionList}" />
+                                            </apex:selectList>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="slds-form-element slds-m-top_medium slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12"  style="display:{!IF((Invoicetype!='invoice'),'','none')}">
+                                    
+                                    <div class="slds-form-element slds-m-top_medium">
+                                        <label class="slds-form-element__label">{!InvoiceLabel} Line Item Preference</label> <a href="javascript:void(0);" onmouseover="identifyfield(this,'QuickBooks Online allows two entirely different types of line items (i.e. Account Details and Item Details). Breadwinner can push relative Line Items to either \'Account Details\' or \'Item Details\'. Please select which you want to have your relative Line Items populate. You can still manually add other lines in either category during an individual {!InvoiceLabel} creation.','280','25')" onmouseout="mouseoutclose();">
+                                        <img style="margin-bottom: 4px;height:15px;width:15px;" src="{!URLFOR($Resource.Breadwinner_QBO, 'Breadwinner_QBO/Images/InfoLightning.png')}"/><span class="slds-assistive-text">Help</span>
+                                        </a>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <apex:selectList value="{!selectedMappingTypeForLineItems}" id="selectedMappingTypeForLineItems" styleClass="slds-select" size="1">
+                                                    <apex:selectOption itemValue="Items" itemLabel="Item based Line Items"/><apex:selectOption itemValue="Accounts" itemLabel="Account based Line Items"/>
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </div>
+                            </div>
+                            
+                            <apex:outputPanel layout="block" styleClass="slds-m-top_medium slds-m-horizontal_small" >
+                                <div class="infoM3" style="border-radius:4px;">
+                                    This field is optional, you may leave this blank and just click proceed.
+                                </div>
+                            </apex:outputPanel>  
+                            
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(NOT(childRelationshipSection), fieldMappingSection)}">
+                            <h3 class="slds-section-title_divider">Map {!InvoiceLabel} fields with {!Parent_Object_Label} fields</h3>
+                            
+                            <div class="slds-grid slds-wrap">
+                                <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for {!InvoiceLabel} Account ({!IF(InvoiceType=='invoice', 'Customer','Vendor')})</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!Parent_Account}" id="selectParentAccount" size="1" styleClass="slds-select">
+                                                        <apex:selectOptions value="{!accountLookUpFields}" />
+                                                        <!-- <apex:selectOptions value="{!parentFormulaTextFields}" /> -->
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for {!IF(Invoicetype!='purchaseorder',InvoiceLabel,'PO')} Date</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!Invoice_Date_Field}" id="selectDatefield" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentDateFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" style="display:{!IF((Invoicetype!='purchaseorder'),'','none')}">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for {!InvoiceLabel} Due Date</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!Due_Date_Field}" size="1" id="selectDueDatefield" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentDateFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12 slds-m-top_medium">
+                                        <apex:outputPanel styleClass="slds-form-element " rendered="{!OR(AND(InvoiceType=='invoice',areInvoiceCustomTxnNumbersEnabled),(InvoiceType!='invoice'))}">
+                                            <label class="slds-form-element__label">Select a field for {!IF(Invoicetype!='purchaseorder',InvoiceLabel,'PO')} Number (Custom)</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Invoice_Number_Field" value="{!Invoice_Number_Field}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentTextFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </apex:outputPanel>
+                                    </div>
+                                </div>
+                                <apex:outputPanel layout="block" styleClass="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    <!--  Custom / additional fields  -->
+                                    <apex:outputPanel layout="block" styleClass=" slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!AND(field_1_enabled,Invoicetype!='bill')}">
+                                        <div class="slds-form-element">
+                                            <label class="slds-form-element__label  slds-m-top_medium ">Custom Field #1 {!IF(ISBLANK(field_1_label), '', '('&field_1_label&')')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_custom_field_1}" id="invoiceParentFieldForCustomField1" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    <apex:outputPanel layout="block" styleClass="  slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!AND(field_2_enabled,Invoicetype!='bill')}">
+                                        <div class="slds-form-element ">
+                                            <label class="slds-form-element__label slds-m-top_medium">Custom Field #2 {!IF(ISBLANK(field_2_label), '', '('&field_2_label&')')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_custom_field_2}" size="1" id="invoiceParentFieldForCustomField2" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" styleClass="slds-m-top_medium  slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!AND(field_3_enabled,Invoicetype!='bill')}">
+                                        <div class="slds-form-element">
+                                            
+                                            <label class="slds-form-element__label">Custom Field #3 {!IF(ISBLANK(field_3_label), '', '('&field_3_label&')')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_custom_field_3}" id="invoiceParentFieldForCustomField3" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" styleClass=" slds-m-top_medium  slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!field_Location_enabled}">
+                                        <div class="slds-form-element">
+                                            
+                                            <label class="slds-form-element__label">Location Field {!IF(ISBLANK(field_Location_Label), '', '('&field_Location_Label&')')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_location_field}" id="invoiceLocationField" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentTextFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="block" styleClass="slds-m-top_medium  slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!AND(isClassTrackingPerTxnEnabled,Invoicetype=='invoice')}">
+                                        <div class="slds-form-element">
+                                            
+                                            <label class="slds-form-element__label">Select a field for Invoice Class</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_class_field}" size="1" id="invoiceClassField" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentTextFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div></div>
+                                    </apex:outputPanel>
+                                    
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" style="display:{!IF((Invoicetype!='bill'),'','none')}">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for {!IF(Invoicetype!='purchaseorder','Invoice Message (Message displayed on Invoice)','Your message to Vendor')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_message_field}" size="1" id="invoiceMessageField" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentTextAreaFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for {!InvoiceLabel} Memo (Statement memo/Notes)</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!invoice_memo_field}" size="1" id="invoiceMemoField" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!parentTextAreaFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    
+                                </apex:outputPanel>
+                            </div>
+                        </apex:outputPanel>
+                        
+                        <apex:outputPanel layout="block" styleClass="slds-m-top_large" rendered="{!AND(NOT(ISBLANK(Parent_Object_Name)),fieldMappingSection, NOT(ISBLANK(Child_Relationship_Name)))}">
+                            <h3 class="slds-section-title_divider">Map Line Item fields with {!Child_Object_Label} fields</h3>
+                            <br/>
+                            
+                            <div class="slds-grid slds-wrap ">
+                                
+                                <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                    
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" >
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">{!IF(selectedMappingTypeForLineItems=='Items','Select a field for Product/Service Name','Select a field for Ledger Account Code')}</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList value="{!Child_Object_Item_Name}" id="ChildObjectItemName" size="1" styleClass="slds-select">
+                                                        <apex:selectOptions value="{!childTextFields}" />
+                                                        <!--  <apex:selectOptions value="{!childLookupCustomFields}" />-->
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" style="display:{!IF((Invoicetype=='invoice'),'','none')}">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for Service Date</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Child_Object_Service_Date" value="{!Child_Object_Service_Date}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!childDateFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for Description</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Child_Object_Description" value="{!Child_Object_Description}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!childTextFields}" />
+                                                        <!--   <apex:selectOptions value="{!childLookupCustomFields}" /> -->
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <apex:outputPanel layout="block" styleClass="slds-form-element slds-m-top_medium slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" rendered="{!OR(AND(isClassTrackingPerTxnLineEnabled,Invoicetype=='invoice'),AND(OR(isClassTrackingPerTxnEnabled,isClassTrackingPerTxnLineEnabled),Invoicetype!='invoice'))}">
+                                        <label class="slds-form-element__label">Select a field for Class</label>
+                                        <div class="slds-form-element__control">
+                                            <div class="slds-select_container">
+                                                <apex:selectList id="txnLine_class_field" value="{!child_object_class_field}" size="1" styleClass="slds-select">
+                                                    <apex:selectOption value="{!null}"></apex:selectOption>
+                                                    <apex:selectOptions value="{!childTextFields}" />
+                                                </apex:selectList>
+                                            </div>
+                                        </div>
+                                    </apex:outputPanel>
+                                </div>
+                                <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">                  
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for Quantity</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Child_Object_Quantity" value="{!Child_Object_Quantity}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!childNumberFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for Rate</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Child_Object_Unit_Price" value="{!Child_Object_Unit_Price}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!childNumberFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12" style="display:{!IF(AND(isUSTaxModel,Invoicetype!='purchaseorder'),'grid','none')}" >
+                                        <div class="slds-form-element slds-m-top_medium">
+                                            <label class="slds-form-element__label">Select a field for Is Taxable</label>
+                                            <div class="slds-form-element__control">
+                                                <div class="slds-select_container">
+                                                    <apex:selectList id="Child_Object_Taxable" value="{!Child_Object_Taxable}" size="1" styleClass="slds-select">
+                                                        <apex:selectOption value="{!null}"></apex:selectOption>
+                                                        <apex:selectOptions value="{!childBooleanFields}" />
+                                                    </apex:selectList>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                            </div>
+                            
+                            <div class="infoM3 slds-m-top_small slds-m-horizontal_small" style="border-radius:4px">
+                                <ul class="slds-list_dotted">
+                                    <li>If you are unable to map something, create formula fields according to your requirements, and restart this. </li>
+                                    <li>If you are unable to find some field, make sure that field level security is visible.</li>
+                                </ul>
+                            </div>
+                        </apex:outputPanel>
+                        <apex:outputPanel layout="block" style="border-radius:4px" styleClass="infoM3 slds-col_padded slds-m-horizontal_medium slds-m-top_small" rendered="{!AND(fieldMappingSection, ISBLANK(Child_Relationship_Name))}">
+                            <p>
+                                If you want to map {!InvoiceLabel} Line Item fields like Item Name, Description, Quantity etc., you must choose a Child Relationship in the previous page, you can do that by clicking Go Back button
+                            </p>
+                            
+                        </apex:outputPanel>
+                        
+                        <div style="text-align:center;" class="slds-m-top_large slds-m-bottom_large">
+                            <apex:commandButton id="next" value="Next" action="{!next1}" styleClass="slds-button slds-button_brand" rendered="{!AND(NOT(childRelationshipSection), NOT(fieldMappingSection))}" />
+                            <apex:commandButton id="proceedAndMapfields" value="Proceed and Map fields" styleClass="slds-button slds-button_brand" action="{!next2}" rendered="{!AND(NOT(ISBLANK(Parent_Object_Name)), childRelationshipSection )}" />
+                            <apex:commandButton id="goBack" value="Go Back" styleClass="slds-button slds-button_neutral slds-m-horizontal_xx-small" action="{!goBackToSecondPage}" rendered="{!AND(NOT(ISBLANK(Parent_Object_Name)), fieldMappingSection)}" />
+                            <apex:commandButton id="generateURL" value="Generate URL" styleClass="slds-button slds-button_brand" action="{!generateURL}" rendered="{!AND(NOT(ISBLANK(Parent_Object_Name)), fieldMappingSection)}" />
+                        </div>
+                        
+                        <apex:outputPanel layout="block" rendered="{!AND(fieldMappingSection,NOT(ISBLANK(Final_URL)))}">
+                            <h3 class="slds-section-title_divider">Generated URL</h3>
+                            <div class="slds-col_padded slds-size_1-of-2 slds-medium-size_3-of-6 slds-large-size_6-of-12">
+                                <div class="slds-form-element slds-m-top_medium">
+                                    <label class="slds-form-element__label">Copy and Paste the following URL in the Custom Button (New {!InvoiceLabel})</label>
+                                    <div class="slds-form-element__control">
+                                        <apex:inputTextarea id="url" onfocus="this.select();" styleClass="slds-textarea" cols="120" rows="8" value="{!Final_URL}"></apex:inputTextarea>
+                                    </div>
+                                    <div class="slds-text-body_small  slds-m-left_medium slds-m-top_small">If you want to preview before creating {!IF(Invoicetype=='invoice','an','a')} {!InvoiceLabel}, append <b>&amp;testing=true</b> at the end of the URL.</div>
+                                    
+                                </div>
+                            </div>
+                        </apex:outputPanel>
+                        
+                    </div>
+                    
+                </div>
+            </apex:form>
+        </body>
+        
+    </html>
+    
+</apex:page>
